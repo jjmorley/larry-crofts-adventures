@@ -4,4 +4,4 @@
 | Domain      |               |                |
 | Renderer    | Joseph Morley | morleyjose     |
 | Persistency |               |                |
-| Recorder    |               |                |
+| Recorder    | Nate Burt     | burtnath       |
