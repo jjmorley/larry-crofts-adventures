@@ -2,6 +2,6 @@
 |-------------|---------------|----------------|
 | App         | Trent Shailer | shailetren     |
 | Domain      |               |                |
-| Renderer    |               |                |
+| Renderer    | Joseph Morley | morleyjose     |
 | Persistency |               |                |
 | Recorder    |               |                |
