@@ -1,13 +1,16 @@
 # Requirements
 
-### 1. 2D game display
--  
+### 1. spritemanager
+-  event must trigger seperate sprite selection
 
-### 2. Player Animations
-- 
-
-### 3. Actor Animations
-- 
+### 2. Events needed
+- PlayerMovement
+- Key Pickup
+- Teasure Pickup
+- All Treasures PickedUp
+- DoorUnlocked
+- Lose
+- Win
 
 ### 4. Sounds
 - Opening Door
