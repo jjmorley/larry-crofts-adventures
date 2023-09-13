@@ -26,16 +26,27 @@
 - Open a help page
 - Load a level (Not a requirement but is kind of needed?)
 
-### The module also manages the level time limit. When it reaches zero:
+### 4. The module also manages the level time limit. When it reaches zero:
 - Display game over
 - Stop the game
 - Let the player restart the level
 
 # Brainstorm
 
+Main question is about how the modules will communicate.
+
 ```java
+// This plan would result in a lot of 2 way communication between modules...
+// May have App as the mainWindow rather than having it as a child class
+// Depends on how everything else works, if I need lots of logic in App to carry out it's responsibilities
+// or if communication and that behaviour can be handled entirely by the child classes
+
+// Domain has a TryMove function that retuerns a boolean and takes a Direction
+
+
 class App {
     private Game currentGame;
+    private MainWindow mainWindow;
     
     public App(){
         /*
@@ -46,11 +57,31 @@ class App {
          * currentGame should be initialized with either:
          *      The newest incomplete save, if one exists
          *      Else level 1
+         * 
+         * Creates main window and input manager
          * */
     }
+    
+    /*
+     * Actions and events from classes like game and input manager call methods here?
+     * */
 }
 
 class Game {
+    private boolean isPaused;
+    private Domain domain;
+    private int timeLeft;
+    
+    // Perhaps the game contains the renderer and game info GUI parts
+    // then the main window can render game.gameInfo and game.renderer
+    // this means the components that need data from the game are children of the game
+    // rather than having communication between have to pass from game -> app -> main window -> component
+    // However, this depends on how the rendering with javaFX works and again how data communication works
+    // this couples the renderer and the game info very closely with game
+    
+    // renderer needs info about the domain
+    // gameInfo needs info from domain as well
+    
     /*
      * This manages the timer for the current game
      * contains the domain
@@ -60,21 +91,46 @@ class Game {
      
 }
 
-class MainWindow {
-    /*
-     * Is the main window
-     * */
-}
 
 class InputManager {
     /*
      * Captures the keyboard inputs
+     *
+     * If the game is paused, stop interpreting certain inputs
+     * 
+     * Inputs should timeout for a set time after receiving an input
+     * however it should probably only timeout if the action is successful
+     * */
+}
+
+class MainWindow extends Application {
+    private MenuBar menuBar;
+    private GameInfoGUI gameInfoGUI;
+    private Renderer renderer;
+    private InputManager inputManager;
+    
+    // How do I get game reflected in renderer and this?
+    
+    /*
+     * Is the main window
+     * Always exists
+     * When a new game is started, the game info and renderer are updated/recreated 
+     * 
+     * Creates the renderer instance
+     * Creates the GameInfo gui
+     * Creates the menu bar
      * */
 }
 
 class MenuBar {
     /*
-     * Renders and manages the menu bar
+     * Renders and manages the menu bar (3.)
+     * */
+}
+
+class GameInfoGUI {
+    /*
+     * Renders all of (2.)
      * */
 }
 ```
