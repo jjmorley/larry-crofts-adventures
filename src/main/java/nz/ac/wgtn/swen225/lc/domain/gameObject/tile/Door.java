@@ -12,7 +12,7 @@ import nz.ac.wgtn.swen225.lc.domain.gameObject.item.Key;
 public class Door implements Tile {
 
     private Position position;
-    private Key key;
+    private final Key key;
 
     public Door(Key key, Position position) {
         assert key!=null;
