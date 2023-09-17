@@ -1,15 +1,18 @@
-package nz.ac.wgtn.swen225.lc.domain.gameObject.tile;
+package nz.ac.wgtn.swen225.lc.domain.gameObject.tile.walkableTile;
 
 import nz.ac.wgtn.swen225.lc.domain.Position;
+import nz.ac.wgtn.swen225.lc.domain.gameObject.GameObject;
+import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.Tile;
 
 /**
  * The type Free.
  *
  * @author Alexander_Galloway.
  */
-public class Free implements Tile{
+public class Free implements WalkableTile {
 
     private Position position;
+    private GameObject gameObject;
 
     /**
      * Returns the current position of the GameObject
@@ -39,5 +42,25 @@ public class Free implements Tile{
     @Override
     public boolean isWalkable() {
         return true;
+    }
+
+    /**
+     * Returns GameObject that a tile may be holding
+     *
+     * @return GameObject Can be altered.
+     */
+    @Override
+    public GameObject getGameObject() {
+        return gameObject;
+    }
+
+    /**
+     * Sets new gameObject to a tile.
+     *
+     * @param gameObject New item on gameObject.
+     */
+    @Override
+    public void setGameObject(GameObject gameObject) {
+        this.gameObject = gameObject;
     }
 }

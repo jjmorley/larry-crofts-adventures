@@ -1,6 +1,9 @@
 package nz.ac.wgtn.swen225.lc.domain.gameObject;
 
+import javafx.geometry.Pos;
 import nz.ac.wgtn.swen225.lc.domain.Position;
+
+import java.util.List;
 
 /**
  * The type Actor.
@@ -10,6 +13,7 @@ import nz.ac.wgtn.swen225.lc.domain.Position;
 public class Actor implements GameObject{
 
     private Position position;
+    private List<Position> route;
 
     /**
      * Returns the current position of the GameObject

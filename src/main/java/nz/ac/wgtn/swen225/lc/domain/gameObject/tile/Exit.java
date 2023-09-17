@@ -1,15 +1,17 @@
 package nz.ac.wgtn.swen225.lc.domain.gameObject.tile;
 
 import nz.ac.wgtn.swen225.lc.domain.Position;
+import nz.ac.wgtn.swen225.lc.domain.gameObject.GameObject;
 
 /**
  * The type Exit.
  *
  * @author Alexander_Galloway.
  */
-public class Exit implements Tile{
+public class Exit implements Tile {
 
     private Position position;
+    private GameObject gameObject;
 
     /**
      * Returns the current position of the GameObject

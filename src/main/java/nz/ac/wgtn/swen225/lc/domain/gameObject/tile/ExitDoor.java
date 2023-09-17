@@ -7,7 +7,7 @@ import nz.ac.wgtn.swen225.lc.domain.Position;
  *
  * @author Alexander_Galloway.
  */
-public class ExitDoor implements Tile{
+public class ExitDoor implements Tile {
 
     private Position position;
 

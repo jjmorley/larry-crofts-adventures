@@ -7,7 +7,7 @@ import nz.ac.wgtn.swen225.lc.domain.Position;
  *
  * @author Alexander_Galloway.
  */
-public class Wall implements Tile{
+public class Wall implements Tile {
 
     private Position position;
 

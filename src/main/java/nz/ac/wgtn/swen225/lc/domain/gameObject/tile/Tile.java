@@ -7,6 +7,4 @@ import nz.ac.wgtn.swen225.lc.domain.gameObject.GameObject;
  *
  * @author Alexander_Galloway.
  */
-public interface Tile extends GameObject {
-
-}
+public interface Tile extends GameObject {}

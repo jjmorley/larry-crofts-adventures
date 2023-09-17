@@ -9,8 +9,18 @@ import nz.ac.wgtn.swen225.lc.domain.Position;
  * @author Alexander_Galloway.
  */
 public class Player implements GameObject{
-
     private Position position;
+
+    /**
+     * Instantiates a new Player.
+     *
+     * @param position the position
+     */
+    public Player(Position position) {
+        assert position!=null;
+
+        this.position = position;
+    }
 
     /**
      * Returns the current position of the GameObject

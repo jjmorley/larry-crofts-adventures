@@ -1,7 +1,6 @@
 package nz.ac.wgtn.swen225.lc.domain.gameObject.item;
 
 import nz.ac.wgtn.swen225.lc.domain.gameObject.GameObject;
-import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.Tile;
 
 /**
  * The interface Item.

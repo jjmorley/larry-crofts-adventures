@@ -8,7 +8,7 @@ import nz.ac.wgtn.swen225.lc.domain.gameObject.item.Key;
  *
  * @author Alexander_Galloway.
  */
-public class Door implements Tile{
+public class Door implements Tile {
 
     private Position position;
     private Key key;
