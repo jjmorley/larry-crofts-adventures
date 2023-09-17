@@ -11,6 +11,18 @@ import nz.ac.wgtn.swen225.lc.domain.gameObject.GameObject;
 public class Key implements Item, GameObject {
 
     private Position position;
+    private int key;
+    private GameObject replaceWith;
+
+
+    /**
+     * Returns an ID that matches a number for a door.
+     *
+     * @return int Unique ID.
+     */
+    public int getKey() {
+        return key;
+    }
 
     /**
      * Returns the current position of the GameObject
@@ -40,5 +52,15 @@ public class Key implements Item, GameObject {
     @Override
     public boolean isWalkable() {
         return true;
+    }
+
+    /**
+     * Returns the GameObject the Item should be replaced with when picked up.
+     *
+     * @return GameObject Changes if walkable.
+     */
+    @Override
+    public GameObject replaceWith() {
+        return replaceWith;
     }
 }

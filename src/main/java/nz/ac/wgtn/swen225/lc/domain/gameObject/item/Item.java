@@ -1,5 +1,8 @@
 package nz.ac.wgtn.swen225.lc.domain.gameObject.item;
 
+import nz.ac.wgtn.swen225.lc.domain.gameObject.GameObject;
+import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.Tile;
+
 /**
  * The interface Item.
  *
@@ -7,4 +10,10 @@ package nz.ac.wgtn.swen225.lc.domain.gameObject.item;
  */
 public interface Item {
 
+    /**
+     * Returns the GameObject the Item should be replaced with when picked up.
+     *
+     * @return GameObject Changes if walkable.
+     */
+    public GameObject replaceWith();
 }

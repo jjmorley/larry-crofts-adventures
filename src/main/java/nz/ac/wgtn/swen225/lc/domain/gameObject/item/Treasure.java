@@ -11,6 +11,7 @@ import nz.ac.wgtn.swen225.lc.domain.gameObject.GameObject;
 public class Treasure implements Item, GameObject {
 
     private Position position;
+    private GameObject replaceWith;
 
     /**
      * Returns the current position of the GameObject
@@ -40,5 +41,15 @@ public class Treasure implements Item, GameObject {
     @Override
     public boolean isWalkable() {
         return true;
+    }
+
+    /**
+     * Returns the GameObject the Item should be replaced with when picked up.
+     *
+     * @return GameObject Changes if walkable.
+     */
+    @Override
+    public GameObject replaceWith() {
+        return replaceWith;
     }
 }

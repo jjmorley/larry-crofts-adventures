@@ -1,6 +1,7 @@
 package nz.ac.wgtn.swen225.lc.domain.gameObject.tile;
 
 import nz.ac.wgtn.swen225.lc.domain.Position;
+import nz.ac.wgtn.swen225.lc.domain.gameObject.item.Key;
 
 /**
  * The type Door.
@@ -10,6 +11,16 @@ import nz.ac.wgtn.swen225.lc.domain.Position;
 public class Door implements Tile{
 
     private Position position;
+    private Key key;
+
+    /**
+     * Returns true or false, if key matches the doors key.
+     *
+     * @return boolean.
+     */
+    public boolean keyMatch(Key key) {
+        return this.key.equals(key);
+    }
 
     /**
      * Returns the current position of the GameObject
