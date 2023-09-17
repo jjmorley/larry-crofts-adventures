@@ -13,6 +13,14 @@ public class Treasure implements Item, GameObject {
     private Position position;
     private GameObject replaceWith;
 
+    public Treasure(GameObject replaceWith, Position position) {
+        assert replaceWith!=null;
+        assert position!=null;
+
+        this.replaceWith = replaceWith;
+        this.position = position;
+    }
+
     /**
      * Returns the current position of the GameObject
      *

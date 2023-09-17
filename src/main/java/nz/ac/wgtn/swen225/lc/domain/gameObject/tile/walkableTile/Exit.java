@@ -1,17 +1,27 @@
-package nz.ac.wgtn.swen225.lc.domain.gameObject.tile;
+package nz.ac.wgtn.swen225.lc.domain.gameObject.tile.walkableTile;
 
+import javafx.geometry.Pos;
 import nz.ac.wgtn.swen225.lc.domain.Position;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.GameObject;
+import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.Tile;
 
 /**
  * The type Exit.
  *
  * @author Alexander_Galloway.
  */
-public class Exit implements Tile {
+public class Exit implements WalkableTile {
 
     private Position position;
     private GameObject gameObject;
+
+    public Exit(GameObject gameObject, Position position) {
+        assert gameObject!=null;
+        assert position!=null;
+
+        this.gameObject = gameObject;
+        this.position = position;
+    }
 
     /**
      * Returns the current position of the GameObject
@@ -41,5 +51,25 @@ public class Exit implements Tile {
     @Override
     public boolean isWalkable() {
         return true;
+    }
+
+    /**
+     * Returns GameObject that a tile may be holding
+     *
+     * @return GameObject Can be altered.
+     */
+    @Override
+    public GameObject getGameObject() {
+        return gameObject;
+    }
+
+    /**
+     * Sets new gameObject to a tile.
+     *
+     * @param gameObject New item on gameObject.
+     */
+    @Override
+    public void setGameObject(GameObject gameObject) {
+        this.gameObject = gameObject;
     }
 }

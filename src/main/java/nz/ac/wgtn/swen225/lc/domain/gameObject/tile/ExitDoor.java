@@ -11,6 +11,12 @@ public class ExitDoor implements Tile {
 
     private Position position;
 
+    public ExitDoor(Position position) {
+        assert position!=null;
+        
+        this.position = position;
+    }
+
     /**
      * Returns the current position of the GameObject
      *

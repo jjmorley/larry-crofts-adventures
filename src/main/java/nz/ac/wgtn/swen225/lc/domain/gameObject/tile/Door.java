@@ -1,5 +1,6 @@
 package nz.ac.wgtn.swen225.lc.domain.gameObject.tile;
 
+import javafx.geometry.Pos;
 import nz.ac.wgtn.swen225.lc.domain.Position;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.item.Key;
 
@@ -12,6 +13,14 @@ public class Door implements Tile {
 
     private Position position;
     private Key key;
+
+    public Door(Key key, Position position) {
+        assert key!=null;
+        assert position!=null;
+
+        this.key = key;
+        this.position = position;
+    }
 
     /**
      * Returns true or false, if key matches the doors key.

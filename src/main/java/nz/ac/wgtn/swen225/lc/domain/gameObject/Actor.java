@@ -12,8 +12,15 @@ import java.util.List;
  */
 public class Actor implements GameObject{
 
-    private Position position;
     private List<Position> route;
+    private int positionIndex;
+
+    public Actor(List<Position> positionList) {
+        assert positionList!=null;
+
+        this.route = positionList;
+        positionIndex = 0;
+    }
 
     /**
      * Returns the current position of the GameObject
@@ -22,17 +29,17 @@ public class Actor implements GameObject{
      */
     @Override
     public Position getPosition() {
-        return position;
+        return route.get(positionIndex);
     }
 
     /**
-     * Set the position of the game-object to be a new position
+     * This no longer can change the position, just move the position by one more along its route.
      *
      * @param position new chosen position for game-object.
      */
     @Override
     public void setPosition(Position position) {
-        this.position = position;
+        positionIndex++;
     }
 
     /**

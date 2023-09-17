@@ -1,5 +1,6 @@
 package nz.ac.wgtn.swen225.lc.domain.gameObject.tile.walkableTile;
 
+import javafx.geometry.Pos;
 import nz.ac.wgtn.swen225.lc.domain.Position;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.GameObject;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.Tile;
@@ -13,6 +14,14 @@ public class Free implements WalkableTile {
 
     private Position position;
     private GameObject gameObject;
+
+    public Free(GameObject gameObject, Position position) {
+        assert gameObject!=null;
+        assert position!=null;
+
+        this.gameObject = gameObject;
+        this.position = position;
+    }
 
     /**
      * Returns the current position of the GameObject

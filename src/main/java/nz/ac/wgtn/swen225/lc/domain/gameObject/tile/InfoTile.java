@@ -11,6 +11,12 @@ public class InfoTile implements Tile {
 
     private Position position;
 
+    public InfoTile(Position position) {
+        assert position!=null;
+
+        this.position = position;
+    }
+
     /**
      * Returns the current position of the GameObject
      *

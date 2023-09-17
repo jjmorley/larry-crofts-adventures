@@ -11,6 +11,12 @@ public class Wall implements Tile {
 
     private Position position;
 
+    public Wall(Position position) {
+        assert position!=null;
+
+        this.position = position;
+    }
+
     /**
      * Returns the current position of the GameObject
      *

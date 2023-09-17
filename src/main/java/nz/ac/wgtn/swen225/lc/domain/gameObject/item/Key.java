@@ -14,6 +14,15 @@ public class Key implements Item, GameObject {
     private int key;
     private GameObject replaceWith;
 
+    public Key(GameObject replaceWith, int key, Position position) {
+        assert replaceWith!=null;
+        assert position!=null;
+
+        this.replaceWith = replaceWith;
+        this.key = key;
+        this.position = position;
+
+    }
 
     /**
      * Returns an ID that matches a number for a door.
