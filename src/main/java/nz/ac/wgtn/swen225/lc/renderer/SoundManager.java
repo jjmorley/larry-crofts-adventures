@@ -1,7 +1,7 @@
-package main.java.nz.ac.wgtn.swen225.lc.renderer;
+package nz.ac.wgtn.swen225.lc.renderer;
 
 import java.util.*;
-import javafx.scene.media.AudioClip;
+import javafx.scene.media.*;
 
 /**
  * Manages importing the sounds files for Renderer use. 

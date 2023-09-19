@@ -1,4 +1,4 @@
-package main.java.nz.ac.wgtn.swen225.lc.renderer;
+package nz.ac.wgtn.swen225.lc.renderer;
 
 import java.util.*;
 import javafx.scene.image.Image;
@@ -10,7 +10,7 @@ import javafx.scene.image.Image;
  */
 public class SpriteManager {
 	
-	private static final String BASE_PATH = "C:\\Users\\joefa\\git\\larry-crofts-adventures\\assets\\Sprites\\";
+	private static final String BASE_PATH = "C:\\Users\\joefa\\Documents\\SWEN225\\Project\\larry-crofts-adventures\\assets\\Sprites\\";
 	
 	private Map<String, Image> spriteCache;
 
@@ -37,7 +37,7 @@ public class SpriteManager {
         spriteCache.put("Key_Yellow", new Image(BASE_PATH + "Key_Yellow.png"));
         spriteCache.put("Treasure", new Image(BASE_PATH + "Treasure.png"));
         spriteCache.put("Wall", new Image(BASE_PATH + "Wall.png"));
-        spriteCache.put("Floor", new Image(BASE_PATH + "Floor.png"));
+        spriteCache.put("Free", new Image(BASE_PATH + "Floor.png"));
         spriteCache.put("Door_Exit_Open", new Image(BASE_PATH + "Door_Exit_Open.png"));
         spriteCache.put("Door_Yellow_Open", new Image(BASE_PATH + "Door_Yellow_Open.png"));
         spriteCache.put("Door_Red_Open", new Image(BASE_PATH + "Door_Red_Open.png"));
