@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * The type Actor.
  *
- * @author Alexander_Galloway.
+ * @author Alexander_Galloway 300611406.
  */
 public class Actor implements GameObject{
 
@@ -16,7 +16,7 @@ public class Actor implements GameObject{
     private int positionIndex;
 
     public Actor(List<Position> positionList) {
-        assert positionList!=null;
+        if (positionList==null) throw new IllegalArgumentException();
 
         this.route = positionList;
         positionIndex = 0;
@@ -50,5 +50,15 @@ public class Actor implements GameObject{
     @Override
     public boolean isWalkable() {
         return true;
+    }
+
+    /**
+     * Returns the name of the class.
+     *
+     * @return String .
+     */
+    @Override
+    public String getName() {
+        return "Actor";
     }
 }

@@ -5,7 +5,7 @@ import nz.ac.wgtn.swen225.lc.domain.Position;
 /**
  * The interface Game object.
  *
- * @author Alexander_Galloway.
+ * @author Alexander_Galloway 300611406.
  */
 public interface GameObject {
 
@@ -30,4 +30,10 @@ public interface GameObject {
      */
     public boolean isWalkable();
 
+    /**
+     * Returns the name of the class.
+     *
+     * @return String .
+     */
+    public String getName();
 }

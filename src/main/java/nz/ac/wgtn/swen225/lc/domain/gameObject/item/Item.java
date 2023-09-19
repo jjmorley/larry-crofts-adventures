@@ -5,7 +5,7 @@ import nz.ac.wgtn.swen225.lc.domain.gameObject.GameObject;
 /**
  * The interface Item.
  *
- * @author Alexander_Galloway.
+ * @author Alexander_Galloway 300611406.
  */
 public interface Item {
 

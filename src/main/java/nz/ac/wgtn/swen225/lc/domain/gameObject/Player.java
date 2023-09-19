@@ -6,7 +6,7 @@ import nz.ac.wgtn.swen225.lc.domain.Position;
 /**
  * The type Player.
  *
- * @author Alexander_Galloway.
+ * @author Alexander_Galloway 300611406.
  */
 public class Player implements GameObject{
     private Position position;
@@ -17,7 +17,7 @@ public class Player implements GameObject{
      * @param position the position
      */
     public Player(Position position) {
-        assert position!=null;
+        if (position==null) throw new IllegalArgumentException();
 
         this.position = position;
     }
@@ -50,5 +50,15 @@ public class Player implements GameObject{
     @Override
     public boolean isWalkable() {
         return false;
+    }
+
+    /**
+     * Returns the name of the class.
+     *
+     * @return String .
+     */
+    @Override
+    public String getName() {
+        return "Player";
     }
 }

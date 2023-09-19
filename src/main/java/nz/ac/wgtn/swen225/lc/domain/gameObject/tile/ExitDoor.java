@@ -5,14 +5,14 @@ import nz.ac.wgtn.swen225.lc.domain.Position;
 /**
  * The type Exit door.
  *
- * @author Alexander_Galloway.
+ * @author Alexander_Galloway 300611406.
  */
 public class ExitDoor implements Tile {
 
     private Position position;
 
     public ExitDoor(Position position) {
-        assert position!=null;
+        if (position==null) throw new IllegalArgumentException();
         
         this.position = position;
     }
@@ -45,5 +45,15 @@ public class ExitDoor implements Tile {
     @Override
     public boolean isWalkable() {
         return false;
+    }
+
+    /**
+     * Returns the name of the class.
+     *
+     * @return String .
+     */
+    @Override
+    public String getName() {
+        return "ExitDoor";
     }
 }

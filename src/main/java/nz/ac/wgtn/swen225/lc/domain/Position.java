@@ -7,28 +7,25 @@ import java.util.Objects;
  * Position is an object that holds a fixed X and Y value for our board.
  * New Position object must be made to change X and Y value.
  *
- * @author Alexander_Galloway.
+ * @author Alexander_Galloway 300611406.
  */
-public class Position {
-    private final int x;
-    private final int y;
-
+public record Position(int x, int y) {
     /**
      * Instantiates a new Position.
      *
      * @param x the x.
      * @param y the y.
      */
-    public Position(int x, int y) {
-        this.x = x;
-        this.y = y;
+    public Position {
+        if (x < 0) throw new IllegalArgumentException();
+        if (y < 0) throw new IllegalArgumentException();
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Position position)) return false;
-        return getX() == position.getX() && getY() == position.getY();
+        return x() == position.x() && y() == position.y();
     }
 
     @Override
@@ -41,7 +38,7 @@ public class Position {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getX(), getY());
+        return Objects.hash(x(), y());
     }
 
     /**
@@ -49,7 +46,8 @@ public class Position {
      *
      * @return the x
      */
-    public int getX() {
+    @Override
+    public int x() {
         return x;
     }
 
@@ -58,7 +56,8 @@ public class Position {
      *
      * @return the y
      */
-    public int getY() {
+    @Override
+    public int y() {
         return y;
     }
 }

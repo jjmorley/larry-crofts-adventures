@@ -5,14 +5,14 @@ import nz.ac.wgtn.swen225.lc.domain.Position;
 /**
  * The type Info tile.
  *
- * @author Alexander_Galloway.
+ * @author Alexander_Galloway 300611406.
  */
 public class InfoTile implements Tile {
 
     private Position position;
 
     public InfoTile(Position position) {
-        assert position!=null;
+        if (position==null) throw new IllegalArgumentException();
 
         this.position = position;
     }
@@ -45,5 +45,15 @@ public class InfoTile implements Tile {
     @Override
     public boolean isWalkable() {
         return true;
+    }
+
+    /**
+     * Returns the name of the class.
+     *
+     * @return String .
+     */
+    @Override
+    public String getName() {
+        return "InfoTile";
     }
 }

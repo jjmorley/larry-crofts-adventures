@@ -7,7 +7,7 @@ import nz.ac.wgtn.swen225.lc.domain.gameObject.item.Key;
 /**
  * The type Door.
  *
- * @author Alexander_Galloway.
+ * @author Alexander_Galloway 300611406.
  */
 public class Door implements Tile {
 
@@ -15,8 +15,8 @@ public class Door implements Tile {
     private final Key key;
 
     public Door(Key key, Position position) {
-        assert key!=null;
-        assert position!=null;
+        if (key==null) throw new IllegalArgumentException();
+        if (position==null) throw new IllegalArgumentException();
 
         this.key = key;
         this.position = position;
@@ -59,5 +59,15 @@ public class Door implements Tile {
     @Override
     public boolean isWalkable() {
         return false;
+    }
+
+    /**
+     * Returns the name of the class.
+     *
+     * @return String .
+     */
+    @Override
+    public String getName() {
+        return "Door";
     }
 }
