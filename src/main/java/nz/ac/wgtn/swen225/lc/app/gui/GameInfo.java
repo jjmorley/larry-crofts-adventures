@@ -32,6 +32,6 @@ public class GameInfo extends HBox {
   @Override
   protected double computePrefHeight(double v) {
     // 100px - height of menu bar
-    return 100 - 26;
+    return 100 - 25;
   }
 }
