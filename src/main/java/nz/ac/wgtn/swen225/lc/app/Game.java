@@ -62,7 +62,7 @@ public class Game {
 
   /**
    * Save the current game.
-   * */
+   */
   public void saveGame() {
 
   }
@@ -70,9 +70,14 @@ public class Game {
   /**
    * Pause the game.
    */
-  public void pauseGame() {
+  public void pauseGame(boolean showOverlay) {
     isPaused = true;
-    // Send event to UI to display game paused
+
+    // TODO do timer stuff
+
+    if (showOverlay) {
+      gameWindow.overlay.displayPause();
+    }
   }
 
   /**
@@ -80,7 +85,10 @@ public class Game {
    */
   public void resumeGame() {
     isPaused = false;
-    // Send event to UI to display game resumed
+
+    // TODO timer stuff
+
+    gameWindow.overlay.close();
   }
 
   /**

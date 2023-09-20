@@ -47,7 +47,7 @@ public class InputManager {
     } else if (key.isLetterKey() && isControlDown) {
       handleGame(key);
     } else if (key == KeyCode.SPACE) {
-      game.pauseGame();
+      game.pauseGame(true);
     } else if (key == KeyCode.ESCAPE) {
       game.resumeGame();
     }
