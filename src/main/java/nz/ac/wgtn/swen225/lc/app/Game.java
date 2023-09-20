@@ -1,6 +1,7 @@
 package nz.ac.wgtn.swen225.lc.app;
 
 import java.io.File;
+
 import javafx.stage.Stage;
 import nz.ac.wgtn.swen225.lc.app.gui.GameWindow;
 
@@ -22,7 +23,7 @@ public class Game {
    * Loads the newest incomplete save if one exists, else level 1.
    *
    * @param stage The stage created by the application window.
-   * */
+   */
   public Game(Stage stage) {
     gameWindow = new GameWindow(stage, this);
     // Load game
@@ -32,7 +33,7 @@ public class Game {
    * Create the game with a specific level on startup, used only by Fuzzing.
    *
    * @param level the number of the level to load;
-   * */
+   */
   public Game(int level) {
     // Not implemented yet
   }
@@ -41,7 +42,7 @@ public class Game {
    * Exit the game.
    *
    * @param save Should the current game be saved before exiting.
-   * */
+   */
   public void exitGame(boolean save) {
     if (save) {
       // wait for save to finish then exit game
@@ -54,14 +55,21 @@ public class Game {
    * Try to load a game from a given file.
    *
    * @param file the save/level file to load from.
-   * */
+   */
   public void loadGame(File file) {
     // This function may change depending on how Persistence works
   }
 
   /**
-   * Pause the game.
+   * Save the current game.
    * */
+  public void saveGame() {
+
+  }
+
+  /**
+   * Pause the game.
+   */
   public void pauseGame() {
     isPaused = true;
     // Send event to UI to display game paused
@@ -69,7 +77,7 @@ public class Game {
 
   /**
    * Resume a paused game.
-   * */
+   */
   public void resumeGame() {
     isPaused = false;
     // Send event to UI to display game resumed
@@ -79,9 +87,8 @@ public class Game {
    * Try a move the player in a given direction.
    *
    * @param direction the direction the player should move in.
-   *
    * @return If the movement was successful.
-   * */
+   */
   public boolean movePlayer(Direction direction) {
     // Only if domain exists
 

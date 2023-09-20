@@ -1,6 +1,7 @@
 package nz.ac.wgtn.swen225.lc.app.gui;
 
 import java.io.File;
+
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -50,7 +51,7 @@ public class GameWindow {
         )
     );
 
-    MenuBar menuBar = new MenuBar();
+    MenuBar menuBar = new MenuBar(game, this);
     GameInfo gameInfo = new GameInfo();
 
     // VBox to stack menu bar, game info, and game window vertically
@@ -89,5 +90,9 @@ public class GameWindow {
     // TODO processing if it is a valid file?
 
     return file;
+  }
+
+  public void openHelp() {
+
   }
 }
