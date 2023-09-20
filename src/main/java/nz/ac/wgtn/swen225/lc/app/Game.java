@@ -1,8 +1,6 @@
 package nz.ac.wgtn.swen225.lc.app;
 
 import java.io.File;
-
-import com.sun.glass.ui.Application;
 import javafx.stage.Stage;
 import nz.ac.wgtn.swen225.lc.app.gui.GameWindow;
 
@@ -15,9 +13,7 @@ import nz.ac.wgtn.swen225.lc.app.gui.GameWindow;
 public class Game {
   private boolean isPaused = false;
   private int timeLeft;
-
   private int currentLevel;
-
   private GameWindow gameWindow;
 
 
@@ -41,6 +37,11 @@ public class Game {
     // Not implemented yet
   }
 
+  /**
+   * Exit the game.
+   *
+   * @param save Should the current game be saved before exiting.
+   * */
   public void exitGame(boolean save) {
     if (save) {
       // wait for save to finish then exit game
@@ -49,22 +50,41 @@ public class Game {
     System.exit(0);
   }
 
-  public void loadGame(File f) {
+  /**
+   * Try to load a game from a given file.
+   *
+   * @param file the save/level file to load from.
+   * */
+  public void loadGame(File file) {
     // This function may change depending on how Persistence works
   }
 
+  /**
+   * Pause the game.
+   * */
   public void pauseGame() {
     isPaused = true;
     // Send event to UI to display game paused
   }
 
+  /**
+   * Resume a paused game.
+   * */
   public void resumeGame() {
     isPaused = false;
     // Send event to UI to display game resumed
   }
 
-  public void movePlayer(Direction direction) {
+  /**
+   * Try a move the player in a given direction.
+   *
+   * @param direction the direction the player should move in.
+   *
+   * @return If the movement was successful.
+   * */
+  public boolean movePlayer(Direction direction) {
     // Only if domain exists
-    // Implement timeout (Needs to work with Recorder, maybe timeout should be in input manager?
+
+    return true;
   }
 }
