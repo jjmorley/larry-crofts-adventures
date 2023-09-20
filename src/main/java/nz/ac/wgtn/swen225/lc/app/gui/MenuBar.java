@@ -67,17 +67,15 @@ public class MenuBar extends javafx.scene.control.MenuBar {
   }
 
   private Menu setupPauseMenu(Game game, GameWindow window) {
-    Menu pause = new Menu("Pause");
-    pause.setOnAction(event -> game.pauseGame());
+    Menu pause = new MenuButton("Pause", event -> game.pauseGame(true));
 
     return pause;
   }
 
   private Menu setupHelpMenu(Game game, GameWindow window) {
-    Menu help = new Menu("Help");
-    help.setOnAction(event -> {
-      game.pauseGame();
-      window.openHelp();
+    Menu help = new MenuButton("Help", event -> {
+      game.pauseGame(false);
+      window.overlay.displayHelp();
     });
 
     return help;

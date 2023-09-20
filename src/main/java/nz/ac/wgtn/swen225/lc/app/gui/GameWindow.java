@@ -1,7 +1,6 @@
 package nz.ac.wgtn.swen225.lc.app.gui;
 
 import java.io.File;
-
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -22,6 +21,7 @@ public class GameWindow {
   private final Game game;
   private final InputManager inputManager;
   private final Stage stage;
+  public Overlay overlay;
 
   /**
    * Sets up the game window and manages all game window related functionality.
@@ -38,6 +38,26 @@ public class GameWindow {
   }
 
   private Scene setupWindow(Stage stage) {
+    // Pane to stack the overlay on top of the main pane
+    StackPane stackPane = new StackPane();
+
+    overlay = new Overlay(game);
+    VBox mainPane = createMainPane();
+
+    stackPane.getChildren().addAll(mainPane, overlay);
+
+    // Setup window
+    Scene scene = new Scene(stackPane, 720, 820);
+    stage.setScene(scene);
+    stage.setTitle("Larry Croft's Adventures");
+    stage.getIcons().add(new Image("windowIcon.png"));
+    stage.setResizable(false);
+    stage.show();
+
+    return scene;
+  }
+
+  private VBox createMainPane() {
     // Pane to contain the Renderer
     HBox gamePane = new HBox();
     gamePane.setPrefHeight(720);
@@ -55,17 +75,7 @@ public class GameWindow {
     GameInfo gameInfo = new GameInfo();
 
     // VBox to stack menu bar, game info, and game window vertically
-    VBox pane = new VBox(menuBar, gameInfo, gamePane);
-
-    // Setup window
-    Scene scene = new Scene(pane, 720, 820);
-    stage.setScene(scene);
-    stage.setTitle("Larry Croft's Adventures");
-    stage.getIcons().add(new Image("windowIcon.png"));
-    stage.setResizable(false);
-    stage.show();
-
-    return scene;
+    return new VBox(menuBar, gameInfo, gamePane);
   }
 
   public void createGame(/*Domain domain*/) {
@@ -92,7 +102,7 @@ public class GameWindow {
     return file;
   }
 
-  public void openHelp() {
-
+  public Stage getStage() {
+    return stage;
   }
 }
