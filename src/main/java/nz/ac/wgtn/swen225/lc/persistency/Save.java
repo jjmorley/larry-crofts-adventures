@@ -17,7 +17,7 @@ public class Save {
      * TODO: Save json with name based upon computer time. May need separate
      * func. for this
      */
-    public static void saveJSON(String[][] levelArray, int gridSize, String charPos){
+    public static void saveJSON(String[][] levelArray, int gridSize, String charPos, String pathName){
 
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode json = mapper.createObjectNode();
@@ -38,7 +38,7 @@ public class Save {
 
         ObjectWriter writer = mapper.writer(new DefaultPrettyPrinter());
         try{
-            writer.writeValue(new File("levels/savedLevel.json"), json);
+            writer.writeValue(new File(pathName), json);
         }
         catch (IOException e) {
             throw new RuntimeException(e);

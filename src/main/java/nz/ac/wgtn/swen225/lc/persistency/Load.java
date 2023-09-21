@@ -8,6 +8,9 @@ import java.io.IOException;
 
 /**
  * Loads in level from JSON file.
+ *
+ * TODO: RETURN CHARACTER POS
+ * TODO: EXTRA NPC
  */
 public class Load {
 
@@ -16,12 +19,11 @@ public class Load {
     /**
      * Loads JSON file from a given filepath.
      *
-     * TODO: CHANGE FILE PATH TO A PARAMETER
      */
-    public static void loadJSON(){
+    public static void loadJSON(String pathName){
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            json = objectMapper.readTree(new File("levels/levels-template.json"));
+            json = objectMapper.readTree(new File(pathName));
         }
         catch (IOException e){
             System.out.println("Something messed up. \n" + e.toString());
@@ -33,9 +35,9 @@ public class Load {
      *
      * @return String[][]
      */
-    public static String[][] loadAsArray(){
+    public static String[][] loadAsArray(String pathName){
         //JSON LOADING
-        loadJSON();
+        loadJSON(pathName);
         JsonNode level = json.get("level");
         int gridSize = json.get("gridSize").asInt();
 
@@ -46,15 +48,18 @@ public class Load {
                 levelArray[i][j] = level.get(i + ", " + j).asText();
             }
         }
-
-    //for testing porpoises
-//        for(int i = 0; i < gridSize; i++){
-//            for(int j = 0; j <  gridSize; j++){
-//                System.out.println(levelArray[i][j]);
-//            }
-//        }
-
         return levelArray;
+    }
+
+    /**
+     * Return loaded JSON as JSONNode. This is for testing purposes.
+     *
+     * @return JsonNode
+     */
+    public static JsonNode loadAsJSON(String pathName){
+        loadJSON(pathName);
+
+        return json;
     }
 
 }
