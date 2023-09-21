@@ -1,31 +1,37 @@
-package main.java.nz.ac.wgtn.swen225.lc.recorder;
+package nz.ac.wgtn.swen225.lc.recorder;
 
 
+import nz.ac.wgtn.swen225.lc.app.Direction;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.*;
+import com.fasterxml.jackson.databind.*;
+
 
 class GameEvent {
-    // Define your game state data here
+    // Define your game state data he
 }
 
 class GameRecorder {
     private List<GameEvent> gameHistory = new ArrayList<>();
+    private List<Direction> moveHistory = new ArrayList<>();
 
     public void startRecording() {
         // Initialize recording
     }
 
-    public void recordGameState(GameEvent gameEvent) {
-        gameHistory.add(gameEvent);
+    public void addPlayerMove(Direction d) {
+        moveHistory.add(d);
     }
 
     public void saveRecordedGameToFile(String filePath) {
         try {
            ObjectMapper objectMapper = new ObjectMapper();
-           objectMapper.writeValue(new File(filePath), gameHistory);
+           objectMapper.writeValue(new File(filePath), moveHistory);
+           System.out.println("Recorded Moves Saved to: " + filePath);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -48,4 +54,5 @@ class GameRecorder {
     public void autoReplayGame(int speed) {
         // Implement auto-replay logic with the given speed
     }
+
 }
