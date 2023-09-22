@@ -52,6 +52,18 @@ public class Load {
     }
 
     /**
+     * Return character's position.
+     *
+     * TODO: This is a string currently, but needs to be
+     * changed to a location or something.
+     *
+     * @return String
+     */
+    public static String playerPos(){
+        return json.get("char").asText();
+    }
+
+    /**
      * Return loaded JSON as JSONNode. This is for testing purposes.
      *
      * @return JsonNode

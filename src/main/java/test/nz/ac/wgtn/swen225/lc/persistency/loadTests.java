@@ -50,4 +50,9 @@ public class loadTests {
         assert levelArray[2][0].equals("k");
     }
 
+    @Test
+    public void playerPositionCorrect(){
+        assert json.get("char").asText().equals("1, 1");
+    }
+
 }
