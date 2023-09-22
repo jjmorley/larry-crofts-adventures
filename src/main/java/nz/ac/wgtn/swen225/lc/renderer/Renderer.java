@@ -1,5 +1,6 @@
 package nz.ac.wgtn.swen225.lc.renderer;
 
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -30,7 +31,7 @@ import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.Tile;
  */
 public class Renderer {
 	private Canvas canvas;
-	private SoundManager soundManager;
+	private static SoundManager soundManager;
 	private SpriteManager spriteManager;
 	private final Domain domain;
 	private ImageView playerSprite;
@@ -56,10 +57,11 @@ public class Renderer {
 
 	public Renderer(Domain domain, Tile[][] tiles){
 		this.root = new Pane();
+
 		cellSize = 64;
 		this.tiles = tiles;
 		this.domain = domain;
-		// soundManager = new SoundManager();
+		soundManager = new SoundManager();
 		spriteManager = new SpriteManager();
 		canvas = new Canvas(cellSize*tiles.length,cellSize*tiles.length);
 		initialiseGameBoard();
@@ -101,7 +103,6 @@ public class Renderer {
 
 				// Add the tile's ImageView and item's ImageView to the gridPane
 				gc.drawImage(tileImage, j*cellSize, i*cellSize);
-				//gridPane.add(new ImageView(itemImage), j, i);
 			}
 		}
 	}
@@ -152,14 +153,14 @@ public class Renderer {
 	 * 
 	 * @param soundFilePath
 	 */
-	public void playSound(String soundFilePath) {
-		// Play game sounds
+	public static void playSound(String soundFilePath) {
+		soundManager.playSoundEffect(soundFilePath);
 	}
 
 	/**
 	 * Moves player from last coordinate to the current coordinate
      */
-	public void movePlayer(Position previous, Position current) {
+	public void movePlayer() {
 		TranslateTransition transition = new TranslateTransition(MOVE_DURATION, imageView);
 		transition.setByX(cellSize);
 		transition.play();
@@ -173,4 +174,6 @@ public class Renderer {
 	public void startAnimation(Player player){
 		renderPlayer(player.getPosition());
 	}
+
+
 }

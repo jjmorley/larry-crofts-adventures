@@ -10,9 +10,10 @@ import javafx.scene.media.*;
  */
 public class SoundManager {
 
-	private static final String BASE_PATH = "C:/Users/joefa/git/larry-crofts-adventures/assets/Sprites/";
+    private static final String BASE_PATH = "file:///C:/Users/joefa/Documents/SWEN225/Project/larry-crofts-adventures/assets/Sounds/";
 
-	private Map<String, AudioClip> soundCache;
+
+    private Map<String, AudioClip> soundCache;
     private AudioClip backgroundMusic;//not implemented yet
 
     public SoundManager() {
@@ -26,9 +27,9 @@ public class SoundManager {
      */
     private void loadSounds() {
     	try {
-    		soundCache.put("Key",new AudioClip(BASE_PATH + "Key.mp3"));
+            soundCache.put("Key",new AudioClip(BASE_PATH + "Key.mp3"));
     	 soundCache.put("Door",new AudioClip(BASE_PATH + "Door.mp3"));
-    	 soundCache.put("Door_Exit",new AudioClip(BASE_PATH + "Door_Exit.mp3"));
+    	 soundCache.put("Exit_Door",new AudioClip(BASE_PATH + "Exit_Door.mp3"));
     	 soundCache.put("Lose",new AudioClip(BASE_PATH + "Lose.mp3"));
     	 soundCache.put("Win",new AudioClip(BASE_PATH + "Win.mp3"));
     	 soundCache.put("Treasure",new AudioClip(BASE_PATH + "Treasure.mp3"));
