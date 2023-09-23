@@ -1,6 +1,7 @@
 package nz.ac.wgtn.swen225.lc.domain;
 
 import nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable.Actor;
+import nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable.Direction;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable.Player;
 
 import java.util.List;
@@ -14,6 +15,7 @@ public class Domain {
     private final Player player;
     private Board board;
     private final List<Actor> actors;
+    private int treasuresLeft;
 
     public Domain (Board board, Player player, List<Actor> actors) {
         this.board = board;
@@ -21,13 +23,31 @@ public class Domain {
         this.actors = actors;
     }
 
-    public void advanceClock () {
+    public InformationPacket advanceClock () {
+        // Could use streams in this case to make the code shorter, But makes it a pain to read.
+        // Seems unnecessary.
+        InformationPacket infoPacket = null;
         for (Actor actor : actors) {
-            board = actor.move(board);
+            infoPacket = actor.move(board);
+            if (infoPacket==null) throw new IllegalArgumentException();
+
+            if (!infoPacket.isPlayerAlive()) return infoPacket;
+            board = infoPacket.getBoard();
         }
+
+        if (infoPacket==null) throw new IllegalArgumentException();
+        return infoPacket;
     }
 
-    public void movePlayer () {
+    public InformationPacket movePlayer (Direction direction) {
+        // Remember to add sound queues.
+        InformationPacket infoPacket = player.move(board, direction);
+        if (infoPacket==null) throw new IllegalArgumentException();
+
+        if (!infoPacket.isPlayerAlive() || !infoPacket.isPlayerMoved()) return infoPacket;
+        board = infoPacket.getBoard();
+
+        return infoPacket;
     }
 
     public Player getPlayer() {

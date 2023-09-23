@@ -1,6 +1,7 @@
 package nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable;
 
 import nz.ac.wgtn.swen225.lc.domain.Board;
+import nz.ac.wgtn.swen225.lc.domain.InformationPacket;
 import nz.ac.wgtn.swen225.lc.domain.Position;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.GameObject;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.Tile;
@@ -35,7 +36,7 @@ public class Actor implements GameObject {
      * @param board includes non-updated board.
      * @return Board that has been updated.
      */
-    public Board move (Board board) {
+    public InformationPacket move (Board board) {
         if (board==null) throw new IllegalArgumentException();
         if (positionIndex++ >= route.size())  positionIndex = -1;
 
@@ -50,7 +51,7 @@ public class Actor implements GameObject {
         }
         // If walkableTile contains a player, the player has been killed. as the actor is stepping on it.
         if (((WalkableTile) moveToTile).getGameObject().getName().equals("Player")) {
-            return null;
+            return new InformationPacket(board, false, false);
         }
 
         // Using full newBoard as there is no second step, compared to moveToTile.
@@ -61,7 +62,7 @@ public class Actor implements GameObject {
         positionIndex++;
 
         board.setBoard(newBoard);
-        return board;
+        return new InformationPacket(board, false, true);
     }
 
     /**
