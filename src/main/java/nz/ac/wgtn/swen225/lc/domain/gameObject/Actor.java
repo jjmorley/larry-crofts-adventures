@@ -1,7 +1,8 @@
 package nz.ac.wgtn.swen225.lc.domain.gameObject;
 
-import javafx.geometry.Pos;
+import nz.ac.wgtn.swen225.lc.domain.Board;
 import nz.ac.wgtn.swen225.lc.domain.Position;
+import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.Tile;
 
 import java.util.List;
 
@@ -12,14 +13,39 @@ import java.util.List;
  */
 public class Actor implements GameObject{
 
-    private List<Position> route;
+    private final List<Position> route;
     private int positionIndex;
+    private final Tile replaceWith;
 
-    public Actor(List<Position> positionList) {
+    public Actor(List<Position> positionList, Tile replaceWith) {
         if (positionList==null) throw new IllegalArgumentException();
+        if (replaceWith==null) throw new IllegalArgumentException();
 
         this.route = positionList;
+        this.replaceWith =replaceWith;
         positionIndex = 0;
+    }
+
+    public Board move (Board board) {
+        if (board==null) throw new IllegalArgumentException();
+        if (positionIndex++ >= route.size())  positionIndex = -1;
+
+        int newIndex = positionIndex++;
+        Tile[][] newBoard = board.getBoard();
+        //check if board is not walkable, if not check it's the player. if so return true. else throw error.
+        //if the board returns false. increment positionIndex and update board
+        if (!newBoard[route.get(newIndex).x()][route.get(newIndex).y()].isWalkable()) {
+            if (newBoard[route.get(newIndex).x()][route.get(newIndex).y()] instanceof Player) {
+                return null;
+            } else throw new IllegalArgumentException();
+        }
+
+        newBoard[route.get(newIndex).x()][route.get(newIndex).y()] = replaceWith;
+        newBoard[route.get(positionIndex).x()][route.get(positionIndex).y()] = replaceWith;
+        positionIndex++;
+
+        board.setBoard(newBoard);
+        return board;
     }
 
     /**

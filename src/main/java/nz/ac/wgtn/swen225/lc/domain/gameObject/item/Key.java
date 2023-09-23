@@ -11,8 +11,8 @@ import nz.ac.wgtn.swen225.lc.domain.gameObject.GameObject;
 public class Key implements Item, GameObject {
 
     private Position position;
-    private int key;
-    private GameObject replaceWith;
+    private final int key;
+    private final GameObject replaceWith;
 
     public Key(GameObject replaceWith, int key, Position position) {
         if (replaceWith==null) throw new IllegalArgumentException();

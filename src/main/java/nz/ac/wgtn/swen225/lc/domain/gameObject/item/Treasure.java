@@ -11,7 +11,7 @@ import nz.ac.wgtn.swen225.lc.domain.gameObject.GameObject;
 public class Treasure implements Item, GameObject {
 
     private Position position;
-    private GameObject replaceWith;
+    private final GameObject replaceWith;
 
     public Treasure(GameObject replaceWith, Position position) {
         if (replaceWith==null) throw new IllegalArgumentException();
