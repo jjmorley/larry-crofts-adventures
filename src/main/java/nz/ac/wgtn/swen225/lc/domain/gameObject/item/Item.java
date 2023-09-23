@@ -1,18 +1,8 @@
 package nz.ac.wgtn.swen225.lc.domain.gameObject.item;
 
-import nz.ac.wgtn.swen225.lc.domain.gameObject.GameObject;
-
 /**
- * The interface Item.
+ * The interface Item, this interface does nothing except specify that something is pickup able.
  *
  * @author Alexander_Galloway 300611406.
  */
-public interface Item {
-
-    /**
-     * Returns the GameObject the Item should be replaced with when picked up.
-     *
-     * @return GameObject Changes if walkable.
-     */
-    public GameObject replaceWith();
-}
+public interface Item {}

@@ -24,13 +24,6 @@ public interface GameObject {
     public void setPosition(Position position);
 
     /**
-     * Returns if the gameObject can be walked through.
-     *
-     * @return boolean Changes if walkable.
-     */
-    public boolean isWalkable();
-
-    /**
      * Returns the name of the class.
      *
      * @return String .

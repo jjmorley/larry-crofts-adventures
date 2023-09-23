@@ -16,7 +16,6 @@ public class Free implements WalkableTile {
     private GameObject gameObject;
 
     public Free(GameObject gameObject, Position position) {
-        if (gameObject==null) throw new IllegalArgumentException();
         if (position==null) throw new IllegalArgumentException();
 
         this.gameObject = gameObject;
@@ -41,16 +40,6 @@ public class Free implements WalkableTile {
     @Override
     public void setPosition(Position position) {
         this.position = position;
-    }
-
-    /**
-     * Returns if the gameObject can be walked through.
-     *
-     * @return boolean Changes if walkable.
-     */
-    @Override
-    public boolean isWalkable() {
-        return true;
     }
 
     /**

@@ -1,17 +1,23 @@
-package nz.ac.wgtn.swen225.lc.domain.gameObject.tile;
+package nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable;
 
+import javafx.geometry.Pos;
 import nz.ac.wgtn.swen225.lc.domain.Position;
+import nz.ac.wgtn.swen225.lc.domain.gameObject.GameObject;
 
 /**
- * The type Info tile.
+ * The type Player.
  *
  * @author Alexander_Galloway 300611406.
  */
-public class InfoTile implements Tile {
-
+public class Player implements GameObject {
     private Position position;
 
-    public InfoTile(Position position) {
+    /**
+     * Instantiates a new Player.
+     *
+     * @param position the position
+     */
+    public Player(Position position) {
         if (position==null) throw new IllegalArgumentException();
 
         this.position = position;
@@ -38,22 +44,12 @@ public class InfoTile implements Tile {
     }
 
     /**
-     * Returns if the gameObject can be walked through.
-     *
-     * @return boolean Changes if walkable.
-     */
-    @Override
-    public boolean isWalkable() {
-        return true;
-    }
-
-    /**
      * Returns the name of the class.
      *
      * @return String .
      */
     @Override
     public String getName() {
-        return "InfoTile";
+        return "Player";
     }
 }

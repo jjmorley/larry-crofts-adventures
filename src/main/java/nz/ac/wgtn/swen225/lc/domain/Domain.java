@@ -1,7 +1,7 @@
 package nz.ac.wgtn.swen225.lc.domain;
 
-import nz.ac.wgtn.swen225.lc.domain.gameObject.Actor;
-import nz.ac.wgtn.swen225.lc.domain.gameObject.Player;
+import nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable.Actor;
+import nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable.Player;
 
 import java.util.List;
 
@@ -28,7 +28,6 @@ public class Domain {
     }
 
     public void movePlayer () {
-        board = player;
     }
 
     public Player getPlayer() {

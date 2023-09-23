@@ -1,6 +1,5 @@
 package nz.ac.wgtn.swen225.lc.domain;
 
-import nz.ac.wgtn.swen225.lc.domain.gameObject.Player;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.Tile;
 
 /**

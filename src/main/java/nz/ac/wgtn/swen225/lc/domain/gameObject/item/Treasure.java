@@ -11,13 +11,10 @@ import nz.ac.wgtn.swen225.lc.domain.gameObject.GameObject;
 public class Treasure implements Item, GameObject {
 
     private Position position;
-    private final GameObject replaceWith;
 
-    public Treasure(GameObject replaceWith, Position position) {
-        if (replaceWith==null) throw new IllegalArgumentException();
+    public Treasure(Position position) {
         if (position==null) throw new IllegalArgumentException();
 
-        this.replaceWith = replaceWith;
         this.position = position;
     }
 
@@ -42,16 +39,6 @@ public class Treasure implements Item, GameObject {
     }
 
     /**
-     * Returns if the gameObject can be walked through.
-     *
-     * @return boolean Changes if walkable.
-     */
-    @Override
-    public boolean isWalkable() {
-        return true;
-    }
-
-    /**
      * Returns the name of the class.
      *
      * @return String .
@@ -59,15 +46,5 @@ public class Treasure implements Item, GameObject {
     @Override
     public String getName() {
         return "Treasure";
-    }
-
-    /**
-     * Returns the GameObject the Item should be replaced with when picked up.
-     *
-     * @return GameObject Changes if walkable.
-     */
-    @Override
-    public GameObject replaceWith() {
-        return replaceWith;
     }
 }

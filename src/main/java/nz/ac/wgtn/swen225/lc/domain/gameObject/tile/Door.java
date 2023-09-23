@@ -1,6 +1,5 @@
 package nz.ac.wgtn.swen225.lc.domain.gameObject.tile;
 
-import javafx.geometry.Pos;
 import nz.ac.wgtn.swen225.lc.domain.Position;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.item.Key;
 
@@ -49,16 +48,6 @@ public class Door implements Tile {
     @Override
     public void setPosition(Position position) {
         this.position = position;
-    }
-
-    /**
-     * Returns if the gameObject can be walked through.
-     *
-     * @return boolean Changes if walkable.
-     */
-    @Override
-    public boolean isWalkable() {
-        return false;
     }
 
     /**

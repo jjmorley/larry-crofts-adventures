@@ -38,16 +38,6 @@ public class ExitDoor implements Tile {
     }
 
     /**
-     * Returns if the gameObject can be walked through.
-     *
-     * @return boolean Changes if walkable.
-     */
-    @Override
-    public boolean isWalkable() {
-        return false;
-    }
-
-    /**
      * Returns the name of the class.
      *
      * @return String .

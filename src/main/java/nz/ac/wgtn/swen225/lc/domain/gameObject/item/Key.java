@@ -12,13 +12,10 @@ public class Key implements Item, GameObject {
 
     private Position position;
     private final int key;
-    private final GameObject replaceWith;
 
-    public Key(GameObject replaceWith, int key, Position position) {
-        if (replaceWith==null) throw new IllegalArgumentException();
+    public Key(int key, Position position) {
         if (position==null) throw new IllegalArgumentException();
 
-        this.replaceWith = replaceWith;
         this.key = key;
         this.position = position;
 
@@ -54,16 +51,6 @@ public class Key implements Item, GameObject {
     }
 
     /**
-     * Returns if the gameObject can be walked through.
-     *
-     * @return boolean Changes if walkable.
-     */
-    @Override
-    public boolean isWalkable() {
-        return true;
-    }
-
-    /**
      * Returns the name of the class.
      *
      * @return String .
@@ -71,15 +58,5 @@ public class Key implements Item, GameObject {
     @Override
     public String getName() {
         return "Key";
-    }
-
-    /**
-     * Returns the GameObject the Item should be replaced with when picked up.
-     *
-     * @return GameObject Changes if walkable.
-     */
-    @Override
-    public GameObject replaceWith() {
-        return replaceWith;
     }
 }
