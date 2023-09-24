@@ -10,7 +10,7 @@ import javafx.scene.media.*;
  */
 public class SoundManager {
 
-    private static final String BASE_PATH = "file:///C:/Users/joefa/Documents/SWEN225/Project/larry-crofts-adventures/assets/Sounds/";
+    private static final String BASE_PATH = "file:///C:/Users/joefa/Documents/SWEN225/Project/larry-crofts-adventures/src/main/resources/Sounds/";
 
 
     private Map<String, AudioClip> soundCache;

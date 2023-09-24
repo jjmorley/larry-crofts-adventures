@@ -10,7 +10,7 @@ import javafx.scene.image.Image;
  */
 public class SpriteManager {
 	
-	private static final String BASE_PATH = "C:\\Users\\joefa\\Documents\\SWEN225\\Project\\larry-crofts-adventures\\assets\\Sprites\\";
+	private static final String BASE_PATH = "C:\\Users\\joefa\\Documents\\SWEN225\\Project\\larry-crofts-adventures\\src\\main\\resources\\Sprites\\";
 	
 	private Map<String, Image> spriteCache;
 
