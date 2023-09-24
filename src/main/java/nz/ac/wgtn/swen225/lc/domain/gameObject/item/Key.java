@@ -6,19 +6,16 @@ import nz.ac.wgtn.swen225.lc.domain.gameObject.GameObject;
 /**
  * The type Key.
  *
- * @author Alexander_Galloway.
+ * @author Alexander_Galloway 300611406.
  */
 public class Key implements Item, GameObject {
 
     private Position position;
-    private int key;
-    private GameObject replaceWith;
+    private final int key;
 
-    public Key(GameObject replaceWith, int key, Position position) {
-        assert replaceWith!=null;
-        assert position!=null;
+    public Key(int key, Position position) {
+        if (position==null) throw new IllegalArgumentException();
 
-        this.replaceWith = replaceWith;
         this.key = key;
         this.position = position;
 
@@ -54,22 +51,12 @@ public class Key implements Item, GameObject {
     }
 
     /**
-     * Returns if the gameObject can be walked through.
+     * Returns the name of the class.
      *
-     * @return boolean Changes if walkable.
+     * @return String .
      */
     @Override
-    public boolean isWalkable() {
-        return true;
-    }
-
-    /**
-     * Returns the GameObject the Item should be replaced with when picked up.
-     *
-     * @return GameObject Changes if walkable.
-     */
-    @Override
-    public GameObject replaceWith() {
-        return replaceWith;
+    public String getName() {
+        return "Key";
     }
 }

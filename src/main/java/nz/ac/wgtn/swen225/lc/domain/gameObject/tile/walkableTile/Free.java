@@ -8,7 +8,7 @@ import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.Tile;
 /**
  * The type Free.
  *
- * @author Alexander_Galloway.
+ * @author Alexander_Galloway 300611406.
  */
 public class Free implements WalkableTile {
 
@@ -16,8 +16,7 @@ public class Free implements WalkableTile {
     private GameObject gameObject;
 
     public Free(GameObject gameObject, Position position) {
-        assert gameObject!=null;
-        assert position!=null;
+        if (position==null) throw new IllegalArgumentException();
 
         this.gameObject = gameObject;
         this.position = position;
@@ -44,13 +43,13 @@ public class Free implements WalkableTile {
     }
 
     /**
-     * Returns if the gameObject can be walked through.
+     * Returns the name of the class.
      *
-     * @return boolean Changes if walkable.
+     * @return String .
      */
     @Override
-    public boolean isWalkable() {
-        return true;
+    public String getName() {
+        return "Free";
     }
 
     /**

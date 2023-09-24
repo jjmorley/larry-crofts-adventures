@@ -1,25 +1,26 @@
 package nz.ac.wgtn.swen225.lc.domain.gameObject.tile.walkableTile;
 
-import javafx.geometry.Pos;
 import nz.ac.wgtn.swen225.lc.domain.Position;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.GameObject;
-import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.Tile;
 
 /**
- * The type Exit.
+ * The type Info tile.
  *
  * @author Alexander_Galloway 300611406.
  */
-public class Exit implements WalkableTile {
+public class InfoTile implements WalkableTile {
 
     private Position position;
     private GameObject gameObject;
+    private final String information;
 
-    public Exit(GameObject gameObject, Position position) {
+    public InfoTile(GameObject gameObject, Position position, String information) {
         if (position==null) throw new IllegalArgumentException();
+        if (information==null) throw new IllegalArgumentException();
 
-        this.gameObject = gameObject;
         this.position = position;
+        this.gameObject = gameObject;
+        this.information = information;
     }
 
     /**
@@ -49,11 +50,20 @@ public class Exit implements WalkableTile {
      */
     @Override
     public String getName() {
-        return "Exit";
+        return "InfoTile";
     }
 
     /**
-     * Returns GameObject that a tile may be holding
+     * Returns the information that we want the user to see when stepped on of the class.
+     *
+     * @return String .
+     */
+    public String getInformation() {
+        return information;
+    }
+
+    /**
+     * Returns GameObject that a tile may be holding.
      *
      * @return GameObject Can be altered.
      */

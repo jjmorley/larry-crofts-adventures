@@ -5,7 +5,7 @@ import nz.ac.wgtn.swen225.lc.domain.Position;
 /**
  * The interface Game object.
  *
- * @author Alexander_Galloway.
+ * @author Alexander_Galloway 300611406.
  */
 public interface GameObject {
 
@@ -24,10 +24,9 @@ public interface GameObject {
     public void setPosition(Position position);
 
     /**
-     * Returns if the gameObject can be walked through.
+     * Returns the name of the class.
      *
-     * @return boolean Changes if walkable.
+     * @return String .
      */
-    public boolean isWalkable();
-
+    public String getName();
 }

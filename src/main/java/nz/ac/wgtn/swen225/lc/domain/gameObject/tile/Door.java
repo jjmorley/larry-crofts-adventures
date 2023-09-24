@@ -1,13 +1,12 @@
 package nz.ac.wgtn.swen225.lc.domain.gameObject.tile;
 
-import javafx.geometry.Pos;
 import nz.ac.wgtn.swen225.lc.domain.Position;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.item.Key;
 
 /**
  * The type Door.
  *
- * @author Alexander_Galloway.
+ * @author Alexander_Galloway 300611406.
  */
 public class Door implements Tile {
 
@@ -15,8 +14,8 @@ public class Door implements Tile {
     private final Key key;
 
     public Door(Key key, Position position) {
-        assert key!=null;
-        assert position!=null;
+        if (key==null) throw new IllegalArgumentException();
+        if (position==null) throw new IllegalArgumentException();
 
         this.key = key;
         this.position = position;
@@ -52,12 +51,12 @@ public class Door implements Tile {
     }
 
     /**
-     * Returns if the gameObject can be walked through.
+     * Returns the name of the class.
      *
-     * @return boolean Changes if walkable.
+     * @return String .
      */
     @Override
-    public boolean isWalkable() {
-        return false;
+    public String getName() {
+        return "Door";
     }
 }

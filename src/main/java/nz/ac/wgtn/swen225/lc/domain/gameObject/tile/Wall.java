@@ -5,14 +5,14 @@ import nz.ac.wgtn.swen225.lc.domain.Position;
 /**
  * The type Wall.
  *
- * @author Alexander_Galloway.
+ * @author Alexander_Galloway 300611406.
  */
 public class Wall implements Tile {
 
     private Position position;
 
     public Wall(Position position) {
-        assert position!=null;
+        if (position==null) throw new IllegalArgumentException();
 
         this.position = position;
     }
@@ -38,12 +38,12 @@ public class Wall implements Tile {
     }
 
     /**
-     * Returns if the gameObject can be walked through.
+     * Returns the name of the class.
      *
-     * @return boolean Changes if walkable.
+     * @return String .
      */
     @Override
-    public boolean isWalkable() {
-        return false;
+    public String getName() {
+        return "Wall";
     }
 }

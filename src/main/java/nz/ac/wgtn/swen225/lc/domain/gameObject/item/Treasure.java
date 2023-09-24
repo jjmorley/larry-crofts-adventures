@@ -6,18 +6,15 @@ import nz.ac.wgtn.swen225.lc.domain.gameObject.GameObject;
 /**
  * The type Treasure.
  *
- * @author Alexander_Galloway.
+ * @author Alexander_Galloway 300611406.
  */
 public class Treasure implements Item, GameObject {
 
     private Position position;
-    private GameObject replaceWith;
 
-    public Treasure(GameObject replaceWith, Position position) {
-        assert replaceWith!=null;
-        assert position!=null;
+    public Treasure(Position position) {
+        if (position==null) throw new IllegalArgumentException();
 
-        this.replaceWith = replaceWith;
         this.position = position;
     }
 
@@ -42,22 +39,12 @@ public class Treasure implements Item, GameObject {
     }
 
     /**
-     * Returns if the gameObject can be walked through.
+     * Returns the name of the class.
      *
-     * @return boolean Changes if walkable.
+     * @return String .
      */
     @Override
-    public boolean isWalkable() {
-        return true;
-    }
-
-    /**
-     * Returns the GameObject the Item should be replaced with when picked up.
-     *
-     * @return GameObject Changes if walkable.
-     */
-    @Override
-    public GameObject replaceWith() {
-        return replaceWith;
+    public String getName() {
+        return "Treasure";
     }
 }
