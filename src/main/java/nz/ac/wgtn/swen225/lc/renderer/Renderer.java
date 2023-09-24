@@ -19,9 +19,13 @@ import javafx.scene.shape.Rectangle;
 import nz.ac.wgtn.swen225.lc.domain.Domain;
 import nz.ac.wgtn.swen225.lc.domain.Position;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.GameObject;
-import nz.ac.wgtn.swen225.lc.domain.gameObject.Player;
+import nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable.Actor;
+import nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable.Direction;
+import nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable.Player;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.item.Item;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.Tile;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This is the main class on the Renderer Package. It is responsible for update
@@ -30,43 +34,42 @@ import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.Tile;
  * @author morleyjose
  */
 public class Renderer {
-	private Canvas canvas;
+	private Pane root;
 	private static SoundManager soundManager;
-	private SpriteManager spriteManager;
-	private final Domain domain;
-	private ImageView playerSprite;
-
-	// Variables for animation
-	private static final int FRAME_WIDTH = 64;
-	private static final int FRAME_HEIGHT = 64;
-	private static final int FRAME_COUNT = 4;
-	private int currentFrame = 0;
-	private Timeline frameTimeline;
+	private final SpriteManager spriteManager;
 	private final int cellSize;
 
-	// temp variables for testing purposes
-	Tile[][] tiles;
-	Item[][] items;
+	//animation variables
+	private ImageView playerSprite;
+	private int currentFrame = 0;
 	private static final int NUM_FRAMES = 4;
-	private Pane root;
-
-	private ImageView imageView;
-	private Timeline animation;
+	private ImageView playerImageView;
+	private List<ImageView> actorImageViews = new ArrayList<>();
+	private Timeline playerAnimation;
 	private static final Duration MOVE_DURATION = Duration.millis(500); // Adjust as needed
 
+	//canvas variables
+	private Canvas canvas;
+	Tile[][] tiles;
+	Item[][] items;
 
-	public Renderer(Domain domain, Tile[][] tiles){
+
+
+	public Renderer(Domain domain, int canvasSize){
 		this.root = new Pane();
-
-		cellSize = 64;
-		this.tiles = tiles;
-		this.domain = domain;
+		this.tiles = domain.getBoard().getBoard();
+		this.cellSize = canvasSize/ tiles.length;
 		soundManager = new SoundManager();
 		spriteManager = new SpriteManager();
 		canvas = new Canvas(cellSize*tiles.length,cellSize*tiles.length);
-		initialiseGameBoard();
 		renderGameBoard();
 		root.getChildren().add(canvas);
+		//setup player animation
+		renderPlayer(domain.getPlayer().getPosition());
+		//setup actor animation
+		if(domain.getActors() != null && !domain.getActors().isEmpty()) {
+			renderActors(domain);
+		}
 	}
 
 	/**
@@ -91,7 +94,8 @@ public class Renderer {
 	/**
 	 * Responsible for redrawing the static 2D tiles and items of the board.
 	 */
-	public void renderGameBoard() {
+	private void renderGameBoard() {
+		initialiseGameBoard();
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 		// Initialize tiles and items and add them to the gridPane
 		for (int i = 0; i < tiles.length; i++) {
@@ -101,56 +105,71 @@ public class Renderer {
 				// Load the item images image
 				//Image itemImage = spriteManager.getSprite(items[i][j].getName());
 
-				// Add the tile's ImageView and item's ImageView to the gridPane
+				// Add the tile's Image and item's Image to the canvas
 				gc.drawImage(tileImage, j*cellSize, i*cellSize);
+				//gc.drawImage(itemImage, j*cellSize, i*cellSize);
 			}
 		}
 	}
 
 	/**
 	 * Responsible for animating the player.
-	 * 
-	 * @param pos
-	 */
-	public void renderPlayer(Position pos) {
+	 *
+     */
+	private void renderPlayer(Position pos) {
 		Image spriteSheet = spriteManager.getSprite("Player");
-		imageView = new ImageView(spriteSheet);
-		imageView.setFitWidth(FRAME_WIDTH);
-		imageView.setFitHeight(FRAME_HEIGHT);
-		root.getChildren().add(imageView);
+		playerImageView = new ImageView(spriteSheet);
+		playerImageView.setFitWidth(cellSize);
+		playerImageView.setFitHeight(cellSize);
+		root.getChildren().add(playerImageView);
 
 		// Set the initial position of the sprite
-		imageView.setLayoutX(pos.getX()*cellSize); // Initial X coordinate
-		imageView.setLayoutY(pos.getY()*cellSize); // Initial Y coordinate
-		animation = createAnimation();
-		animation.setCycleCount(Animation.INDEFINITE);
-		animation.play();
+		playerImageView.setLayoutX(pos.x()*cellSize); // Initial X coordinate
+		playerImageView.setLayoutY(pos.y()*cellSize); // Initial Y coordinate
+		playerAnimation = createAnimation(playerImageView);
+		playerAnimation.setCycleCount(Animation.INDEFINITE);
+		playerAnimation.play();
 	}
-	private Timeline createAnimation() {
+	private Timeline createAnimation(ImageView currentImageView) {
 		Duration frameDuration = Duration.millis(100); // Adjust frame duration as needed
 		KeyFrame keyFrame = new KeyFrame(
 				frameDuration,
 				event -> {
-					updateFrame();
+					updateFrame(currentImageView);
 				}
 		);
 
 		return new Timeline(keyFrame);
 	}
-	private void updateFrame() {
+	private void updateFrame(ImageView currentImageView) {
 		currentFrame = (currentFrame + 1) % NUM_FRAMES;
-		int x = currentFrame * FRAME_WIDTH;
-		imageView.setViewport(new javafx.geometry.Rectangle2D(x, 0, FRAME_WIDTH, FRAME_HEIGHT));
+		int x = currentFrame * cellSize;
+		currentImageView.setViewport(new javafx.geometry.Rectangle2D(x, 0, cellSize, cellSize));
 	}
 
 	/**
-	 * Responsible for animating the actor.
-	 *
-	 * public void renderActors(List<Actor> actors) { // Render other game actors
-	 * (enemies, collectibles, etc.) /
-	 * 
-	 * /** Manages playing the sounds at the appropriate times.
-	 * 
+	 * Responsible for animating the actors.
+	 */
+	private void renderActors(Domain domain){
+		Image spriteSheet = spriteManager.getSprite("Actor");
+		for(Position pos : domain.getActors().getPosition()) {
+			ImageView actorImageView = new ImageView(spriteSheet);
+			actorImageView.setFitWidth(cellSize);
+			actorImageView.setFitHeight(cellSize);
+			root.getChildren().add(playerImageView);
+			// Set the initial position of the sprite
+			actorImageView.setLayoutX(pos.x() * cellSize); // Initial X coordinate
+			actorImageView.setLayoutY(pos.y() * cellSize); // Initial Y coordinate
+			actorImageViews.add(actorImageView);
+
+			Timeline actorAnimation = createAnimation(actorImageView);
+			actorAnimation.setCycleCount(Animation.INDEFINITE);
+			actorAnimation.play();
+		}
+	}
+
+	/**
+	 * allows any package to play a sound statically.
 	 * @param soundFilePath
 	 */
 	public static void playSound(String soundFilePath) {
@@ -158,22 +177,47 @@ public class Renderer {
 	}
 
 	/**
-	 * Moves player from last coordinate to the current coordinate
+	 * Moves player in the direction given by app package.
      */
-	public void movePlayer() {
-		TranslateTransition transition = new TranslateTransition(MOVE_DURATION, imageView);
-		transition.setByX(cellSize);
+	public void movePlayer(Direction direction) {
+		TranslateTransition transition = new TranslateTransition(MOVE_DURATION, playerImageView);
+		if(direction == Direction.LEFT){
+			transition.setByX(-cellSize);
+		} else if (direction == Direction.RIGHT) {
+			transition.setByX(cellSize);
+		} else if (direction == Direction.DOWN) {
+			transition.setByY(cellSize);
+		}
+		else {
+			transition.setByY(-cellSize);
+		}
 		transition.play();
-
 	}
 
+	/**
+	 * Moves actor in the direction given by app package.
+	 * Requires an integer of which actor needs to be moved - this assumes imageView list is the same order as actor list in domain
+	 */
+	public void moveActor(int actor, Direction direction) {
+		TranslateTransition transition = new TranslateTransition(MOVE_DURATION, actorImageViews.get(actor));
+		if(direction == Direction.LEFT){
+			transition.setByX(-cellSize);
+		} else if (direction == Direction.RIGHT) {
+			transition.setByX(cellSize);
+		} else if (direction == Direction.DOWN) {
+			transition.setByY(cellSize);
+		}
+		else {
+			transition.setByY(-cellSize);
+		}
+		transition.play();
+	}
+
+	/**
+	 * gets the main renderer panel which contains the board canvas and player and actor panels.
+	 * @return root
+	 */
 	public Pane getDisplay() {
 		return root;
 	}
-
-	public void startAnimation(Player player){
-		renderPlayer(player.getPosition());
-	}
-
-
 }
