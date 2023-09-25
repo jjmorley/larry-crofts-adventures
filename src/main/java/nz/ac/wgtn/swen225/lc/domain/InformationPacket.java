@@ -22,7 +22,7 @@ public class InformationPacket {
         return board;
     }
 
-    public boolean isPlayerMoved() {
+    public boolean hasPlayerMoved() {
         return playerMoved;
     }
 
