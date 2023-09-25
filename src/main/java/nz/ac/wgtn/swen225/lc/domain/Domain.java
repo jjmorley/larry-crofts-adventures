@@ -44,7 +44,7 @@ public class Domain {
         InformationPacket infoPacket = player.move(board, direction);
         if (infoPacket==null) throw new IllegalArgumentException();
 
-        if (!infoPacket.isPlayerAlive() || !infoPacket.isPlayerMoved()) return infoPacket;
+        if (!infoPacket.isPlayerAlive() || !infoPacket.hasPlayerMoved()) return infoPacket;
         board = infoPacket.getBoard();
 
         return infoPacket;
@@ -56,5 +56,13 @@ public class Domain {
 
     public Board getBoard() {
         return board;
+    }
+
+    public int getTreasuresLeft() {
+        return treasuresLeft;
+    }
+
+    public List<Actor> getActors() {
+        return actors;
     }
 }
