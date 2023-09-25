@@ -1,0 +1,17 @@
+JSON KEY
+    Level - Each coordinate correlates to a tile on the map.
+        F = free tile
+        W = wall
+        T = treasure
+        I = info
+        L = exit lock
+        E = exit
+        D = locked door
+        K = key
+        For doors and keys, the second letter correlates
+        to the colour of the door-key pair (I.E (d, r) = red door)
+            R - red
+            G - green
+            B - blue
+    Char - Correlates to the position of the player character.
+    GridSize - Correlates to the size of the level (I.E 9 = 9 tiles x 9 tiles).
