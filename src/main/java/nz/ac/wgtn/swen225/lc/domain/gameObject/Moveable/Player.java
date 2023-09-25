@@ -7,6 +7,7 @@ import nz.ac.wgtn.swen225.lc.domain.Position;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.GameObject;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.item.Item;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.item.Key;
+import nz.ac.wgtn.swen225.lc.domain.gameObject.item.Treasure;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.Door;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.ExitDoor;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.Tile;
@@ -56,64 +57,91 @@ public class Player implements GameObject {
         if (board==null) throw new IllegalArgumentException();
         if (direction==null) throw new IllegalArgumentException();
 
-        int[] space2D = convertIntTo2Dspace(direction);
+        int[] directionOffset = convertIntTo2Dspace(direction);
 
         Tile[][] newBoard = board.getBoard();
-        Tile moveToTile = newBoard[position.x()+space2D[0]][position.y()+space2D[1]];
+        Tile moveToTile = newBoard[position.x()+directionOffset[0]][position.y()+directionOffset[1]];
 
 
         if (!(moveToTile instanceof WalkableTile) && !(moveToTile instanceof Wall)) {
-            // Will need to add check for if the player was killed
+            InformationPacket infoPacket = tryWalkThroughNonWalkableTile(moveToTile, newBoard, board, directionOffset);
 
-            if (moveToTile instanceof Door) {
-                int keys = inventory.stream()
-                        .filter(item-> item instanceof Key && ((Door) moveToTile).keyMatch((Key) item))
-                        .toList().size();
-
-                if (keys>0) {
-                    Position pos = new Position(position.x()+space2D[0], position.y()+space2D[1]);
-                    newBoard[position.x()+space2D[0]][position.y()+space2D[1]] = new Free(null, pos);
-                }
-            } else if (moveToTile instanceof ExitDoor) {
-                if (treasuresLeft==0) {
-                    Position pos = new Position(position.x()+space2D[0], position.y()+space2D[1]);
-                    newBoard[position.x()+space2D[0]][position.y()+space2D[1]] = new Free(null, pos);
-                }
+            if (infoPacket==null) {
+                return new InformationPacket(board, false, true);
             }
-        } else if (!(moveToTile instanceof WalkableTile))
-            {return new InformationPacket(board, false, true);}
+            board.setBoard(infoPacket.getBoard().getBoard());
 
+        } else if ((moveToTile instanceof WalkableTile targetTile)) {
+            InformationPacket infoPacket = getContentsOfNextTile(targetTile, newBoard, board);
 
-        // It likes this asserts to make itself happy, already confirmed it was walkableTile
-        assert moveToTile instanceof WalkableTile;
-        if (((WalkableTile) moveToTile).getGameObject()!=null) {
-
-            if (((WalkableTile) moveToTile).getGameObject().getName().equals("Key")) {
-                inventory.add((Item) ((WalkableTile) moveToTile).getGameObject());
-                ((WalkableTile) newBoard[position.x()+space2D[0]][position.y()+space2D[1]]).setGameObject(null);
-
-            } else if (((WalkableTile) moveToTile).getGameObject().getName().equals("Treasure")) {
-                treasuresLeft--;
-                ((WalkableTile) newBoard[position.x()+space2D[0]][position.y()+space2D[1]]).setGameObject(null);
-
-            } else if (((WalkableTile) moveToTile).getGameObject().getName().equals("Actor")) {
-                ((WalkableTile) newBoard[position.x()][position.y()]).setGameObject(null);
-                board.setBoard(newBoard);
-                return new InformationPacket(board, false, false);
+            if (!infoPacket.isPlayerAlive()) {
+                return infoPacket;
             }
+            board.setBoard(infoPacket.getBoard().getBoard());
+
+        } else{
+            return new InformationPacket(board, false, true);
         }
 
+
         // Using full newBoard as there is no second step, compared to moveToTile.
-        ((WalkableTile) newBoard[position.x()+space2D[0]][position.y()+space2D[1]]).setGameObject(this);
+        ((WalkableTile) newBoard[position.x()+directionOffset[0]][position.y()+directionOffset[1]]).setGameObject(this);
         // We are currently alive, so it is assumed we did the check beforehand.
         ((WalkableTile) newBoard[position.x()][position.y()]).setGameObject(null);
 
 
         board.setBoard(newBoard);
-        return new InformationPacket(board, false, true);
+        return new InformationPacket(board, true, true);
     }
 
-    public int[] convertIntTo2Dspace (Direction direction) {
+    private InformationPacket tryWalkThroughNonWalkableTile (Tile targetTile, Tile[][] newBoard, Board board, int[] directionOffset) {
+        boolean validMove = false;
+
+        if (targetTile instanceof Door doorTile) {
+            int keys = inventory.stream()
+                    .filter(item-> item instanceof Key && doorTile.keyMatch((Key) item))
+                    .toList().size();
+
+            if (keys>0) {
+                validMove = true;
+            }
+        } else if (targetTile instanceof ExitDoor) {
+            if (treasuresLeft==0) {
+                validMove = true;
+            }
+        }
+
+        if (validMove) {
+            Position pos = new Position(position.x()+directionOffset[0], position.y()+directionOffset[1]);
+            newBoard[position.x()+directionOffset[0]][position.y()+directionOffset[1]] = new Free(null, pos);
+
+            board.setBoard(newBoard);
+            return new InformationPacket(board, true, true);
+        }
+
+        return null;
+    }
+
+    private InformationPacket getContentsOfNextTile (WalkableTile targetTile, Tile[][] newBoard, Board board) {
+        boolean playerSurvived = true;
+
+        ((WalkableTile) newBoard[position.x()][position.y()]).setGameObject(null);
+        board.setBoard(newBoard);
+
+        if (targetTile.getGameObject()!=null) {
+            if (targetTile.getGameObject() instanceof Key key) {
+                inventory.add(key);
+            } else if (targetTile.getGameObject() instanceof Treasure) {
+                treasuresLeft--;
+            } else if (targetTile.getGameObject() instanceof Actor) {
+                playerSurvived = false;
+            }
+        }
+
+        return new InformationPacket(board, false, playerSurvived);
+    }
+
+    private int[] convertIntTo2Dspace (Direction direction) {
         int[] space2D = new int[2];
         switch (direction) {
             case UP -> {
