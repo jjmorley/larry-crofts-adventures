@@ -17,14 +17,15 @@ class GameEvent {
 
 class GameRecorder {
     private List<GameEvent> gameHistory = new ArrayList<>();
-    private List<Direction> moveHistory = new ArrayList<>();
+    private List<String> moveHistory = new ArrayList<>();
 
     public void startRecording() {
         // Initialize recording
     }
 
     public void addPlayerMove(Direction d) {
-        moveHistory.add(d);
+        moveHistory.add(d.toString());
+        System.out.println("Player Move '" + d.toString() + "' Recorded");
     }
 
     public void saveRecordedGameToFile(String filePath) {
