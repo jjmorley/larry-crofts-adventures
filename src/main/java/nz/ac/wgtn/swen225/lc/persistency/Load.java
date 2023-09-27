@@ -129,14 +129,14 @@ public class Load {
     }
 
     /**
-     * Return character's position.
+     * Return character's position. This is -48 because it's otherwise the ascii values
      *
      * @return Position
      */
     public static Position playerPos(){
         String s = json.get("char").asText();
-        int x = Integer.valueOf(s.charAt(0));
-        int y = Integer.valueOf(s.charAt(3));
+        int x = Integer.valueOf(s.charAt(0)) - 48;
+        int y = Integer.valueOf(s.charAt(3)) - 48;
 
         return new Position(x, y);
     }
