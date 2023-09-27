@@ -2,11 +2,14 @@ package test.nz.ac.wgtn.swen225.lc.persistency;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.junit.Test;
+
+import java.io.File;
+
 import static nz.ac.wgtn.swen225.lc.persistency.Load.*;
 
 public class loadTests {
-    JsonNode json = loadAsJSON("src/main/resources/levels/levels-template.json");
-    String[][] levelArray = loadAsArray("src/main/resources/levels/levels-template.json");
+    JsonNode json = loadAsJSON(new File("src/main/resources/levels/levels-template.json"));
+    String[][] levelArray = loadAsArray(new File("src/main/resources/levels/levels-template.json"));
 
     @Test
     public void JSONNotEmpty(){
