@@ -10,6 +10,8 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import nz.ac.wgtn.swen225.lc.app.Game;
 import nz.ac.wgtn.swen225.lc.app.InputManager;
+import nz.ac.wgtn.swen225.lc.domain.Domain;
+import nz.ac.wgtn.swen225.lc.renderer.Renderer;
 
 /**
  * This class creates the game window and all subcomponents including input capture.
@@ -22,6 +24,9 @@ public class GameWindow {
   private final InputManager inputManager;
   private final Stage stage;
   public Overlay overlay;
+
+  public Renderer renderer;
+  private Pane gamePane;
 
   /**
    * Sets up the game window and manages all game window related functionality.
@@ -59,7 +64,7 @@ public class GameWindow {
 
   private VBox createMainPane() {
     // Pane to contain the Renderer
-    HBox gamePane = new HBox();
+    gamePane = new HBox();
     gamePane.setPrefHeight(720);
     gamePane.setBackground(
         new Background(
@@ -78,8 +83,15 @@ public class GameWindow {
     return new VBox(menuBar, gameInfo, gamePane);
   }
 
-  public void createGame(/*Domain domain*/) {
-
+  /**
+   * Set up the UI when a new game is started/loaded.
+   *
+   * @param domain The domain of the new game.
+   * */
+  public void createGame(Domain domain) {
+    gamePane.getChildren().clear();
+    renderer = new Renderer(domain, (int) gamePane.getWidth());
+    gamePane.getChildren().add(renderer.getDisplay());
   }
 
   /**

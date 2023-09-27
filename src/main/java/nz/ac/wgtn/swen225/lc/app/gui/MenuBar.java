@@ -83,6 +83,7 @@ public class MenuBar extends javafx.scene.control.MenuBar {
 
   private Menu setupRecorderMenu(Game game, GameWindow window) {
     Menu recorder = new Menu("Recorder");
+    MenuItem saveRecording = new MenuItem("Save Recording");
     // TODO add recorder controls
 
     return recorder;
