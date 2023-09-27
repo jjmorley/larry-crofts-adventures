@@ -26,8 +26,8 @@ import java.util.ArrayList;
 /**
  * Loads in level from JSON file.
  *
- * TODO: RETURN CHARACTER POS
  * TODO: EXTRA NPC
+ * @author Seb Collis 300603371
  */
 public class Load {
 
@@ -81,11 +81,11 @@ public class Load {
         int treasures = json.get("treasures").asInt();
 
         //MAKE ARRAY
-        GameObject[][] levelArray = new GameObject[gridSize][gridSize];
+        Tile[][] levelArray = new Tile[gridSize][gridSize];
         for(int i = 0; i < gridSize; i++){
             for(int j = 0; j <  gridSize; j++){
                 String s = level.get(i + ", " + j).asText();
-                GameObject tile;
+                Tile tile;
                 switch(s){
                     case("f"):
                         tile = new Free(null, new Position(i, j));
@@ -119,7 +119,7 @@ public class Load {
             }
         }
 
-        Board b = new Board((Tile[][]) levelArray, true);
+        Board b = new Board(levelArray, true);
 
         Player p = new Player(playerPos(), new ArrayList<Item>(), treasures);
 
