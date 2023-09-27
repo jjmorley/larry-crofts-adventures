@@ -24,6 +24,8 @@ import nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable.Direction;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable.Player;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.item.Item;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.Tile;
+import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.walkableTile.WalkableTile;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,7 +53,6 @@ public class Renderer {
 	//canvas variables
 	private Canvas canvas;
 	Tile[][] tiles;
-	Item[][] items;
 
 
 
@@ -102,12 +103,17 @@ public class Renderer {
 			for (int j = 0; j < tiles[i].length; j++) {
 				// Load the tile image
 				Image tileImage = spriteManager.getSprite(tiles[i][j].getName());
-				// Load the item images image
-				//Image itemImage = spriteManager.getSprite(items[i][j].getName());
-
-				// Add the tile's Image and item's Image to the canvas
+				//draw the tile onto the canvas
 				gc.drawImage(tileImage, j*cellSize, i*cellSize);
-				//gc.drawImage(itemImage, j*cellSize, i*cellSize);
+				//It the tile is a WalkableTile check to see it has an item
+				if(tiles[i][j] instanceof WalkableTile tile){
+					if(tile.getGameObject() != null) {
+						//load the item sprite
+						Image itemImage = spriteManager.getSprite(tile.getGameObject().getName());
+						//draw the item onto the canvas
+						gc.drawImage(itemImage, j*cellSize, i*cellSize);
+					}
+				}
 			}
 		}
 	}
@@ -152,7 +158,8 @@ public class Renderer {
 	 */
 	private void renderActors(Domain domain){
 		Image spriteSheet = spriteManager.getSprite("Actor");
-		for(Position pos : domain.getActors().getPosition()) {
+		for(Actor actor : domain.getActors()) {
+			Position pos = actor.getPosition();
 			ImageView actorImageView = new ImageView(spriteSheet);
 			actorImageView.setFitWidth(cellSize);
 			actorImageView.setFitHeight(cellSize);

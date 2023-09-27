@@ -9,10 +9,6 @@ import javafx.scene.media.*;
  *
  */
 public class SoundManager {
-
-    private static final String BASE_PATH = "file:///C:/Users/joefa/Documents/SWEN225/Project/larry-crofts-adventures/src/main/resources/Sounds/";
-
-
     private Map<String, AudioClip> soundCache;
     private AudioClip backgroundMusic;//not implemented yet
 
@@ -27,12 +23,12 @@ public class SoundManager {
      */
     private void loadSounds() {
     	try {
-            soundCache.put("Key",new AudioClip(BASE_PATH + "Key.mp3"));
-    	 soundCache.put("Door",new AudioClip(BASE_PATH + "Door.mp3"));
-    	 soundCache.put("Exit_Door",new AudioClip(BASE_PATH + "Exit_Door.mp3"));
-    	 soundCache.put("Lose",new AudioClip(BASE_PATH + "Lose.mp3"));
-    	 soundCache.put("Win",new AudioClip(BASE_PATH + "Win.mp3"));
-    	 soundCache.put("Treasure",new AudioClip(BASE_PATH + "Treasure.mp3"));
+            soundCache.put("Key",new AudioClip(this.getClass().getResource("/Sounds/Key.mp3").toExternalForm()));
+    	 soundCache.put("Door",new AudioClip(this.getClass().getResource("/Sounds/Door.mp3").toExternalForm()));
+    	 soundCache.put("Exit_Door",new AudioClip(this.getClass().getResource("/Sounds/Exit_Door.mp3").toExternalForm()));
+    	 soundCache.put("Lose",new AudioClip(this.getClass().getResource("/Sounds/Lose.mp3").toExternalForm()));
+    	 soundCache.put("Win",new AudioClip(this.getClass().getResource("/Sounds/Win.mp3").toExternalForm()));
+    	 soundCache.put("Treasure",new AudioClip(this.getClass().getResource("/Sounds/Treasure.mp3").toExternalForm()));
     	}catch (Exception e) {
     		    System.err.println("Error loading sound file: " + e.getMessage());
     		}
