@@ -5,8 +5,8 @@ import org.junit.Test;
 import static nz.ac.wgtn.swen225.lc.persistency.Load.*;
 
 public class loadTests {
-    JsonNode json = loadAsJSON("levels/levels-template.json");
-    String[][] levelArray = loadAsArray("levels/levels-template.json");
+    JsonNode json = loadAsJSON("src/main/resources/levels/levels-template.json");
+    String[][] levelArray = loadAsArray("src/main/resources/levels/levels-template.json");
 
     @Test
     public void JSONNotEmpty(){
