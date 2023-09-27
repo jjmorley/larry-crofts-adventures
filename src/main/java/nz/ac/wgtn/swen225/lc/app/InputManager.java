@@ -4,6 +4,8 @@ import java.io.File;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import nz.ac.wgtn.swen225.lc.app.gui.GameWindow;
+import nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable.Direction;
+
 
 /**
  * Manage keyboard inputs for the game.
@@ -63,8 +65,8 @@ public class InputManager {
       return;
     }
 
-    Direction dir = Direction.keyToDirection(key);
-    assert dir != Direction.NONE;
+    Direction dir = keyToDirection(key);
+    assert dir != null;
     boolean success = game.movePlayer(dir);
 
     // Start timeout
@@ -100,5 +102,22 @@ public class InputManager {
 
       game.loadGame(file);
     }
+  }
+
+  /**
+   * Convert an arrow key to a direction.
+   *
+   * @param key the key pressed.
+   * */
+  public static Direction keyToDirection(KeyCode key) {
+    Direction out;
+    switch (key) {
+      case UP -> out = Direction.UP;
+      case DOWN -> out = Direction.DOWN;
+      case LEFT -> out = Direction.LEFT;
+      case RIGHT -> out = Direction.RIGHT;
+      default -> out = null;
+    }
+    return out;
   }
 }
