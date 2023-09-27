@@ -83,5 +83,6 @@
     "8, 8" : "f"
   },
   "char" : "4, 4",
-  "gridSize" : 9
+  "gridSize" : 9,
+  "treasures": 5
 }

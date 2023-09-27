@@ -15,3 +15,4 @@ JSON KEY
             B - blue
     Char - Correlates to the position of the player character.
     GridSize - Correlates to the size of the level (I.E 9 = 9 tiles x 9 tiles).
+    Treasure - Correlates to the amount of treasure on the map

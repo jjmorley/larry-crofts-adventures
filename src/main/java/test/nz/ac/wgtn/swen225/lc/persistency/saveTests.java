@@ -19,12 +19,12 @@ public class saveTests {
 
     @BeforeAll
     static void setup() {
-        saveJSON(levelArray, 3, "1, 1", "levels/saved-level-test.json");
+        saveJSON(levelArray, 3, "1, 1", "src/main/resources/levels/saved-level-test.json");
     }
 
     @Test
     public void SavedJSONNotEmpty(){
-        JsonNode json = loadAsJSON("levels/saved-level-test.json");
+        JsonNode json = loadAsJSON(new File("src/main/resources/levels/saved-level-test.json"));
 
         assert json != null;
         assert json.isEmpty() != true;
@@ -32,8 +32,8 @@ public class saveTests {
 
     @Test
     public void SavedJSONIdenticalToTemplate(){
-        JsonNode templateJson = loadAsJSON("levels/levels-template.json");
-        JsonNode savedJson = loadAsJSON("levels/saved-level-test.json");
+        JsonNode templateJson = loadAsJSON(new File("src/main/resources/levels/levels-template.json"));
+        JsonNode savedJson = loadAsJSON(new File("src/main/resources/levels/saved-level-test.json"));
 
         assert templateJson.equals(savedJson);
     }
