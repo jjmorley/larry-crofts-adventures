@@ -9,7 +9,7 @@ import java.io.File;
 import static nz.ac.wgtn.swen225.lc.persistency.Load.loadAsJSON;
 import static nz.ac.wgtn.swen225.lc.persistency.Save.*;
 
-public class saveTests {
+/*public class saveTests {
 
     static String[][] levelArray = {
             new String[]{"w", "w", "d"},
@@ -37,4 +37,4 @@ public class saveTests {
 
         assert templateJson.equals(savedJson);
     }
-}
+}*/

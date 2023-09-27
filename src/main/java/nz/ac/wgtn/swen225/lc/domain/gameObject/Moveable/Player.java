@@ -142,7 +142,7 @@ public class Player implements GameObject {
     }
 
     private int[] convertIntTo2Dspace (Direction direction) {
-        int[] space2D = new int[2];
+        int[] space2D = {0, 0};
         switch (direction) {
             case UP -> {
                 space2D[1] = 1;
