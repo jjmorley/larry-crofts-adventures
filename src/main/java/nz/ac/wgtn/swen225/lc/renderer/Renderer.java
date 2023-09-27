@@ -106,10 +106,10 @@ public class Renderer {
 				//draw the tile onto the canvas
 				gc.drawImage(tileImage, j*cellSize, i*cellSize);
 				//It the tile is a WalkableTile check to see it has an item
-				if(tiles[i][j] instanceof WalkableTile){
-					if(((WalkableTile) tiles[i][j]).getGameObject() != null) {
+				if(tiles[i][j] instanceof WalkableTile tile){
+					if(tile.getGameObject() != null) {
 						//load the item sprite
-						Image itemImage = spriteManager.getSprite(((WalkableTile) tiles[i][j]).getGameObject().getName());
+						Image itemImage = spriteManager.getSprite(tile.getGameObject().getName());
 						//draw the item onto the canvas
 						gc.drawImage(itemImage, j*cellSize, i*cellSize);
 					}
