@@ -46,11 +46,11 @@ public class Actor implements GameObject {
         Tile moveToTile = newBoard[route.get(newIndex).x()][route.get(newIndex).y()];
 
         // If not a walkableTile something has gone wrong with the map making, throws IllegalArgumentException.
-        if (!(moveToTile instanceof WalkableTile)) {
+        if (!(moveToTile instanceof WalkableTile walkTile)) {
             throw new IllegalArgumentException();
         }
         // If walkableTile contains a player, the player has been killed. as the actor is stepping on it.
-        if (((WalkableTile) moveToTile).getGameObject().getName().equals("Player")) {
+        if (walkTile.getGameObject() instanceof Player) {
             return new InformationPacket(board, false, false);
         }
 
@@ -58,7 +58,6 @@ public class Actor implements GameObject {
         ((WalkableTile) newBoard[route.get(newIndex).x()][route.get(newIndex).y()]).setGameObject(this);
         // We are currently alive, so it is assumed we did the check beforehand.
         ((WalkableTile) newBoard[route.get(positionIndex).x()][route.get(positionIndex).y()]).setGameObject(null);
-
         positionIndex++;
 
         board.setBoard(newBoard);
