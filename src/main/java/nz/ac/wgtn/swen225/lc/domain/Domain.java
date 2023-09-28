@@ -15,7 +15,6 @@ public class Domain {
     private final Player player;
     private Board board;
     private final List<Actor> actors;
-    private int treasuresLeft;
 
     public Domain (Board board, Player player, List<Actor> actors) {
         this.board = board;
@@ -56,10 +55,6 @@ public class Domain {
 
     public Board getBoard() {
         return board;
-    }
-
-    public int getTreasuresLeft() {
-        return treasuresLeft;
     }
 
     public List<Actor> getActors() {

@@ -9,9 +9,6 @@ import javafx.scene.image.Image;
  *
  */
 public class SpriteManager {
-	
-	private static final String BASE_PATH = "C:\\Users\\joefa\\Documents\\SWEN225\\Project\\larry-crofts-adventures\\src\\main\\resources\\Sprites\\";
-	
 	private Map<String, Image> spriteCache;
 
     public SpriteManager() {
@@ -24,24 +21,24 @@ public class SpriteManager {
      */
     private void loadSprites() {
         // Load and cache sprite images here
-        spriteCache.put("Player", new Image(BASE_PATH + "Player.png"));
-        spriteCache.put("Actor", new Image(BASE_PATH + "Actor.png"));
-        spriteCache.put("Door_Exit", new Image(BASE_PATH + "Door_Exit_Closed.png"));
-        spriteCache.put("Door_Yellow", new Image(BASE_PATH + "Door_Yellow_Closed.png"));
-        spriteCache.put("Door_Red", new Image(BASE_PATH + "Door_Red_Closed.png"));
-        spriteCache.put("Door_Green", new Image(BASE_PATH + "Door_Green_Closed.png"));
-        spriteCache.put("Exit", new Image(BASE_PATH + "Exit.png"));
-        spriteCache.put("Info", new Image(BASE_PATH + "Info.png"));
-        spriteCache.put("Key_Green", new Image(BASE_PATH + "Key_Green.png"));
-        spriteCache.put("Key_Red", new Image(BASE_PATH + "Key_Red.png"));
-        spriteCache.put("Key_Yellow", new Image(BASE_PATH + "Key_Yellow.png"));
-        spriteCache.put("Treasure", new Image(BASE_PATH + "Treasure.png"));
-        spriteCache.put("Wall", new Image(BASE_PATH + "Wall.png"));
-        spriteCache.put("Free", new Image(BASE_PATH + "Floor.png"));
-        spriteCache.put("Door_Exit_Open", new Image(BASE_PATH + "Door_Exit_Open.png"));
-        spriteCache.put("Door_Yellow_Open", new Image(BASE_PATH + "Door_Yellow_Open.png"));
-        spriteCache.put("Door_Red_Open", new Image(BASE_PATH + "Door_Red_Open.png"));
-        spriteCache.put("Door_Green_Open", new Image(BASE_PATH + "Door_Green_Open.png"));
+        spriteCache.put("Player", new Image("/Sprites/Player.png"));
+        spriteCache.put("Actor", new Image("/SpritesActor.png"));
+        spriteCache.put("Door_Exit", new Image("/Sprites/Door_Exit_Closed.png"));
+        spriteCache.put("Door_Yellow", new Image("/Sprites/Door_Yellow_Closed.png"));
+        spriteCache.put("Door_Red", new Image("/Sprites/Door_Red_Closed.png"));
+        spriteCache.put("Door_Green", new Image("/Sprites/Door_Green_Closed.png"));
+        spriteCache.put("Exit", new Image("/Sprites/Exit.png"));
+        spriteCache.put("Info", new Image("/Sprites/Info.png"));
+        spriteCache.put("Key_Green", new Image("/Sprites/Key_Green.png"));
+        spriteCache.put("Key_Red", new Image("/Sprites/Key_Red.png"));
+        spriteCache.put("Key_Yellow", new Image("/Sprites/Key_Yellow.png"));
+        spriteCache.put("Treasure", new Image("/Sprites/Treasure.png"));
+        spriteCache.put("Wall", new Image("/Sprites/Wall.png"));
+        spriteCache.put("Free", new Image("/Sprites/Floor.png"));
+        spriteCache.put("Door_Exit_Open", new Image("/Sprites/Door_Exit_Open.png"));
+        spriteCache.put("Door_Yellow_Open", new Image("/Sprites/Door_Yellow_Open.png"));
+        spriteCache.put("Door_Red_Open", new Image("/Sprites/Door_Red_Open.png"));
+        spriteCache.put("Door_Green_Open", new Image("/Sprites/Door_Green_Open.png"));
     }
 
     /**
