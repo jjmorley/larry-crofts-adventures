@@ -8,27 +8,27 @@ import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.Tile;
  * @author Alexander_Galloway 300611406.
  */
 public class Board {
-     private Tile[][] board;
-     private Boolean playerAlive;
+  private Tile[][] board;
+  private Boolean playerAlive;
 
-    public Board(Tile[][] board, boolean playerAlive) {
-        this.board = board;
-        this.playerAlive = playerAlive;
-    }
+  public Board(Tile[][] board, boolean playerAlive) {
+    this.board = board;
+    this.playerAlive = playerAlive;
+  }
 
-    public Tile[][] getBoard() {
-        return board;
-    }
+  public Tile[][] getBoard() {
+    return board;
+  }
 
-    public void setBoard(Tile[][] board) {
-        this.board = board;
-    }
+  public void setBoard(Tile[][] board) {
+    this.board = board;
+  }
 
-    public Boolean getPlayerAlive() {
-        return playerAlive;
-    }
+  public Boolean getPlayerAlive() {
+    return playerAlive;
+  }
 
-    public void setPlayerAlive(Boolean playerAlive) {
-        this.playerAlive = playerAlive;
-    }
+  public void setPlayerAlive(Boolean playerAlive) {
+    this.playerAlive = playerAlive;
+  }
 }
