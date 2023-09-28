@@ -98,12 +98,22 @@ public class Player implements GameObject {
     private InformationPacket tryWalkThroughNonWalkableTile(Tile targetTile, Tile[][] newBoard, Board board, int[] directionOffset) {
         boolean validMove = false;
 
-        if (targetTile instanceof Door doorTile) {
-            int keys = inventory.stream()
-                    .filter(item -> item instanceof Key && doorTile.keyMatch((Key) item))
-                    .toList().size();
+        if (targetTile instanceof Door doorTile && inventory.size()>0) {
+            Item validKey = null;
 
-            if (keys > 0) {
+            int i = 0;
+            for (Item item : inventory) {
+                if (item instanceof Key key && doorTile.keyMatch(key)) {
+                    validKey = key;
+                    break;
+                }
+                i++;
+
+                if (i==inventory.size()) i=-1;
+            }
+            if (i!=-1) inventory.remove(i);
+
+            if (validKey!=null) {
                 validMove = true;
             }
         } else if (targetTile instanceof ExitDoor) {
@@ -146,16 +156,16 @@ public class Player implements GameObject {
         int[] space2D = new int[2];
         switch (direction) {
             case UP -> {
-                space2D[1] = -1;
+                space2D[0] = -1;
             }
             case RIGHT -> {
-                space2D[0] = 1;
-            }
-            case DOWN -> {
                 space2D[1] = 1;
             }
+            case DOWN -> {
+                space2D[0] = 1;
+            }
             case LEFT -> {
-                space2D[0] = -1;
+                space2D[1] = -1;
             }
             default -> throw new IllegalArgumentException();
         }
