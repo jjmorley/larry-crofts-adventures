@@ -16,6 +16,7 @@ import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.Door;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.ExitDoor;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.Tile;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.Wall;
+import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.walkableTile.Exit;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.walkableTile.Free;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.walkableTile.InfoTile;
 
@@ -93,8 +94,11 @@ public class Load {
                     case("w"):
                         tile = new Wall(new Position(i, j));
                         break;
-                    case("e"):
+                    case("l"):
                         tile = new ExitDoor(new Position(i, j));
+                        break;
+                    case("e"):
+                        tile = new Exit(null, new Position(i, j));
                         break;
                     case("i"):
                         tile = new InfoTile(null, new Position(i, j), "hasn't been set yet");
