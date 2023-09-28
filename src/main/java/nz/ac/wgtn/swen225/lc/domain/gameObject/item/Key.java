@@ -14,7 +14,7 @@ public class Key implements Item, GameObject {
     private final int key;
 
     public Key(int key, Position position) {
-        if (position==null) throw new IllegalArgumentException();
+        if (position == null) throw new IllegalArgumentException();
 
         this.key = key;
         this.position = position;

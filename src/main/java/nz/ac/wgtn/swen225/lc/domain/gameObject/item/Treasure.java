@@ -13,7 +13,7 @@ public class Treasure implements Item, GameObject {
     private Position position;
 
     public Treasure(Position position) {
-        if (position==null) throw new IllegalArgumentException();
+        if (position == null) throw new IllegalArgumentException();
 
         this.position = position;
     }

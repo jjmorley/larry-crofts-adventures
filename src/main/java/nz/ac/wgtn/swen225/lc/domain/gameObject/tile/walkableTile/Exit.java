@@ -16,7 +16,7 @@ public class Exit implements WalkableTile {
     private GameObject gameObject;
 
     public Exit(GameObject gameObject, Position position) {
-        if (position==null) throw new IllegalArgumentException();
+        if (position == null) throw new IllegalArgumentException();
 
         this.gameObject = gameObject;
         this.position = position;

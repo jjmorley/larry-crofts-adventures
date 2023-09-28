@@ -14,8 +14,8 @@ public class Door implements Tile {
     private final Key key;
 
     public Door(Key key, Position position) {
-        if (key==null) throw new IllegalArgumentException();
-        if (position==null) throw new IllegalArgumentException();
+        if (key == null) throw new IllegalArgumentException();
+        if (position == null) throw new IllegalArgumentException();
 
         this.key = key;
         this.position = position;
@@ -28,6 +28,15 @@ public class Door implements Tile {
      */
     public boolean keyMatch(Key key) {
         return this.key.equals(key);
+    }
+
+    /**
+     * Returns an ID that matches a number for a door.
+     *
+     * @return int Unique ID.
+     */
+    public int getKeyID() {
+        return key.getKey();
     }
 
     /**

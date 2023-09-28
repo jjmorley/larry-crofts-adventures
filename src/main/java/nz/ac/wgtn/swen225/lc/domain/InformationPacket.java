@@ -11,7 +11,7 @@ public class InformationPacket {
     private final boolean playerAlive;
 
     public InformationPacket(Board board, boolean playerMoved, boolean playerAlive) {
-        if (board==null) throw new IllegalArgumentException();
+        if (board == null) throw new IllegalArgumentException();
 
         this.board = board;
         this.playerMoved = playerMoved;

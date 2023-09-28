@@ -8,8 +8,8 @@ import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.Tile;
  * @author Alexander_Galloway 300611406.
  */
 public class Board {
-     private Tile[][] board;
-     private Boolean playerAlive;
+    private Tile[][] board;
+    private Boolean playerAlive;
 
     public Board(Tile[][] board, boolean playerAlive) {
         this.board = board;

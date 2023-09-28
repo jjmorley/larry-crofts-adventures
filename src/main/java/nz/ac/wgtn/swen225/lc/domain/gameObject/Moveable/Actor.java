@@ -20,7 +20,7 @@ public class Actor implements GameObject {
     private int positionIndex;
 
     public Actor(List<Position> positionList) {
-        if (positionList==null) throw new IllegalArgumentException();
+        if (positionList == null) throw new IllegalArgumentException();
 
         this.route = positionList;
         positionIndex = 0;
@@ -36,9 +36,9 @@ public class Actor implements GameObject {
      * @param board includes non-updated board.
      * @return Board that has been updated.
      */
-    public InformationPacket move (Board board) {
-        if (board==null) throw new IllegalArgumentException();
-        if (positionIndex++ >= route.size())  positionIndex = -1;
+    public InformationPacket move(Board board) {
+        if (board == null) throw new IllegalArgumentException();
+        if (positionIndex++ >= route.size()) positionIndex = -1;
 
         int newIndex = positionIndex++;
         Tile[][] newBoard = board.getBoard();
