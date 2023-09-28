@@ -5,4 +5,5 @@ package nz.ac.wgtn.swen225.lc.domain.gameObject.item;
  *
  * @author Alexander_Galloway 300611406.
  */
-public interface Item {}
+public interface Item {
+}

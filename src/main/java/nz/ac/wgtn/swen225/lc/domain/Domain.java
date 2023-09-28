@@ -12,52 +12,52 @@ import java.util.List;
  * @author Alexander_Galloway 300611406.
  */
 public class Domain {
-    private final Player player;
-    private Board board;
-    private final List<Actor> actors;
+  private final Player player;
+  private Board board;
+  private final List<Actor> actors;
 
-    public Domain (Board board, Player player, List<Actor> actors) {
-        this.board = board;
-        this.player = player;
-        this.actors = actors;
+  public Domain(Board board, Player player, List<Actor> actors) {
+    this.board = board;
+    this.player = player;
+    this.actors = actors;
+  }
+
+  public InformationPacket advanceClock() {
+    // Could use streams in this case to make the code shorter, But makes it a pain to read.
+    // Seems unnecessary.
+    InformationPacket infoPacket = null;
+    for (Actor actor : actors) {
+      infoPacket = actor.move(board);
+      if (infoPacket == null) throw new IllegalArgumentException();
+
+      if (!infoPacket.isPlayerAlive()) return infoPacket;
+      board = infoPacket.getBoard();
     }
 
-    public InformationPacket advanceClock () {
-        // Could use streams in this case to make the code shorter, But makes it a pain to read.
-        // Seems unnecessary.
-        InformationPacket infoPacket = null;
-        for (Actor actor : actors) {
-            infoPacket = actor.move(board);
-            if (infoPacket==null) throw new IllegalArgumentException();
+    if (infoPacket == null) throw new IllegalArgumentException();
+    return infoPacket;
+  }
 
-            if (!infoPacket.isPlayerAlive()) return infoPacket;
-            board = infoPacket.getBoard();
-        }
+  public InformationPacket movePlayer(Direction direction) {
+    // Remember to add sound queues.
+    InformationPacket infoPacket = player.move(board, direction);
+    if (infoPacket == null) throw new IllegalArgumentException();
 
-        if (infoPacket==null) throw new IllegalArgumentException();
-        return infoPacket;
-    }
+    if (!infoPacket.isPlayerAlive() || !infoPacket.hasPlayerMoved()) return infoPacket;
+    board = infoPacket.getBoard();
 
-    public InformationPacket movePlayer (Direction direction) {
-        // Remember to add sound queues.
-        InformationPacket infoPacket = player.move(board, direction);
-        if (infoPacket==null) throw new IllegalArgumentException();
+    return infoPacket;
+  }
 
-        if (!infoPacket.isPlayerAlive() || !infoPacket.hasPlayerMoved()) return infoPacket;
-        board = infoPacket.getBoard();
+  public Player getPlayer() {
+    return player;
+  }
 
-        return infoPacket;
-    }
+  public Board getBoard() {
+    return board;
+  }
 
-    public Player getPlayer() {
-        return player;
-    }
-
-    public Board getBoard() {
-        return board;
-    }
-
-    public List<Actor> getActors() {
-        return actors;
-    }
+  public List<Actor> getActors() {
+    return actors;
+  }
 }
