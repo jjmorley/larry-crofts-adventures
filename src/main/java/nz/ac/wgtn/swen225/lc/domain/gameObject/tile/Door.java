@@ -27,7 +27,7 @@ public class Door implements Tile {
      * @return boolean.
      */
     public boolean keyMatch(Key key) {
-        return this.key.equals(key);
+        return this.key.getKey()==key.getKey();
     }
 
     /**
