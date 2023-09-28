@@ -1,9 +1,14 @@
 package nz.ac.wgtn.swen225.lc.app;
 
 import java.io.File;
-
+import java.net.URISyntaxException;
+import java.net.URL;
 import javafx.stage.Stage;
 import nz.ac.wgtn.swen225.lc.app.gui.GameWindow;
+import nz.ac.wgtn.swen225.lc.domain.Domain;
+import nz.ac.wgtn.swen225.lc.domain.InformationPacket;
+import nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable.Direction;
+import nz.ac.wgtn.swen225.lc.persistency.Load;
 
 
 /**
@@ -17,6 +22,7 @@ public class Game {
   private int currentLevel;
   private GameWindow gameWindow;
 
+  private Domain domain;
 
   /**
    * Creates a new instance of the game.
@@ -27,6 +33,15 @@ public class Game {
   public Game(Stage stage) {
     gameWindow = new GameWindow(stage, this);
     // Load game
+    try {
+      URL fileUrl = getClass().getResource("/levels/level1.json");
+      if (fileUrl != null) {
+        File f = new File(fileUrl.toURI());
+        loadGame(f);
+      }
+    } catch (URISyntaxException ex) {
+      System.out.println("Failed to load level1, URI Syntax error: " + ex.toString());
+    }
   }
 
   /**
@@ -57,7 +72,10 @@ public class Game {
    * @param file the save/level file to load from.
    */
   public void loadGame(File file) {
-    // This function may change depending on how Persistence works
+    Domain domain = Load.loadAsDomain(file);
+    System.out.println(domain.getPlayer().getPosition());
+    this.domain = domain;
+    gameWindow.createGame(domain);
   }
 
   /**
@@ -98,7 +116,25 @@ public class Game {
    * @return If the movement was successful.
    */
   public boolean movePlayer(Direction direction) {
-    // Only if domain exists
+    if (domain == null || gameWindow.renderer == null) {
+      return false;
+    }
+
+    InformationPacket moveResult = domain.movePlayer(direction);
+
+    if (!moveResult.hasPlayerMoved()) {
+      return false;
+    }
+
+    if (!moveResult.isPlayerAlive()) {
+      System.out.println("Dead");
+      // Handle death
+    }
+
+    // Movement was successful
+    gameWindow.renderer.movePlayer(direction);
+
+    //gameRecorder.addPlayerMove(direction);
 
     return true;
   }

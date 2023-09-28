@@ -12,21 +12,6 @@ public enum Direction {
   UP,
   NONE;
 
-  /**
-   * Convert an arrow key to a direction.
-   *
-   * @param key the key pressed.
-   * */
-  public static Direction keyToDirection(KeyCode key) {
-    Direction out;
-    switch (key) {
-      case UP -> out = UP;
-      case DOWN -> out = DOWN;
-      case LEFT -> out = LEFT;
-      case RIGHT -> out = RIGHT;
-      default -> out = NONE;
-    }
-    return out;
-  }
+
 }
 

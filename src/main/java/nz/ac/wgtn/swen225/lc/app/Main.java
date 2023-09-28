@@ -6,10 +6,16 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
+/**
+ * Entrypoint for Larry Crofts Adventures.
+ *
+ * @author Trent Shailer 300602354.
+ * */
 public class Main extends Application {
   @Override
   public void start(Stage stage) {
     new Game(stage);
+    stage.setOnCloseRequest(event -> System.exit(0));
   }
 
   /**
