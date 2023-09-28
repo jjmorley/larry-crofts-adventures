@@ -74,7 +74,6 @@ public class Game {
    */
   public void loadGame(File file) {
     Domain domain = Load.loadAsDomain(file);
-    System.out.println(domain.getPlayer().getPosition());
     this.domain = domain;
     gameWindow.createGame(domain);
   }
