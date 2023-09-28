@@ -16,7 +16,7 @@ public class Free implements WalkableTile {
     private GameObject gameObject;
 
     public Free(GameObject gameObject, Position position) {
-        if (position==null) throw new IllegalArgumentException();
+        if (position == null) throw new IllegalArgumentException();
 
         this.gameObject = gameObject;
         this.position = position;

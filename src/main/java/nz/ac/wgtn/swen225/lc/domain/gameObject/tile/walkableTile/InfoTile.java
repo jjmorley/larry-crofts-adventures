@@ -15,8 +15,8 @@ public class InfoTile implements WalkableTile {
     private final String information;
 
     public InfoTile(GameObject gameObject, Position position, String information) {
-        if (position==null) throw new IllegalArgumentException();
-        if (information==null) throw new IllegalArgumentException();
+        if (position == null) throw new IllegalArgumentException();
+        if (information == null) throw new IllegalArgumentException();
 
         this.position = position;
         this.gameObject = gameObject;

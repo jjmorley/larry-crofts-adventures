@@ -12,8 +12,8 @@ public class ExitDoor implements Tile {
     private Position position;
 
     public ExitDoor(Position position) {
-        if (position==null) throw new IllegalArgumentException();
-        
+        if (position == null) throw new IllegalArgumentException();
+
         this.position = position;
     }
 

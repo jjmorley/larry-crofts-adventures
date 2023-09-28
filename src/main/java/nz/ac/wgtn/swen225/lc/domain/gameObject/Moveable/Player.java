@@ -30,13 +30,13 @@ public class Player implements GameObject {
     /**
      * Instantiates a new Player.
      *
-     * @param position the position.
-     * @param inventory the items carried.
+     * @param position      the position.
+     * @param inventory     the items carried.
      * @param treasuresLeft treasuresLeft to collect.
      */
     public Player(Position position, List<Item> inventory, int treasuresLeft) {
-        if (position==null) throw new IllegalArgumentException();
-        if (treasuresLeft==0) throw new IllegalArgumentException();
+        if (position == null) throw new IllegalArgumentException();
+        if (treasuresLeft == 0) throw new IllegalArgumentException();
 
         this.position = position;
         this.inventory = inventory;
@@ -50,23 +50,23 @@ public class Player implements GameObject {
      * Only checking if it's crashing into the player.
      *
      * @param direction includes moving direction.
-     * @param board includes non-updated board.
+     * @param board     includes non-updated board.
      * @return Board that has been updated.
      */
-    public InformationPacket move (Board board, Direction direction) {
-        if (board==null) throw new IllegalArgumentException();
-        if (direction==null) throw new IllegalArgumentException();
+    public InformationPacket move(Board board, Direction direction) {
+        if (board == null) throw new IllegalArgumentException();
+        if (direction == null) throw new IllegalArgumentException();
 
         int[] directionOffset = convertIntTo2Dspace(direction);
 
         Tile[][] newBoard = board.getBoard();
-        Tile moveToTile = newBoard[position.x()+directionOffset[0]][position.y()+directionOffset[1]];
+        Tile moveToTile = newBoard[position.x() + directionOffset[0]][position.y() + directionOffset[1]];
 
 
         if (!(moveToTile instanceof WalkableTile) && !(moveToTile instanceof Wall)) {
             InformationPacket infoPacket = tryWalkThroughNonWalkableTile(moveToTile, newBoard, board, directionOffset);
 
-            if (infoPacket==null) {
+            if (infoPacket == null) {
                 return new InformationPacket(board, false, true);
             }
             board.setBoard(infoPacket.getBoard().getBoard());
@@ -79,41 +79,42 @@ public class Player implements GameObject {
             }
             board.setBoard(infoPacket.getBoard().getBoard());
 
-        } else{
+        } else {
             return new InformationPacket(board, false, true);
         }
 
 
         // Using full newBoard as there is no second step, compared to moveToTile.
-        ((WalkableTile) newBoard[position.x()+directionOffset[0]][position.y()+directionOffset[1]]).setGameObject(this);
+        ((WalkableTile) newBoard[position.x() + directionOffset[0]][position.y() + directionOffset[1]]).setGameObject(this);
         // We are currently alive, so it is assumed we did the check beforehand.
         ((WalkableTile) newBoard[position.x()][position.y()]).setGameObject(null);
 
+        position = new Position(position.x()+directionOffset[0], position.y()+directionOffset[1]);
 
         board.setBoard(newBoard);
         return new InformationPacket(board, true, true);
     }
 
-    private InformationPacket tryWalkThroughNonWalkableTile (Tile targetTile, Tile[][] newBoard, Board board, int[] directionOffset) {
+    private InformationPacket tryWalkThroughNonWalkableTile(Tile targetTile, Tile[][] newBoard, Board board, int[] directionOffset) {
         boolean validMove = false;
 
         if (targetTile instanceof Door doorTile) {
             int keys = inventory.stream()
-                    .filter(item-> item instanceof Key && doorTile.keyMatch((Key) item))
+                    .filter(item -> item instanceof Key && doorTile.keyMatch((Key) item))
                     .toList().size();
 
-            if (keys>0) {
+            if (keys > 0) {
                 validMove = true;
             }
         } else if (targetTile instanceof ExitDoor) {
-            if (treasuresLeft==0) {
+            if (treasuresLeft == 0) {
                 validMove = true;
             }
         }
 
         if (validMove) {
-            Position pos = new Position(position.x()+directionOffset[0], position.y()+directionOffset[1]);
-            newBoard[position.x()+directionOffset[0]][position.y()+directionOffset[1]] = new Free(null, pos);
+            Position pos = new Position(position.x() + directionOffset[0], position.y() + directionOffset[1]);
+            newBoard[position.x() + directionOffset[0]][position.y() + directionOffset[1]] = new Free(null, pos);
 
             board.setBoard(newBoard);
             return new InformationPacket(board, true, true);
@@ -122,13 +123,13 @@ public class Player implements GameObject {
         return null;
     }
 
-    private InformationPacket getContentsOfNextTile (WalkableTile targetTile, Tile[][] newBoard, Board board) {
+    private InformationPacket getContentsOfNextTile(WalkableTile targetTile, Tile[][] newBoard, Board board) {
         boolean playerSurvived = true;
 
         ((WalkableTile) newBoard[position.x()][position.y()]).setGameObject(null);
         board.setBoard(newBoard);
 
-        if (targetTile.getGameObject()!=null) {
+        if (targetTile.getGameObject() != null) {
             if (targetTile.getGameObject() instanceof Key key) {
                 inventory.add(key);
             } else if (targetTile.getGameObject() instanceof Treasure) {
@@ -141,17 +142,17 @@ public class Player implements GameObject {
         return new InformationPacket(board, false, playerSurvived);
     }
 
-    private int[] convertIntTo2Dspace (Direction direction) {
+    private int[] convertIntTo2Dspace(Direction direction) {
         int[] space2D = new int[2];
         switch (direction) {
             case UP -> {
-                space2D[1] = 1;
+                space2D[1] = -1;
             }
             case RIGHT -> {
                 space2D[0] = 1;
             }
             case DOWN -> {
-                space2D[1] = -1;
+                space2D[1] = 1;
             }
             case LEFT -> {
                 space2D[0] = -1;

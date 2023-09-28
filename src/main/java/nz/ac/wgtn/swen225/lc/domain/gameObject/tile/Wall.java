@@ -12,7 +12,7 @@ public class Wall implements Tile {
     private Position position;
 
     public Wall(Position position) {
-        if (position==null) throw new IllegalArgumentException();
+        if (position == null) throw new IllegalArgumentException();
 
         this.position = position;
     }
