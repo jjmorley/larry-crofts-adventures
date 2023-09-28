@@ -9,24 +9,24 @@ import nz.ac.wgtn.swen225.lc.domain.Position;
  */
 public interface GameObject {
 
-  /**
-   * Returns the current position of the GameObject
-   *
-   * @return Position Can be altered.
-   */
-  public Position getPosition();
+    /**
+     * Returns the current position of the GameObject
+     *
+     * @return Position Can be altered.
+     */
+    public Position getPosition();
 
-  /**
-   * Set the position of the game-object to be a new position
-   *
-   * @param position new chosen position for game-object.
-   */
-  public void setPosition(Position position);
+    /**
+     * Set the position of the game-object to be a new position
+     *
+     * @param position new chosen position for game-object.
+     */
+    public void setPosition(Position position);
 
-  /**
-   * Returns the name of the class.
-   *
-   * @return String .
-   */
-  public String getName();
+    /**
+     * Returns the name of the class.
+     *
+     * @return String .
+     */
+    public String getName();
 }
