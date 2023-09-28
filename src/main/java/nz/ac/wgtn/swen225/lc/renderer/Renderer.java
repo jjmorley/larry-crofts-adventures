@@ -47,6 +47,7 @@ public class Renderer {
 	//animation variables
 	private ImageView playerSprite;
 	private int currentFrame = 0;
+	private static final int SPRITE_SIZE = 64;
 	private static final int NUM_FRAMES = 4;
 	private ImageView playerImageView;
 	private List<ImageView> actorImageViews = new ArrayList<>();
@@ -61,10 +62,10 @@ public class Renderer {
 	public Renderer(Domain domain, int canvasSize){
 		this.root = new Pane();
 		this.tiles = domain.getBoard().getBoard();
-		this.cellSize = canvasSize/ tiles.length;
+		this.cellSize =  canvasSize / tiles.length;
 		soundManager = new SoundManager();
 		spriteManager = new SpriteManager();
-		canvas = new Canvas(cellSize*tiles.length,cellSize*tiles.length);
+		canvas = new Canvas(canvasSize,canvasSize);
 		renderGameBoard();
 		root.getChildren().add(canvas);
 		//setup player animation
@@ -89,7 +90,7 @@ public class Renderer {
 				double x = j * cellSize;
 				double y = i * cellSize;
 				// Draw the tile on the canvas
-				gc.drawImage(tileImage, x, y);
+				gc.drawImage(tileImage, x, y, cellSize, cellSize);
 			}
 		}
 	}
@@ -119,7 +120,7 @@ public class Renderer {
 					tileImage = spriteManager.getSprite(tiles[i][j].getName());
 				}
 				//draw the tile onto the canvas
-				gc.drawImage(tileImage, j*cellSize, i*cellSize);
+				gc.drawImage(tileImage, j*cellSize, i*cellSize, cellSize, cellSize);
 
 				//It the tile is a WalkableTile check to see it has an item
 				if(tiles[i][j] instanceof WalkableTile tile){
@@ -134,7 +135,7 @@ public class Renderer {
 							itemImage = spriteManager.getSprite(tile.getGameObject().getName());
 						}
 						//draw the item onto the canvas
-						gc.drawImage(itemImage, j*cellSize, i*cellSize);
+						gc.drawImage(itemImage, j*cellSize, i*cellSize, cellSize, cellSize);
 					}
 				}
 			}
@@ -172,8 +173,8 @@ public class Renderer {
 	}
 	private void updateFrame(ImageView currentImageView) {
 		currentFrame = (currentFrame + 1) % NUM_FRAMES;
-		int x = currentFrame * cellSize;
-		currentImageView.setViewport(new javafx.geometry.Rectangle2D(x, 0, cellSize, cellSize));
+		int x = currentFrame * SPRITE_SIZE;
+		currentImageView.setViewport(new javafx.geometry.Rectangle2D(x, 0, SPRITE_SIZE, SPRITE_SIZE));
 	}
 
 	/**

@@ -23,12 +23,12 @@ public class SpriteManager {
         // Load and cache sprite images here
         spriteCache.put("Player", new Image("/Sprites/Player.png"));
         spriteCache.put("Actor", new Image("/Sprites/Actor.png"));
-        spriteCache.put("Door_Exit", new Image("/Sprites/Door_Exit_Closed.png"));
+        spriteCache.put("ExitDoor", new Image("/Sprites/Door_Exit_Closed.png"));
         spriteCache.put("Door_Yellow", new Image("/Sprites/Door_Yellow_Closed.png"));
         spriteCache.put("Door_Red", new Image("/Sprites/Door_Red_Closed.png"));
         spriteCache.put("Door_Green", new Image("/Sprites/Door_Green_Closed.png"));
         spriteCache.put("Exit", new Image("/Sprites/Exit.png"));
-        spriteCache.put("Info", new Image("/Sprites/Info.png"));
+        spriteCache.put("InfoTile", new Image("/Sprites/Info.png"));
         spriteCache.put("Key_Green", new Image("/Sprites/Key_Green.png"));
         spriteCache.put("Key_Red", new Image("/Sprites/Key_Red.png"));
         spriteCache.put("Key_Yellow", new Image("/Sprites/Key_Yellow.png"));
