@@ -9,6 +9,7 @@ import nz.ac.wgtn.swen225.lc.domain.Domain;
 import nz.ac.wgtn.swen225.lc.domain.InformationPacket;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable.Direction;
 import nz.ac.wgtn.swen225.lc.persistency.Load;
+import nz.ac.wgtn.swen225.lc.recorder.Recorder;
 
 
 /**
@@ -21,8 +22,8 @@ public class Game {
   private int timeLeft;
   private int currentLevel;
   private GameWindow gameWindow;
-
   private Domain domain;
+  private Recorder recorder = new Recorder();
 
   /**
    * Creates a new instance of the game.
@@ -73,7 +74,6 @@ public class Game {
    */
   public void loadGame(File file) {
     Domain domain = Load.loadAsDomain(file);
-    System.out.println(domain.getPlayer().getPosition());
     this.domain = domain;
     gameWindow.createGame(domain);
   }
@@ -134,7 +134,7 @@ public class Game {
     // Movement was successful
     gameWindow.renderer.movePlayer(direction);
 
-    //gameRecorder.addPlayerMove(direction);
+    recorder.addPlayerMove(direction);
 
     return true;
   }
