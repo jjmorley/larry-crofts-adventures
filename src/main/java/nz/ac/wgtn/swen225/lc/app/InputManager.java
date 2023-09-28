@@ -1,9 +1,14 @@
 package nz.ac.wgtn.swen225.lc.app;
 
 import java.io.File;
+import java.net.URISyntaxException;
+import java.net.URL;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import nz.ac.wgtn.swen225.lc.app.gui.GameWindow;
+import nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable.Direction;
+
+
 
 /**
  * Manage keyboard inputs for the game.
@@ -11,7 +16,7 @@ import nz.ac.wgtn.swen225.lc.app.gui.GameWindow;
  * @author Trent Shailer 300602354.
  */
 public class InputManager {
-  private static final int MOVEMENT_TIMEOUT = 100;
+  private static final int MOVEMENT_TIMEOUT = 500;
   // This value should be updated dynamically based on renderer
   // Since that needs to support recorder playback speed and
   // there should only be one source of truth for that value
@@ -31,6 +36,23 @@ public class InputManager {
     this.gameWindow = gameWindow;
 
     scene.setOnKeyPressed(event -> onKeyPressed(event.getCode(), event.isControlDown()));
+  }
+
+  /**
+   * Convert an arrow key to a direction.
+   *
+   * @param key the key pressed.
+   */
+  public static Direction keyToDirection(KeyCode key) {
+    Direction out;
+    switch (key) {
+      case UP -> out = Direction.UP;
+      case DOWN -> out = Direction.DOWN;
+      case LEFT -> out = Direction.LEFT;
+      case RIGHT -> out = Direction.RIGHT;
+      default -> out = null;
+    }
+    return out;
   }
 
   /**
@@ -63,8 +85,8 @@ public class InputManager {
       return;
     }
 
-    Direction dir = Direction.keyToDirection(key);
-    assert dir != Direction.NONE;
+    Direction dir = keyToDirection(key);
+    assert dir != null;
     boolean success = game.movePlayer(dir);
 
     // Start timeout
@@ -81,8 +103,16 @@ public class InputManager {
       return;
     }
 
-    String path = "levels/level" + levelNum + ".json";
-    game.loadGame(new File(path));
+    try {
+      URL fileUrl = getClass().getResource("/levels/level" + levelNum + ".json");
+      if (fileUrl != null) {
+        File f = new File(fileUrl.toURI());
+        game.loadGame(f);
+      }
+    } catch (URISyntaxException ex) {
+      System.out.println("Failed to load level " + levelNum + ", URI Syntax error: ");
+      System.out.println(ex.getMessage());
+    }
   }
 
   private void handleGame(KeyCode key) {
