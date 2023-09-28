@@ -3,5 +3,5 @@
 | App         | Trent Shailer      | shailetren     |
 | Domain      | Alexander Galloway | gallowalex     |
 | Renderer    | Joseph Morley      | morleyjose     |
-| Persistency |                    |                |
+| Persistency | Seb Collis         | collisseb      |
 | Recorder    | Nate Burt          | burtnath       |
