@@ -1,7 +1,8 @@
 package nz.ac.wgtn.swen225.lc.recorder;
 
 
-import nz.ac.wgtn.swen225.lc.app.Direction;
+//import nz.ac.wgtn.swen225.lc.app.Direction;
+import nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable.Direction;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -12,10 +13,11 @@ import com.fasterxml.jackson.databind.*;
 
 
 class GameEvent {
-    // Define your game state data he
+    // Define your game state data here
 }
 
-class GameRecorder {
+
+public class Recorder {
     private List<GameEvent> gameHistory = new ArrayList<>();
     private List<String> moveHistory = new ArrayList<>();
 
