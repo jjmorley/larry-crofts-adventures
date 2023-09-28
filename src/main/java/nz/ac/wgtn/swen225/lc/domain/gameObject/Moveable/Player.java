@@ -89,6 +89,7 @@ public class Player implements GameObject {
         // We are currently alive, so it is assumed we did the check beforehand.
         ((WalkableTile) newBoard[position.x()][position.y()]).setGameObject(null);
 
+        position = new Position(position.x()+directionOffset[0], position.y()+directionOffset[1]);
 
         board.setBoard(newBoard);
         return new InformationPacket(board, true, true);
