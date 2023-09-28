@@ -31,6 +31,15 @@ public class Door implements Tile {
     }
 
     /**
+     * Returns an ID that matches a number for a door.
+     *
+     * @return int Unique ID.
+     */
+    public int getKeyID() {
+        return key.getKey();
+    }
+
+    /**
      * Returns the current position of the GameObject
      *
      * @return Position Can be altered.
