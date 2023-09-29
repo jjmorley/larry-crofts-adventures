@@ -3,6 +3,7 @@ package nz.ac.wgtn.swen225.lc.app;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
+
 import javafx.stage.Stage;
 import nz.ac.wgtn.swen225.lc.app.gui.GameWindow;
 import nz.ac.wgtn.swen225.lc.domain.Domain;
@@ -51,7 +52,15 @@ public class Game {
    * @param level the number of the level to load;
    */
   public Game(int level) {
-    // Not implemented yet
+    try {
+      URL fileUrl = getClass().getResource("/levels/level" + level + ".json");
+      if (fileUrl != null) {
+        File f = new File(fileUrl.toURI());
+        loadGame(f);
+      }
+    } catch (URISyntaxException ex) {
+      System.out.println("Failed to load level" + level + ", URI Syntax error: " + ex.toString());
+    }
   }
 
   /**
@@ -75,7 +84,9 @@ public class Game {
   public void loadGame(File file) {
     Domain domain = Load.loadAsDomain(file);
     this.domain = domain;
-    gameWindow.createGame(domain);
+    if (gameWindow != null) {
+      gameWindow.createGame(domain);
+    }
   }
 
   /**
@@ -116,7 +127,7 @@ public class Game {
    * @return If the movement was successful.
    */
   public boolean movePlayer(Direction direction) {
-    if (domain == null || gameWindow.renderer == null) {
+    if (domain == null) {
       return false;
     }
 
@@ -132,7 +143,10 @@ public class Game {
     }
 
     // Movement was successful
-    gameWindow.renderer.movePlayer(direction);
+
+    if (gameWindow != null) {
+      gameWindow.renderer.movePlayer(direction);
+    }
 
     recorder.addPlayerMove(direction);
 
