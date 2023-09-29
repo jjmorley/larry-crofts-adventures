@@ -40,6 +40,7 @@ import java.util.Map;
  */
 public class Renderer {
 	private Pane root;
+	private Domain domain;
 	private static SoundManager soundManager;
 	private final SpriteManager spriteManager;
 	private final int cellSize;
@@ -59,8 +60,9 @@ public class Renderer {
 	Tile[][] tiles;
 
 
-	public Renderer(Domain domain, int canvasSize){
+	public Renderer(Domain currentDomain, int canvasSize){
 		this.root = new Pane();
+		this.domain = currentDomain;
 		this.tiles = domain.getBoard().getBoard();
 		this.cellSize =  canvasSize / tiles.length;
 		soundManager = new SoundManager();
@@ -99,13 +101,14 @@ public class Renderer {
 	 * Responsible for redrawing the static 2D tiles and items of the board.
 	 */
 	private void renderGameBoard() {
+		this.tiles = domain.getBoard().getBoard();
 		//map of chars to strings which allows us to determine what colour the doors and keys should be
 		Map<Character, String> colourMap = Map.of(
 				'r', "Red",
 				'b', "Yellow",
 				'g', "Green"
 		);
-		initialiseGameBoard(); //draw an entire board of free tiles
+		//initialiseGameBoard(); //draw an entire board of free tiles
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 		// Initialize tiles and items and add them to the gridPane
 		for (int i = 0; i < tiles.length; i++) {
@@ -124,7 +127,7 @@ public class Renderer {
 
 				//It the tile is a WalkableTile check to see it has an item
 				if(tiles[i][j] instanceof WalkableTile tile){
-					if(tile.getGameObject() != null) {
+					if(tile.getGameObject() != null && !tile.getGameObject().getName().equals("Player")) {
 						//load the item sprite
 						Image itemImage;
 						if(tile.getGameObject() instanceof Key key){//if it's a key, check what colour it is
@@ -211,6 +214,7 @@ public class Renderer {
 	 * Moves player in the direction given by app package.
      */
 	public void movePlayer(Direction direction) {
+		renderGameBoard();
 		TranslateTransition transition = new TranslateTransition(MOVE_DURATION, playerImageView);
 		if(direction == Direction.LEFT){
 			transition.setByX(-cellSize);
