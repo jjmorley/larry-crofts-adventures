@@ -1,12 +1,9 @@
 package nz.ac.wgtn.swen225.lc.persistency;
 
-import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.*;
-import nz.ac.wgtn.swen225.lc.app.Game;
 import nz.ac.wgtn.swen225.lc.domain.Board;
 import nz.ac.wgtn.swen225.lc.domain.Domain;
 import nz.ac.wgtn.swen225.lc.domain.Position;
-import nz.ac.wgtn.swen225.lc.domain.gameObject.GameObject;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable.Actor;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable.Player;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.item.Item;
@@ -80,6 +77,7 @@ public class Load {
         JsonNode level = json.get("level");
         int gridSize = json.get("gridSize").asInt();
         int treasures = json.get("treasures").asInt();
+        String actorPos = json.get("actor").asText();
 
         //MAKE ARRAY
         Tile[][] levelArray = new Tile[gridSize][gridSize];
@@ -123,11 +121,22 @@ public class Load {
             }
         }
 
+        ArrayList<Position> actorList = new ArrayList<Position>();
+        for (int i = 0; i < actorPos.length(); i += 4){
+            int x = Integer.valueOf(actorPos.charAt(i)) - 48;
+            int y = Integer.valueOf(actorPos.charAt(i + 2)) - 48;
+            actorList.add(new Position(x, y));
+        }
+
+        Actor a = new Actor(actorList);
+        ArrayList<Actor> actors = new ArrayList<Actor>();
+        actors.add(a);
+
         Board b = new Board(levelArray, true);
 
         Player p = new Player(playerPos(), new ArrayList<Item>(), treasures);
 
-        Domain d = new Domain(b, p, new ArrayList<Actor>());
+        Domain d = new Domain(b, p, actors);
 
         return d;
     }
