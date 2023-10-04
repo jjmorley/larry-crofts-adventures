@@ -5,9 +5,12 @@ import com.fasterxml.jackson.core.exc.StreamWriteException;
 import com.fasterxml.jackson.core.util.*;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.node.*;
+import nz.ac.wgtn.swen225.lc.domain.Domain;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 public class Save {
 
@@ -17,7 +20,16 @@ public class Save {
      * TODO: Save json with name based upon computer time. May need separate
      * func. for this
      */
-    public static void saveJSON(String[][] levelArray, int gridSize, String charPos, String pathName){
+
+    public static void autoSave(){
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss");
+
+
+
+    }
+
+    public static void saveJSONFromArray(String[][] levelArray, int gridSize, String charPos, String pathName){
 
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode json = mapper.createObjectNode();

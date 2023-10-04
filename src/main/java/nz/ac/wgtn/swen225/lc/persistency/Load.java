@@ -1,6 +1,7 @@
 package nz.ac.wgtn.swen225.lc.persistency;
 
-import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import nz.ac.wgtn.swen225.lc.domain.Board;
 import nz.ac.wgtn.swen225.lc.domain.Domain;
 import nz.ac.wgtn.swen225.lc.domain.Position;
@@ -9,22 +10,21 @@ import nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable.Player;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.item.Item;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.item.Key;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.item.Treasure;
-import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.Door;
-import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.ExitDoor;
-import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.Tile;
-import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.Wall;
-import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.walkableTile.Exit;
-import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.walkableTile.Free;
-import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.walkableTile.InfoTile;
+import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.*;
+import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.walkableTile.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.*;
 import java.util.ArrayList;
+import java.util.Comparator;
+
 
 /**
  * Loads in level from JSON file.
  *
- * TODO: EXTRA NPC
+ * TODO: Time remaining
+ *
  * @author Seb Collis 300603371
  */
 public class Load {
@@ -43,6 +43,30 @@ public class Load {
         catch (IOException e){
             System.out.println("Something messed up. \n" + e.toString());
         }
+    }
+
+    /**
+     * Loads level based upon whatever has been last saved.
+     *
+     * @return Domain
+     */
+    public static Domain autoLoad(){
+        Path dir = Paths.get("src/main/resources/levels");  // specify directory
+        try{
+            File filePath = Files.list(dir)
+                    .filter(f -> !Files.isDirectory(f))
+                    .max(Comparator.comparingLong(f -> f.toFile().lastModified()))
+                    .orElseGet(null).toFile();
+
+            if (filePath != null) //this should not ever be false - would throw error otherwise
+            {
+                return loadAsDomain(filePath);
+            }
+        }
+        catch(Exception e){
+            System.out.println("Something messed up. \n" + e.toString());
+        }
+        return null;
     }
 
     /**
@@ -121,13 +145,13 @@ public class Load {
             }
         }
 
+        //need to break this into its own thing
         ArrayList<Position> actorList = new ArrayList<Position>();
         for (int i = 0; i < actorPos.length(); i += 4){
             int x = Integer.valueOf(actorPos.charAt(i)) - 48;
             int y = Integer.valueOf(actorPos.charAt(i + 2)) - 48;
             actorList.add(new Position(x, y));
         }
-
         Actor a = new Actor(actorList);
         ArrayList<Actor> actors = new ArrayList<Actor>();
         actors.add(a);
