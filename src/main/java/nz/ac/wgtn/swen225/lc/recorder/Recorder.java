@@ -2,60 +2,65 @@ package nz.ac.wgtn.swen225.lc.recorder;
 
 
 //import nz.ac.wgtn.swen225.lc.app.Direction;
+import com.fasterxml.jackson.core.type.TypeReference;
+import nz.ac.wgtn.swen225.lc.app.Game;
+import nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable.Actor;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable.Direction;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.*;
-
-
-class GameEvent {
-    // Define your game state data here
-}
+import nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable.Player;
+import nz.ac.wgtn.swen225.lc.domain.gameObject.item.Item;
 
 
 public class Recorder {
-    private List<GameEvent> gameHistory = new ArrayList<>();
-    private List<String> moveHistory = new ArrayList<>();
+    //private static List<GameEvent> gameHistory = new ArrayList<>();
+    private List<String> playerMoveHistory = new ArrayList<>();
+    private List<String> actorMoveHistory = new ArrayList<>();
+    private int level;
+    private Game game;
 
-    public void startRecording() {
+    public Recorder(int level, Game game) {
+        this.level = level;
+        this.game = game;
         // Initialize recording
     }
 
     public void addPlayerMove(Direction d) {
-        moveHistory.add(d.toString());
+        playerMoveHistory.add(d.toString());
+        actorMoveHistory.add("");//delete if actor and player can move at same time
+        System.out.println("Player Move '" + d.toString() + "' Recorded");
+    }
+    public void addActorMove(Direction d) {
+        actorMoveHistory.add(d.toString());
+        playerMoveHistory.add("");//delete if actor and player can move at same time
         System.out.println("Player Move '" + d.toString() + "' Recorded");
     }
 
-    public void saveRecordedGameToFile(String filePath) {
+
+    public void saveRecordedGameToFile(File file) {
         try {
+            Map<String, Object> recordedGameData = new HashMap<>();
+            recordedGameData.put("playerMoveHistory", playerMoveHistory);
+            recordedGameData.put("actorMoveHistory", actorMoveHistory);
+            recordedGameData.put("level", level);
+
            ObjectMapper objectMapper = new ObjectMapper();
-           objectMapper.writeValue(new File(filePath), moveHistory);
-           System.out.println("Recorded Moves Saved to: " + filePath);
+           objectMapper.writeValue(file, recordedGameData);
+           System.out.println("Recorded Moves Saved to: " + file.toString());
+
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void loadRecordedGameFromFile(String filePath) {
-        try {
-        	//System.out.println("loaded");
-            ObjectMapper objectMapper = new ObjectMapper();
-            gameHistory = objectMapper.readValue(new File(filePath), List.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
-    public void replayGameStepByStep() {
-        // Implement step-by-step replay logic
-    }
-
-    public void autoReplayGame(int speed) {
-        // Implement auto-replay logic with the given speed
-    }
 
 }
