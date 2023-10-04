@@ -20,60 +20,10 @@ import nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable.Player;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.item.Item;
 
 
-//class GameEvent {
-//    // Define your game state data here
-//    private static int turn = 0;
-//    private String move = "";
-//    private String itemCollected = "";
-//    private String actor = "";
-//    private String player = "";
-//
-//    //game event for actor movement
-//    public GameEvent(Actor actor, Direction direction){
-//        turn++;
-//        this.actor = actor.toString();
-//        this.move = direction.toString();
-//    }
-//    //game event for player movement
-//    public GameEvent(Player player, Direction direction) {
-//        turn++;
-//        this.player = player.toString();
-//        this.move = direction.toString();
-//
-//    }
-//    //game event for player item collection
-//    public GameEvent(Player player, Item item){
-//        turn++;
-//        this.player = player.toString();
-//        this.itemCollected = item.toString();
-//    }
-//    //game event for player attack
-//    public GameEvent(Player player, Actor actor){
-//        turn++;
-//        this.player = player.toString();
-//        this.actor = actor.toString();
-//    }
-//
-//    public int turn(){
-//        return this.turn;
-//    }
-//    public String move(){
-//        return this.move;
-//    }
-//    public String item(){
-//        return this.itemCollected;
-//    }
-//    public String player(){
-//        return this.player;
-//    }
-//    public String actor(){
-//        return this.actor;
-//    }
-//}
-
 public class Recorder {
     //private static List<GameEvent> gameHistory = new ArrayList<>();
-    private List<String> moveHistory = new ArrayList<>();
+    private List<String> playerMoveHistory = new ArrayList<>();
+    private List<String> actorMoveHistory = new ArrayList<>();
     private int level;
     private Game game;
 
@@ -84,36 +34,27 @@ public class Recorder {
     }
 
     public void addPlayerMove(Direction d) {
-        moveHistory.add(d.toString());
+        playerMoveHistory.add(d.toString());
+        actorMoveHistory.add("");//delete if actor and player can move at same time
+        System.out.println("Player Move '" + d.toString() + "' Recorded");
+    }
+    public void addActorMove(Direction d) {
+        actorMoveHistory.add(d.toString());
+        playerMoveHistory.add("");//delete if actor and player can move at same time
         System.out.println("Player Move '" + d.toString() + "' Recorded");
     }
 
-//    public static void addMoveEvent(Player chap, Direction d) {
-//        gameHistory.add(new GameEvent(chap,d));
-//        System.out.println("Player Move '" + d.toString() + "' Recorded");
-//    }
-//
-//    public static void addMoveEvent(Actor actor, Direction d) {
-//        gameHistory.add(new GameEvent(actor,d));
-//        System.out.println("Actor Move '" + d.toString() + "' Recorded");
-//    }
-//    public static void addCollectEvent(Player chap, Item item) {
-//        gameHistory.add(new GameEvent(chap,item));
-//    }
-//
-//    public static void addAttackEvent(Player chap, Actor actor){
-//        gameHistory.add(new GameEvent(chap,actor));
-//    }
 
-    public void saveRecordedGameToFile(String filePath) {
+    public void saveRecordedGameToFile(File file) {
         try {
             Map<String, Object> recordedGameData = new HashMap<>();
-            recordedGameData.put("moveHistory", moveHistory);
+            recordedGameData.put("playerMoveHistory", playerMoveHistory);
+            recordedGameData.put("actorMoveHistory", actorMoveHistory);
             recordedGameData.put("level", level);
 
            ObjectMapper objectMapper = new ObjectMapper();
-           objectMapper.writeValue(new File(filePath), recordedGameData);
-           System.out.println("Recorded Moves Saved to: " + filePath);
+           objectMapper.writeValue(file, recordedGameData);
+           System.out.println("Recorded Moves Saved to: " + file.toString());
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -121,7 +62,7 @@ public class Recorder {
     }
 
     public void replayGameStepByStep() {
-        for (String move : moveHistory){
+        for (String move : playerMoveHistory){
             System.out.println("Replaying move: " + move);
 
         }
