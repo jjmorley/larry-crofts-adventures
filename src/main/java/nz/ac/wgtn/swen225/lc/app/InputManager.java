@@ -123,7 +123,7 @@ public class InputManager {
     } else if (key == KeyCode.S) {
       game.exitGame(true);
     } else if (key == KeyCode.R) {
-      File file = gameWindow.openSaveSelectorDialog();
+      File file = gameWindow.openFileSelectorDialog("Save");
       if (file == null) {
         return;
       }

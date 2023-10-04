@@ -1,9 +1,5 @@
 package nz.ac.wgtn.swen225.lc.app;
 
-import java.io.File;
-import java.net.URISyntaxException;
-import java.net.URL;
-
 import javafx.stage.Stage;
 import nz.ac.wgtn.swen225.lc.app.gui.GameWindow;
 import nz.ac.wgtn.swen225.lc.domain.Domain;
@@ -11,6 +7,10 @@ import nz.ac.wgtn.swen225.lc.domain.InformationPacket;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable.Direction;
 import nz.ac.wgtn.swen225.lc.persistency.Load;
 import nz.ac.wgtn.swen225.lc.recorder.Recorder;
+
+import java.io.File;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 
 /**
@@ -24,7 +24,7 @@ public class Game {
   private int currentLevel;
   private GameWindow gameWindow;
   private Domain domain;
-  private Recorder recorder = new Recorder();
+  public Recorder recorder;
 
   /**
    * Creates a new instance of the game.
@@ -64,6 +64,15 @@ public class Game {
   }
 
   /**
+   * Called by recorder when a recording should be played back.
+   *
+   * @param level the level that was recorded.
+   * */
+  public void startRecordingPlayback(int level) {
+
+  }
+
+  /**
    * Exit the game.
    *
    * @param save Should the current game be saved before exiting.
@@ -84,6 +93,8 @@ public class Game {
   public void loadGame(File file) {
     Domain domain = Load.loadAsDomain(file);
     this.domain = domain;
+    this.recorder = new Recorder(-1, this); // TODO Get level number from persistence
+
     if (gameWindow != null) {
       gameWindow.createGame(domain);
     }
@@ -121,6 +132,26 @@ public class Game {
   }
 
   /**
+   * Update the actors and propagate the event.
+   */
+  public void updateActors() {
+    if (domain == null) {
+      return;
+    }
+
+    InformationPacket result = domain.advanceClock();
+
+    if (!result.isPlayerAlive()) {
+      System.out.println("Dead");
+      // TODO Handle death
+    }
+
+    if (recorder != null) {
+      recorder.addActorMove(null); // TODO update to remove direction input
+    }
+  }
+
+  /**
    * Try a move the player in a given direction.
    *
    * @param direction the direction the player should move in.
@@ -130,7 +161,6 @@ public class Game {
     if (domain == null) {
       return false;
     }
-
     InformationPacket moveResult = domain.movePlayer(direction);
 
     if (!moveResult.hasPlayerMoved()) {
@@ -139,7 +169,7 @@ public class Game {
 
     if (!moveResult.isPlayerAlive()) {
       System.out.println("Dead");
-      // Handle death
+      // TODO Handle death
     }
 
     // Movement was successful
@@ -148,7 +178,9 @@ public class Game {
       gameWindow.renderer.movePlayer(direction);
     }
 
-    recorder.addPlayerMove(direction);
+    if (recorder != null) {
+      recorder.addPlayerMove(direction);
+    }
 
     return true;
   }
