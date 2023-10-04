@@ -61,16 +61,6 @@ public class Recorder {
         }
     }
 
-    public void replayGameStepByStep() {
-        for (String move : playerMoveHistory){
-            System.out.println("Replaying move: " + move);
 
-        }
-        // Implement step-by-step replay logic
-    }
-
-    public void autoReplayGame(int speed) {
-        // Implement auto-replay logic with the given speed
-    }
 
 }
