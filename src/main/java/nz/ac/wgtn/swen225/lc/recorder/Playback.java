@@ -46,7 +46,7 @@ public class Playback {
         pause();
         // Implement step-by-step replay logic
         if (actorMoveHistory.get(frame).equals("")){
-            game.movePlayer(Direction.valueOf(playerMoveHistory.get(frame)));
+            // game.movePlayer(Direction.valueOf(playerMoveHistory.get(frame)));
         } else {
            // game.updateActor(Direction.valueOf(playerMoveHistory.get(frame)));
         }
@@ -70,7 +70,7 @@ public class Playback {
         // Implement auto-replay logic with the given speed
         while(playSpeed > 0){
             if (actorMoveHistory.get(frame).equals("")){
-                game.movePlayer(Direction.valueOf(playerMoveHistory.get(frame)));
+                // game.movePlayer(Direction.valueOf(playerMoveHistory.get(frame)));
             } else {
                // game.updateActor(Direction.valueOf(playerMoveHistory.get(frame)));
             }
