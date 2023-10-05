@@ -1,16 +1,24 @@
 package nz.ac.wgtn.swen225.lc.app;
 
-import java.io.File;
-import java.net.URISyntaxException;
-import java.net.URL;
-
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import nz.ac.wgtn.swen225.lc.app.gui.GameWindow;
+import nz.ac.wgtn.swen225.lc.app.gui.RecorderPlaybackController;
+import nz.ac.wgtn.swen225.lc.app.gui.RecorderPlaybackWindow;
 import nz.ac.wgtn.swen225.lc.domain.Domain;
 import nz.ac.wgtn.swen225.lc.domain.InformationPacket;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable.Direction;
 import nz.ac.wgtn.swen225.lc.persistency.Load;
+import nz.ac.wgtn.swen225.lc.recorder.Playback;
 import nz.ac.wgtn.swen225.lc.recorder.Recorder;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 
 /**
@@ -19,12 +27,13 @@ import nz.ac.wgtn.swen225.lc.recorder.Recorder;
  * @author Trent Shailer 300602354.
  */
 public class Game {
+  public Recorder recorder;
   private boolean isPaused = false;
   private int timeLeft;
   private int currentLevel;
   private GameWindow gameWindow;
   private Domain domain;
-  private Recorder recorder = new Recorder();
+  private Stage stage;
 
   /**
    * Creates a new instance of the game.
@@ -33,7 +42,9 @@ public class Game {
    * @param stage The stage created by the application window.
    */
   public Game(Stage stage) {
+    this.stage = stage;
     gameWindow = new GameWindow(stage, this);
+
     // Load game
     try {
       URL fileUrl = getClass().getResource("/levels/level1.json");
@@ -64,6 +75,36 @@ public class Game {
   }
 
   /**
+   * Called by recorder when a recording should be played back.
+   *
+   * @param level the level that was recorded.
+   */
+  public void startRecordingPlayback(int level, Playback playback) {
+    // Lock out user controls
+    gameWindow.inputManager.setMovementLocked(true);
+
+    // Load level
+    try {
+      URL fileUrl = getClass().getResource("/levels/level" + level + ".json");
+      if (fileUrl != null) {
+        File f = new File(fileUrl.toURI());
+        this.loadGame(f);
+      }
+    } catch (URISyntaxException ex) {
+      System.out.println("Failed to load level " + level + ", URI Syntax error: " + ex.toString());
+      return;
+    }
+
+    // Create control window
+    new RecorderPlaybackWindow(stage, playback, this);
+  }
+
+  public void stopRecordingPlayback(Playback playback) {
+    // Resume player controls
+    gameWindow.inputManager.setMovementLocked(false);
+  }
+
+  /**
    * Exit the game.
    *
    * @param save Should the current game be saved before exiting.
@@ -84,6 +125,8 @@ public class Game {
   public void loadGame(File file) {
     Domain domain = Load.loadAsDomain(file);
     this.domain = domain;
+    this.recorder = new Recorder(-1, this); // TODO Get level number from persistence
+
     if (gameWindow != null) {
       gameWindow.createGame(domain);
     }
@@ -121,6 +164,26 @@ public class Game {
   }
 
   /**
+   * Update the actors and propagate the event.
+   */
+  public void updateActors() {
+    if (domain == null) {
+      return;
+    }
+
+    InformationPacket result = domain.advanceClock();
+
+    if (!result.isPlayerAlive()) {
+      System.out.println("Dead");
+      // TODO Handle death
+    }
+
+    if (recorder != null) {
+      recorder.addActorMove(null); // TODO update to remove direction input
+    }
+  }
+
+  /**
    * Try a move the player in a given direction.
    *
    * @param direction the direction the player should move in.
@@ -130,7 +193,6 @@ public class Game {
     if (domain == null) {
       return false;
     }
-
     InformationPacket moveResult = domain.movePlayer(direction);
 
     if (!moveResult.hasPlayerMoved()) {
@@ -139,7 +201,7 @@ public class Game {
 
     if (!moveResult.isPlayerAlive()) {
       System.out.println("Dead");
-      // Handle death
+      // TODO Handle death
     }
 
     // Movement was successful
@@ -148,8 +210,16 @@ public class Game {
       gameWindow.renderer.movePlayer(direction);
     }
 
-    recorder.addPlayerMove(direction);
+    if (recorder != null) {
+      recorder.addPlayerMove(direction);
+    }
 
     return true;
   }
+
+  public int getCurrentLevel() {
+    return currentLevel;
+  }
+
+
 }

@@ -1,6 +1,5 @@
 package nz.ac.wgtn.swen225.lc.app.gui;
 
-import java.io.File;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -13,6 +12,8 @@ import nz.ac.wgtn.swen225.lc.app.InputManager;
 import nz.ac.wgtn.swen225.lc.domain.Domain;
 import nz.ac.wgtn.swen225.lc.renderer.Renderer;
 
+import java.io.File;
+
 /**
  * This class creates the game window and all subcomponents including input capture.
  *
@@ -20,8 +21,8 @@ import nz.ac.wgtn.swen225.lc.renderer.Renderer;
  */
 public class GameWindow {
 
+  public final InputManager inputManager;
   private final Game game;
-  private final InputManager inputManager;
   private final Stage stage;
   public Overlay overlay;
   public Renderer renderer;
@@ -87,7 +88,7 @@ public class GameWindow {
    * Set up the UI when a new game is started/loaded.
    *
    * @param domain The domain of the new game.
-   * */
+   */
   public void createGame(Domain domain) {
     gamePane.getChildren().clear();
     renderer = new Renderer(domain, (int) gamePane.getWidth());
@@ -97,21 +98,42 @@ public class GameWindow {
   /**
    * Opens a file picker and returns the file the user picks.
    *
+   * @param kindOfFile The 'kind' of file that is being selected, e.g., "Save", "Recording"
    * @return The file the user picks or null.
    */
-  public File openSaveSelectorDialog() {
+  public File openFileSelectorDialog(String kindOfFile) {
     FileChooser fileChooser = new FileChooser();
-    fileChooser.setTitle("Open a Save File");
+    fileChooser.setTitle("Open a " + kindOfFile + " File");
     fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
 
-    FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("Save File", "*.json");
+    FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter(
+        kindOfFile + " File",
+        "*.json"
+    );
     fileChooser.getExtensionFilters().add(filter);
 
-    File file = fileChooser.showOpenDialog(stage);
+    return fileChooser.showOpenDialog(stage);
+  }
 
-    // TODO processing if it is a valid file?
+  /**
+   * Opens a save dialog and returns the file the user picks.
+   *
+   * @param kindOfFile The 'kind' of file that is being selected, e.g., "Save", "Recording"
+   * @return The file the user picks or null.
+   */
+  public File openFileSaveDialog(String kindOfFile, String initialFileName) {
+    FileChooser fileChooser = new FileChooser();
+    fileChooser.setTitle("Save as");
+    fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+    fileChooser.setInitialFileName(initialFileName);
 
-    return file;
+    FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter(
+        kindOfFile + " File",
+        "*.json"
+    );
+    fileChooser.getExtensionFilters().add(filter);
+
+    return fileChooser.showSaveDialog(stage);
   }
 
   public Stage getStage() {
