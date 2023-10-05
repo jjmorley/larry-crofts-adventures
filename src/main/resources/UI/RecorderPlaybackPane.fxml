@@ -45,7 +45,7 @@
                 </padding>
                 Playback Speed:
             </Label>
-            <Label fx:id="sliderValue">1</Label>
+            <Label fx:id="sliderLabel">1</Label>
             <Label>x</Label>
         </HBox>
         <Slider fx:id="slider" min="0.1" max="5" value="1" prefWidth="300.0"/>

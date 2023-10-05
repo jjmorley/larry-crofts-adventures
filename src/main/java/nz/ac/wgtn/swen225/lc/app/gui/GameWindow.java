@@ -21,8 +21,8 @@ import java.io.File;
  */
 public class GameWindow {
 
+  public final InputManager inputManager;
   private final Game game;
-  private final InputManager inputManager;
   private final Stage stage;
   public Overlay overlay;
   public Renderer renderer;
@@ -121,10 +121,11 @@ public class GameWindow {
    * @param kindOfFile The 'kind' of file that is being selected, e.g., "Save", "Recording"
    * @return The file the user picks or null.
    */
-  public File openFileSaveDialog(String kindOfFile) {
+  public File openFileSaveDialog(String kindOfFile, String initialFileName) {
     FileChooser fileChooser = new FileChooser();
     fileChooser.setTitle("Save as");
     fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+    fileChooser.setInitialFileName(initialFileName);
 
     FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter(
         kindOfFile + " File",

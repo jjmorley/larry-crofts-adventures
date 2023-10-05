@@ -7,10 +7,12 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import nz.ac.wgtn.swen225.lc.app.gui.GameWindow;
 import nz.ac.wgtn.swen225.lc.app.gui.RecorderPlaybackController;
+import nz.ac.wgtn.swen225.lc.app.gui.RecorderPlaybackWindow;
 import nz.ac.wgtn.swen225.lc.domain.Domain;
 import nz.ac.wgtn.swen225.lc.domain.InformationPacket;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable.Direction;
 import nz.ac.wgtn.swen225.lc.persistency.Load;
+import nz.ac.wgtn.swen225.lc.recorder.Playback;
 import nz.ac.wgtn.swen225.lc.recorder.Recorder;
 
 import java.io.File;
@@ -25,12 +27,13 @@ import java.net.URL;
  * @author Trent Shailer 300602354.
  */
 public class Game {
+  public Recorder recorder;
   private boolean isPaused = false;
   private int timeLeft;
   private int currentLevel;
   private GameWindow gameWindow;
   private Domain domain;
-  public Recorder recorder;
+  private Stage stage;
 
   /**
    * Creates a new instance of the game.
@@ -39,8 +42,8 @@ public class Game {
    * @param stage The stage created by the application window.
    */
   public Game(Stage stage) {
+    this.stage = stage;
     gameWindow = new GameWindow(stage, this);
-    this.startRecordingPlayback(-1, stage);
 
     // Load game
     try {
@@ -75,34 +78,30 @@ public class Game {
    * Called by recorder when a recording should be played back.
    *
    * @param level the level that was recorded.
-   * */
-  public void startRecordingPlayback(int level, Stage parentStage) {
-    Stage stage = new Stage();
-    stage.setTitle("Recorder Playback");
-    stage.initOwner(parentStage);
+   */
+  public void startRecordingPlayback(int level, Playback playback) {
+    // Lock out user controls
+    gameWindow.inputManager.setMovementLocked(true);
 
+    // Load level
     try {
-      URL fxmlFile = getClass().getResource("/UI/RecorderPlaybackPane.fxml");
-      if (fxmlFile == null) {
-        throw new IOException("URL for UI/RecorderPlaybackPane.fxml was null.");
+      URL fileUrl = getClass().getResource("/levels/level" + level + ".json");
+      if (fileUrl != null) {
+        File f = new File(fileUrl.toURI());
+        this.loadGame(f);
       }
-
-      Pane mainPane = FXMLLoader.load(fxmlFile);
-
-      Scene scene = new Scene(mainPane);
-      URL styleSheet = getClass().getResource("/UI/styles.css");
-      if (styleSheet == null) {
-        throw new IOException("URL for UI/styles.css was null.");
-      }
-
-      scene.getStylesheets().add(styleSheet.toExternalForm());
-      stage.setScene(scene);
-      stage.getIcons().add(new Image("recorderWindowIcon.png"));
-      stage.setResizable(false);
-      stage.show();
-    } catch (IOException exception) {
-      throw new RuntimeException(exception);
+    } catch (URISyntaxException ex) {
+      System.out.println("Failed to load level " + level + ", URI Syntax error: " + ex.toString());
+      return;
     }
+
+    // Create control window
+    new RecorderPlaybackWindow(stage, playback, this);
+  }
+
+  public void stopRecordingPlayback(Playback playback) {
+    // Resume player controls
+    gameWindow.inputManager.setMovementLocked(false);
   }
 
   /**
@@ -217,4 +216,10 @@ public class Game {
 
     return true;
   }
+
+  public int getCurrentLevel() {
+    return currentLevel;
+  }
+
+
 }

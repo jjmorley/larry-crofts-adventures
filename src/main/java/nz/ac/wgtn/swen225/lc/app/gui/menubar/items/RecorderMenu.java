@@ -1,11 +1,12 @@
 package nz.ac.wgtn.swen225.lc.app.gui.menubar.items;
 
-import java.io.File;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import nz.ac.wgtn.swen225.lc.app.Game;
 import nz.ac.wgtn.swen225.lc.app.gui.GameWindow;
 import nz.ac.wgtn.swen225.lc.recorder.Playback;
+
+import java.io.File;
 
 /**
  * The recorder menu on the menu bar.
@@ -27,7 +28,10 @@ public class RecorderMenu extends Menu {
         return;
       }
 
-      File file = window.openFileSaveDialog("Recording");
+      File file = window.openFileSaveDialog(
+          "Recording",
+          "Level-" + game.getCurrentLevel() + "-recording"
+      );
       if (file != null) {
         game.recorder.saveRecordedGameToFile(file);
       }
