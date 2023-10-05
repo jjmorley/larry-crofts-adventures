@@ -21,7 +21,7 @@ public class Playback {
     private List<String> actorMoveHistory = new ArrayList<>();
     public Playback(File file, Game game){
         loadRecordedGameFromFile(file);
-        game.startRecording(level);
+        //game.startRecording(level);
     }
     public void loadRecordedGameFromFile(File file) {
         //TODO throw exception if failure to meet format
@@ -48,7 +48,7 @@ public class Playback {
         if (actorMoveHistory.get(frame).equals("")){
             game.movePlayer(Direction.valueOf(playerMoveHistory.get(frame)));
         } else {
-            game.updateActor(Direction.valueOf(playerMoveHistory.get(frame)));
+           // game.updateActor(Direction.valueOf(playerMoveHistory.get(frame)));
         }
         frame++;
     }
@@ -72,7 +72,7 @@ public class Playback {
             if (actorMoveHistory.get(frame).equals("")){
                 game.movePlayer(Direction.valueOf(playerMoveHistory.get(frame)));
             } else {
-                game.updateActor(Direction.valueOf(playerMoveHistory.get(frame)));
+               // game.updateActor(Direction.valueOf(playerMoveHistory.get(frame)));
             }
             frame++;
             try {
