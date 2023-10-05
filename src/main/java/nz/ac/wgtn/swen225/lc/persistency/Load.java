@@ -93,6 +93,8 @@ public class Load {
     /**
      * Return loaded JSON as a domain object.
      *
+     * TODO: MULTIPLE ACTORS
+     *
      * @return Domain
      */
     public static Domain loadAsDomain(File file){

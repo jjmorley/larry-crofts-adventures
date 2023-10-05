@@ -12,6 +12,6 @@
   },
   "char" : "1, 1",
   "gridSize" : 3,
-  "treasures": 5,
+  "treasures" : 0,
   "actor": ["0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0, 1"]
 }

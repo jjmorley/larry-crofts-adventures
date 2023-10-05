@@ -1,25 +1,22 @@
-package test.nz.ac.wgtn.swen225.lc.persistency;
+package nz.ac.wgtn.swen225.lc.persistency;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import nz.ac.wgtn.swen225.lc.domain.Domain;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeAll;
 
 import java.io.File;
 
-import static nz.ac.wgtn.swen225.lc.persistency.Load.loadAsJSON;
+import static nz.ac.wgtn.swen225.lc.persistency.Load.*;
 import static nz.ac.wgtn.swen225.lc.persistency.Save.*;
 
 public class saveTests {
 
-    static String[][] levelArray = {
-            new String[]{"w", "w", "d"},
-            new String[]{"f", "f", "f"},
-            new String[]{"k", "f", "f"}
-    };
 
     @BeforeAll
     static void setup() {
-        saveJSON(levelArray, 3, "1, 1", "src/main/resources/levels/saved-level-test.json");
+        Domain d = loadAsDomain(new File("src/main/resources/levels/levels-template.json"));
+        saveJSONFromDomain(new File("src/main/resources/levels/saved-level-test.json"), d);
     }
 
     @Test
