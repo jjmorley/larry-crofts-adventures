@@ -1,7 +1,12 @@
 package nz.ac.wgtn.swen225.lc.app;
 
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import nz.ac.wgtn.swen225.lc.app.gui.GameWindow;
+import nz.ac.wgtn.swen225.lc.app.gui.RecorderPlaybackController;
 import nz.ac.wgtn.swen225.lc.domain.Domain;
 import nz.ac.wgtn.swen225.lc.domain.InformationPacket;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable.Direction;
@@ -9,6 +14,7 @@ import nz.ac.wgtn.swen225.lc.persistency.Load;
 import nz.ac.wgtn.swen225.lc.recorder.Recorder;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
@@ -34,6 +40,8 @@ public class Game {
    */
   public Game(Stage stage) {
     gameWindow = new GameWindow(stage, this);
+    this.startRecordingPlayback(-1, stage);
+
     // Load game
     try {
       URL fileUrl = getClass().getResource("/levels/level1.json");
@@ -68,8 +76,33 @@ public class Game {
    *
    * @param level the level that was recorded.
    * */
-  public void startRecordingPlayback(int level) {
+  public void startRecordingPlayback(int level, Stage parentStage) {
+    Stage stage = new Stage();
+    stage.setTitle("Recorder Playback");
+    stage.initOwner(parentStage);
 
+    try {
+      URL fxmlFile = getClass().getResource("/UI/RecorderPlaybackPane.fxml");
+      if (fxmlFile == null) {
+        throw new IOException("URL for UI/RecorderPlaybackPane.fxml was null.");
+      }
+
+      Pane mainPane = FXMLLoader.load(fxmlFile);
+
+      Scene scene = new Scene(mainPane);
+      URL styleSheet = getClass().getResource("/UI/styles.css");
+      if (styleSheet == null) {
+        throw new IOException("URL for UI/styles.css was null.");
+      }
+
+      scene.getStylesheets().add(styleSheet.toExternalForm());
+      stage.setScene(scene);
+      stage.getIcons().add(new Image("recorderWindowIcon.png"));
+      stage.setResizable(false);
+      stage.show();
+    } catch (IOException exception) {
+      throw new RuntimeException(exception);
+    }
   }
 
   /**
