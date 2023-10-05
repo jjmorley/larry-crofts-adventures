@@ -21,7 +21,7 @@ public class InputManager {
   private final GameWindow gameWindow;
   private long lastMoved = 0;
 
-  private boolean movementLocked = true;
+  private boolean movementLocked = false;
 
 
   /**
