@@ -97,7 +97,7 @@ public class MenuBarController {
       URL fileUrl = getClass().getResource("/levels/level2.json");
       if (fileUrl != null) {
         File f = new File(fileUrl.toURI());
-        game.loadGame(f);
+        game.loadGame(f, true);
       }
     } catch (URISyntaxException ex) {
       System.out.println("Failed to load level2, URI Syntax error: " + ex.toString());
@@ -113,7 +113,7 @@ public class MenuBarController {
       URL fileUrl = getClass().getResource("/levels/level1.json");
       if (fileUrl != null) {
         File f = new File(fileUrl.toURI());
-        game.loadGame(f);
+        game.loadGame(f, true);
       }
     } catch (URISyntaxException ex) {
       System.out.println("Failed to load level1, URI Syntax error: " + ex.toString());
@@ -135,7 +135,7 @@ public class MenuBarController {
     event.consume();
     File file = window.openFileSelectorDialog("Save");
     if (file != null) {
-      game.loadGame(file);
+      game.loadGame(file, true);
     }
   }
 

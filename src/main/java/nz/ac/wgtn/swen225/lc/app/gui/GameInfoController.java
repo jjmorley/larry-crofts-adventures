@@ -86,7 +86,7 @@ public class GameInfoController {
    * @param game   The game that is relevant to the game bar.
    */
   public void updateUi(Domain domain, Game game) {
-    timeLeft.setText(Integer.toString(game.getTimeLeft()));
+    timeLeft.setText(Long.toString(game.getTimeLeft()));
     treasureLeft.setText(Integer.toString(domain.getPlayer().getTreasuresLeft()));
 
     List<Item> playerInventory = domain.getPlayer().getInventory();
