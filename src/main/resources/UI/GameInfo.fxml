@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<GridPane xmlns="http://javafx.com/javafx"
+          xmlns:fx="http://javafx.com/fxml"
+          fx:controller="nz.ac.wgtn.swen225.lc.app.gui.GameInfoController"
+          minHeight="75.0" maxHeight="75.0"
+          style=" -fx-border-color:#000000aa; -fx-border-width: 0 0 3 0; -fx-border-style: solid;"
+          alignment="CENTER">
+    <padding>
+        <Insets top="3"/>
+    </padding>
+    <background>
+        <Background>
+            <images>
+                <BackgroundImage repeatX="REPEAT" repeatY="REPEAT">
+                    <image>
+                        <Image url="@/UI/GameInfo/background.png"/>
+                    </image>
+                </BackgroundImage>
+            </images>
+        </Background>
+    </background>
+
+    <VBox GridPane.columnIndex="0" GridPane.valignment="CENTER" GridPane.halignment="LEFT" alignment="CENTER"
+          GridPane.Hgrow="ALWAYS">
+        <Label styleClass="gameLabel" textAlignment="CENTER">Treasure Left</Label>
+        <Label fx:id="treasureLeft" styleClass="gameLabelValue" textAlignment="CENTER">10</Label>
+    </VBox>
+
+    <VBox GridPane.columnIndex="1" GridPane.valignment="CENTER" GridPane.halignment="CENTER" alignment="CENTER"
+          GridPane.Hgrow="ALWAYS">
+        <Label styleClass="gameLabel" textAlignment="CENTER" wrapText="true">Time Remaining</Label>
+        <HBox alignment="CENTER">
+            <Label fx:id="timeLeft" styleClass="gameLabelValue" textAlignment="CENTER">120</Label>
+            <Label styleClass="gameLabel" textAlignment="CENTER">s</Label>
+        </HBox>
+    </VBox>
+
+
+    <VBox fx:id="inventory" GridPane.columnIndex="2" GridPane.valignment="CENTER" GridPane.halignment="RIGHT" GridPane.Hgrow="ALWAYS">
+    </VBox>
+</GridPane>
