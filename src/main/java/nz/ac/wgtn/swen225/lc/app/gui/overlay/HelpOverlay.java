@@ -172,7 +172,7 @@ public class HelpOverlay extends BorderPane {
 
   private void createBottom(Game game) {
     Button button = new Button("Close Help");
-    button.setFont(new Font(12));
+    button.getStyleClass().add("OverlayButton");
     button.setOnAction(event -> game.resumeGame());
 
     VBox bottomPane = new VBox();

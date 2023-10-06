@@ -126,9 +126,10 @@ public class Game {
     Domain domain = Load.loadAsDomain(file);
     this.domain = domain;
     this.recorder = new Recorder(-1, this); // TODO Get level number from persistence
+     // TODO Get time remaining from persistenc
 
     if (gameWindow != null) {
-      gameWindow.createGame(domain);
+      gameWindow.createGame(domain, currentLevel);
     }
   }
 
