@@ -49,6 +49,26 @@
     -fx-font-size: 20;
 }
 
+.OverlayTitle {
+    -fx-font-family: 'Silkscreen';
+    -fx-font-weight: Bold;
+    -fx-font-size: 40;
+    -fx-text-fill: #ffffff;
+}
+
+.OverlayHeading {
+    -fx-font-family: 'Silkscreen';
+    -fx-font-weight: Bold;
+    -fx-font-size: 32;
+    -fx-text-fill: #ffffff;
+}
+
+.OverlayText {
+    -fx-font-family: 'Silkscreen';
+    -fx-font-size: 20;
+    -fx-text-fill: #ffffff;
+}
+
 .gameMenu {
     -fx-background-color: #00000014;
 }

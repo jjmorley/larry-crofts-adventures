@@ -53,7 +53,7 @@ public class GameWindow {
     // Pane to stack the overlay on top of the main pane
     StackPane stackPane = new StackPane();
 
-    overlay = new Overlay(game);
+    overlay = new Overlay(game, this);
     VBox mainPane = createMainPane();
 
     stackPane.getChildren().addAll(mainPane, overlay);

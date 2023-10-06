@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="nz.ac.wgtn.swen225.lc.app.gui.overlay.PauseOverlayController"
+            visible="false">
+    <padding>
+        <Insets right="50" top="50" left="50" bottom="50"/>
+    </padding>
+
+    <top>
+        <VBox alignment="CENTER">
+            <Label styleClass="OverlayTitle">
+                Help
+            </Label>
+        </VBox>
+    </top>
+
+    <center>
+        <VBox alignment="TOP_CENTER" spacing="25">
+            <VBox alignment="TOP_CENTER">
+                <Label styleClass="OverlayHeading">
+                    Your Goal
+                </Label>
+                <TextFlow styleClass="OverlayText" textAlignment="JUSTIFY">
+                    <Text fill="#ffffff">Larry Croft, a brave knight, has fallen down a well to discover an old dungeon.
+                        Venture deeper
+                        into the dungeon by collecting treasures
+                    </Text>
+                    <Text fill="#00000000">_</Text>
+                    <ImageView translateY="4" fitHeight="20" fitWidth="20">
+                        <Image url="@/Sprites/Treasure.png"/>
+                    </ImageView>
+                    <Text fill="#00000000">_</Text>
+                    <Text fill="#ffffff">to unlock the exit door</Text>
+                    <Text fill="#00000000">_</Text>
+                    <ImageView translateY="4" fitHeight="20" fitWidth="20">
+                        <Image url="@/Sprites/Door_Exit_Closed.png"/>
+                    </ImageView>
+                    <Text fill="#ffffff">, then descend to the next floor</Text>
+                    <Text fill="#00000000">_</Text>
+                    <ImageView translateY="4" fitHeight="20" fitWidth="20">
+                        <Image url="@/Sprites/Exit.png"/>
+                    </ImageView>
+                    <Text fill="#ffffff">.</Text>
+                </TextFlow>
+            </VBox>
+            <VBox alignment="TOP_CENTER">
+                <Label styleClass="OverlayHeading">
+                    Controls
+                </Label>
+                <HBox spacing="50" alignment="TOP_CENTER">
+                    <VBox alignment="TOP_RIGHT" prefWidth="300" spacing="5">
+                        <Label styleClass="OverlayText">Arrow Keys</Label>
+                        <Label styleClass="OverlayText">Space</Label>
+                        <Label styleClass="OverlayText">Escape</Label>
+                        <Label styleClass="OverlayText">CTRL + X</Label>
+                        <Label styleClass="OverlayText">CTRL + S</Label>
+                        <Label styleClass="OverlayText">CTRL + R</Label>
+                        <Label styleClass="OverlayText">CTRL + #</Label>
+                    </VBox>
+                    <VBox prefWidth="300" spacing="5">
+                        <Label textAlignment="RIGHT" styleClass="OverlayText">Movement</Label>
+                        <Label textAlignment="RIGHT" styleClass="OverlayText">Pause game</Label>
+                        <Label textAlignment="RIGHT" styleClass="OverlayText">Resume game</Label>
+                        <Label textAlignment="RIGHT" styleClass="OverlayText">Quit without saving</Label>
+                        <Label textAlignment="RIGHT" styleClass="OverlayText">Save and quit</Label>
+                        <Label textAlignment="RIGHT" styleClass="OverlayText">Load save</Label>
+                        <Label textAlignment="RIGHT" styleClass="OverlayText">Load level #</Label>
+                    </VBox>
+                </HBox>
+            </VBox>
+        </VBox>
+    </center>
+
+    <bottom>
+        <VBox alignment="CENTER">
+            <Button onAction="#resume" styleClass="OverlayButton">Resume Game</Button>
+        </VBox>
+    </bottom>
+</BorderPane>
