@@ -6,7 +6,6 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import nz.ac.wgtn.swen225.lc.app.Game;
@@ -16,7 +15,6 @@ import nz.ac.wgtn.swen225.lc.renderer.Renderer;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 
 /**
@@ -138,7 +136,7 @@ public class GameWindow {
       gameInfoPane.getChildren().add(gameInfo);
 
       gameInfoController = loader.getController();
-      gameInfoController.updateUI(domain, game);
+      gameInfoController.updateUi(domain, game);
     } catch (IOException exception) {
       throw new RuntimeException(exception);
     }

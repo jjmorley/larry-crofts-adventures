@@ -1,12 +1,8 @@
 package nz.ac.wgtn.swen225.lc.app;
 
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.scene.image.Image;
-import javafx.scene.layout.Pane;
+import javafx.application.Platform;
 import javafx.stage.Stage;
 import nz.ac.wgtn.swen225.lc.app.gui.GameWindow;
-import nz.ac.wgtn.swen225.lc.app.gui.RecorderPlaybackController;
 import nz.ac.wgtn.swen225.lc.app.gui.RecorderPlaybackWindow;
 import nz.ac.wgtn.swen225.lc.domain.Domain;
 import nz.ac.wgtn.swen225.lc.domain.InformationPacket;
@@ -16,7 +12,6 @@ import nz.ac.wgtn.swen225.lc.recorder.Playback;
 import nz.ac.wgtn.swen225.lc.recorder.Recorder;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
@@ -29,7 +24,7 @@ import java.net.URL;
 public class Game {
   public Recorder recorder;
   private boolean isPaused = false;
-  private int timeLeft;
+  private GameTimer gameTimer;
   private int currentLevel;
   private GameWindow gameWindow;
   private Domain domain;
@@ -117,6 +112,18 @@ public class Game {
     System.exit(0);
   }
 
+  private void onTimeout() {
+    gameOver("ran out of time.");
+  }
+
+  private void onTimerUpdate(int timeRemaining) {
+    if (gameWindow == null || gameWindow.gameInfoController == null || domain == null) {
+      return;
+    }
+
+    Platform.runLater(() -> gameWindow.gameInfoController.updateUi(domain, this));
+  }
+
   /**
    * Try to load a game from a given file.
    *
@@ -126,7 +133,8 @@ public class Game {
     Domain domain = Load.loadAsDomain(file);
     this.domain = domain;
     this.recorder = new Recorder(-1, this); // TODO Get level number from persistence
-     // TODO Get time remaining from persistenc
+    // TODO Get time remaining from persistence
+    gameTimer = new GameTimer(60, this::onTimeout, this::onTimerUpdate);
 
     if (gameWindow != null) {
       gameWindow.createGame(domain, currentLevel);
@@ -144,9 +152,12 @@ public class Game {
    * Pause the game.
    */
   public void pauseGame(boolean showOverlay) {
-    isPaused = true;
+    if (gameTimer == null) {
+      return;
+    }
 
-    // TODO do timer stuff
+    isPaused = true;
+    gameTimer.setPaused(true);
 
     if (showOverlay) {
       gameWindow.overlay.displayPause();
@@ -157,9 +168,12 @@ public class Game {
    * Resume a paused game.
    */
   public void resumeGame() {
-    isPaused = false;
+    if (gameTimer == null) {
+      return;
+    }
 
-    // TODO timer stuff
+    isPaused = false;
+    gameTimer.setPaused(false);
 
     gameWindow.overlay.close();
   }
@@ -174,13 +188,12 @@ public class Game {
 
     InformationPacket result = domain.advanceClock();
 
-    if (!result.isPlayerAlive()) {
-      System.out.println("Dead");
-      // TODO Handle death
-    }
-
     if (recorder != null) {
       recorder.addActorMove(null); // TODO update to remove direction input
+    }
+
+    if (!result.isPlayerAlive()) {
+      gameOver("died");
     }
   }
 
@@ -200,30 +213,43 @@ public class Game {
       return false;
     }
 
-    if (!moveResult.isPlayerAlive()) {
-      System.out.println("Dead");
-      // TODO Handle death
-    }
-
     // Movement was successful
 
     if (gameWindow != null) {
       gameWindow.renderer.movePlayer(direction);
-      gameWindow.gameInfoController.updateUI(domain, this);
+      gameWindow.gameInfoController.updateUi(domain, this);
     }
 
     if (recorder != null) {
       recorder.addPlayerMove(direction);
     }
 
+    if (!moveResult.isPlayerAlive()) {
+      gameOver("died");
+    }
+
     return true;
+  }
+
+  private void gameOver(String reason) {
+    // if UI show overlay
+    // do nothing until a new
   }
 
   public int getCurrentLevel() {
     return currentLevel;
   }
 
+  /**
+   * Get the time left in the current game timer.
+   *
+   * @return The time remaining in the current game timer.
+   */
   public int getTimeLeft() {
-    return timeLeft;
+    if (gameTimer == null) {
+      return 0;
+    }
+
+    return gameTimer.getTimeRemaining();
   }
 }

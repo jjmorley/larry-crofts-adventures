@@ -85,7 +85,7 @@ public class GameInfoController {
    * @param domain The domain that is relevant to the game bar.
    * @param game   The game that is relevant to the game bar.
    */
-  public void updateUI(Domain domain, Game game) {
+  public void updateUi(Domain domain, Game game) {
     timeLeft.setText(Integer.toString(game.getTimeLeft()));
     treasureLeft.setText(Integer.toString(domain.getPlayer().getTreasuresLeft()));
 
