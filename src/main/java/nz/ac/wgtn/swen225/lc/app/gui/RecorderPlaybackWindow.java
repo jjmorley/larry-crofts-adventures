@@ -38,9 +38,10 @@ public class RecorderPlaybackWindow {
       }
 
       FXMLLoader loader = new FXMLLoader(fxmlFile);
+      Pane mainPane = loader.load();
+
       RecorderPlaybackController controller = loader.getController();
       controller.initializePlaybackControls(playback);
-      Pane mainPane = loader.load();
 
       Scene scene = new Scene(mainPane);
       URL styleSheet = getClass().getResource("/UI/styles.css");

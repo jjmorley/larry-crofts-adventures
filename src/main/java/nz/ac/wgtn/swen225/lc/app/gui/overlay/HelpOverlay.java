@@ -32,7 +32,7 @@ public class HelpOverlay extends BorderPane {
    * @param game The game to call the resume function in.
    */
   public HelpOverlay(Game game) {
-    setPadding(new Insets(50));
+    setPadding(new Insets(25));
 
     createTop();
     createMiddle();
@@ -43,7 +43,7 @@ public class HelpOverlay extends BorderPane {
 
   private void createTop() {
     Label title = new Label("Help");
-    title.setFont(new Font(48));
+    title.setFont(new Font(40));
     title.setTextFill(Color.WHITE);
 
     VBox topPane = new VBox();
@@ -65,12 +65,12 @@ public class HelpOverlay extends BorderPane {
 
   private Pane createGoal() {
     Label title = new Label("Your Goal");
-    title.setFont(new Font(36));
+    title.setFont(new Font(32));
     title.setTextFill(Color.WHITE);
 
     TextFlow content = new TextFlow();
     Text text = new Text("Larry Croft, a brave knight, has fallen down a well to discover an old dungeon. Venture deeper into the dungeon by collecting treasures :img: to unlock the exit door :img:, then descend to the next floor :img:.");
-    text.setFont(new Font(20));
+    text.setFont(new Font("Silkscreen", 18));
     text.setFill(Color.WHITE);
 
     ImageView treasureImage = new ImageView("sprites/Treasure.png");
@@ -115,7 +115,7 @@ public class HelpOverlay extends BorderPane {
 
   private Pane createControls() {
     Label title = new Label("Controls");
-    title.setFont(new Font(36));
+    title.setFont(new Font(32));
     title.setTextFill(Color.WHITE);
 
     String[] controls = new String[]{
@@ -163,7 +163,7 @@ public class HelpOverlay extends BorderPane {
     for (String s : controls) {
       Label l = new Label(s);
       l.setTextFill(Color.WHITE);
-      l.setFont(new Font(24));
+      l.setFont(new Font(18));
       pane.getChildren().add(l);
     }
 
@@ -172,7 +172,7 @@ public class HelpOverlay extends BorderPane {
 
   private void createBottom(Game game) {
     Button button = new Button("Close Help");
-    button.setFont(new Font(20));
+    button.setFont(new Font(12));
     button.setOnAction(event -> game.resumeGame());
 
     VBox bottomPane = new VBox();

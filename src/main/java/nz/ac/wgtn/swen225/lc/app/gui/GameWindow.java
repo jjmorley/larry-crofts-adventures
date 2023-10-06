@@ -1,10 +1,12 @@
 package nz.ac.wgtn.swen225.lc.app.gui;
 
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import nz.ac.wgtn.swen225.lc.app.Game;
@@ -13,6 +15,9 @@ import nz.ac.wgtn.swen225.lc.domain.Domain;
 import nz.ac.wgtn.swen225.lc.renderer.Renderer;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 
 /**
  * This class creates the game window and all subcomponents including input capture.
@@ -27,6 +32,9 @@ public class GameWindow {
   public Overlay overlay;
   public Renderer renderer;
   private Pane gamePane;
+
+  private Pane gameInfoPane;
+  public GameInfoController gameInfoController;
 
 
   /**
@@ -54,6 +62,7 @@ public class GameWindow {
 
     // Setup window
     Scene scene = new Scene(stackPane, 720, 820);
+    scene.getStylesheets().add(getClass().getResource("/UI/styles.css").toExternalForm());
     stage.setScene(scene);
     stage.setTitle("Larry Croft's Adventures");
     stage.getIcons().add(new Image("windowIcon.png"));
@@ -78,10 +87,12 @@ public class GameWindow {
     );
 
     MenuBar menuBar = new MenuBar(game, this);
-    GameInfo gameInfo = new GameInfo();
+
+    gameInfoPane = new VBox();
+    gameInfoPane.setPrefHeight(75);
 
     // VBox to stack menu bar, game info, and game window vertically
-    return new VBox(menuBar, gameInfo, gamePane);
+    return new VBox(menuBar, gameInfoPane, gamePane);
   }
 
   /**
@@ -93,6 +104,24 @@ public class GameWindow {
     gamePane.getChildren().clear();
     renderer = new Renderer(domain, (int) gamePane.getWidth());
     gamePane.getChildren().add(renderer.getDisplay());
+
+
+    try {
+      URL fxmlFile = getClass().getResource("/UI/GameInfo.fxml");
+      if (fxmlFile == null) {
+        throw new IOException("URL for UI/GameInfo.fxml was null.");
+      }
+
+      FXMLLoader loader = new FXMLLoader(fxmlFile);
+      Pane gameInfo = loader.load();
+      gameInfoPane.getChildren().clear();
+      gameInfoPane.getChildren().add(gameInfo);
+
+      gameInfoController = loader.getController();
+      gameInfoController.updateUI(domain, game);
+    } catch (IOException exception) {
+      throw new RuntimeException(exception);
+    }
   }
 
   /**

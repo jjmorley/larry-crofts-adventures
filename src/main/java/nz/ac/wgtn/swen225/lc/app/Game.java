@@ -208,6 +208,7 @@ public class Game {
 
     if (gameWindow != null) {
       gameWindow.renderer.movePlayer(direction);
+      gameWindow.gameInfoController.updateUI(domain, this);
     }
 
     if (recorder != null) {
@@ -221,5 +222,7 @@ public class Game {
     return currentLevel;
   }
 
-
+  public int getTimeLeft() {
+    return timeLeft;
+  }
 }
