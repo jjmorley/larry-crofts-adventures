@@ -21,8 +21,6 @@ public class Main extends Application {
   @Override
   public void start(Stage stage) {
     new Game(stage);
-    Domain d = loadAsDomain(new File("src/main/resources/levels/levels-template.json"));
-    saveJSONFromDomain(new File("src/main/resources/levels/saved-level-test.json"), d);
     stage.setOnCloseRequest(event -> System.exit(0));
   }
 

@@ -70,24 +70,16 @@ public class Load {
     }
 
     /**
-     * Return loaded JSON as an array. This is a 2D array ATM but am happy to change it.
+     * Return loaded JSON as a SaveData object.
      *
-     * @return String[][]
+     * @return SaveData
      */
-    public static String[][] loadAsArray(File file){
-        //JSON LOADING
-        loadJSON(file);
-        JsonNode level = json.get("level");
-        int gridSize = json.get("gridSize").asInt();
+    public static SaveData loadAsSaveData(File file){
+        Domain d = loadAsDomain(file);
+        int levelNum = json.get("level").asInt();
+        int timeRemaining = json.get("time").asInt();
 
-        //MAKE ARRAY
-        String[][] levelArray = new String[gridSize][gridSize];
-        for(int i = 0; i < gridSize; i++){
-            for(int j = 0; j <  gridSize; j++){
-                levelArray[i][j] = level.get(i + ", " + j).asText();
-            }
-        }
-        return levelArray;
+        return new SaveData(d, levelNum, timeRemaining);
     }
 
     /**
@@ -178,6 +170,27 @@ public class Load {
         int y = Integer.valueOf(s.charAt(3)) - 48;
 
         return new Position(x, y);
+    }
+
+    /**
+     * Return loaded JSON as an array. This is a 2D array ATM but am happy to change it.
+     *
+     * @return String[][]
+     */
+    public static String[][] loadAsArray(File file){
+        //JSON LOADING
+        loadJSON(file);
+        JsonNode level = json.get("level");
+        int gridSize = json.get("gridSize").asInt();
+
+        //MAKE ARRAY
+        String[][] levelArray = new String[gridSize][gridSize];
+        for(int i = 0; i < gridSize; i++){
+            for(int j = 0; j <  gridSize; j++){
+                levelArray[i][j] = level.get(i + ", " + j).asText();
+            }
+        }
+        return levelArray;
     }
 
     /**

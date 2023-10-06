@@ -14,6 +14,7 @@ import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.Tile;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.walkableTile.WalkableTile;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -23,23 +24,36 @@ public class Save {
 
     /**
      * Writes current state of level to JSON.
-     * <p>
-     * TODO: Save json with name based upon computer time. May need separate
-     * func. for this
+     *
      */
 
-    public static void autoSave(Domain d) {
+    public static void autoSave(SaveData s) {
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss");
         File f = new File(currentTime.toString());
 
-        saveJSONFromDomain(f, d);
+        saveJsonFromSaveData(f, s);
     }
 
-    public static void saveJSONFromDomain(File f, Domain d) {
-
+    public static void saveJsonFromSaveData(File f, SaveData s){
         ObjectMapper mapper = new ObjectMapper();
-        ObjectNode json = mapper.createObjectNode();
+
+        ObjectNode json = saveJSONFromDomain(s.getDomain(), mapper);
+
+        json.putPOJO("level", s.getLevelNum());
+        json.putPOJO("time", s.getTimeRemaining());
+
+        ObjectWriter writer = mapper.writer(new DefaultPrettyPrinter());
+        try {
+            writer.writeValue(f, json);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static ObjectNode saveJSONFromDomain(Domain d, ObjectMapper m) {
+        ObjectNode json = m.createObjectNode();
 
         Tile[][] board = d.getBoard().getBoard();
         int gridSize = board.length;
@@ -47,7 +61,7 @@ public class Save {
 
         //add the array representing the level to the JSON
         //FYI: this is deliberately an ObjectNode, not an ArrayNode.
-        ObjectNode array = mapper.createObjectNode();
+        ObjectNode array = m.createObjectNode();
         for (int i = 0; i < gridSize; i++) {
             for (int j = 0; j < gridSize; j++) {
                 Tile t = board[i][j];
@@ -82,11 +96,6 @@ public class Save {
             json.putPOJO("actor", path.toString());
         }
 
-        ObjectWriter writer = mapper.writer(new DefaultPrettyPrinter());
-        try {
-            writer.writeValue(f, json);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return json;
     }
 }

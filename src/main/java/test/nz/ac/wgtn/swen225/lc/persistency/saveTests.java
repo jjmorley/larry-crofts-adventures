@@ -15,8 +15,8 @@ public class saveTests {
 
     @BeforeAll
     static void setup() {
-        Domain d = loadAsDomain(new File("src/main/resources/levels/levels-template.json"));
-        saveJSONFromDomain(new File("src/main/resources/levels/saved-level-test.json"), d);
+        SaveData s = loadAsSaveData(new File("src/main/resources/levels/levels-template.json"));
+        saveJsonFromSaveData(new File("src/main/resources/levels/saved-level-test.json"), s);
     }
 
     @Test
