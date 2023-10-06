@@ -13,7 +13,7 @@
 }
 
 .icon-button:pressed {
-    -fx-background-color: #0000003d;
+    -fx-background-color: #0000005c;
 }
 
 .icon-button .icon {
@@ -42,5 +42,26 @@
 
 .button {
     -fx-font-family: 'Silkscreen';
-    -fx-font-size: 18;
+}
+
+.OverlayButton {
+    -fx-font-family: 'Silkscreen';
+    -fx-font-size: 20;
+}
+
+.gameMenu {
+    -fx-background-color: #00000014;
+}
+
+.menuButton {
+    -fx-background-radius: 0;
+    -fx-background-color: #00000000;
+}
+
+.menuButton:hover {
+    -fx-background-color: #00000029;
+}
+
+.menuButton:pressed {
+    -fx-background-color: #0000005c;
 }

@@ -31,10 +31,10 @@ public class GameWindow {
   private final Stage stage;
   public Overlay overlay;
   public Renderer renderer;
-  private Pane gamePane;
-
-  private Pane gameInfoPane;
   public GameInfoController gameInfoController;
+  private Pane gamePane;
+  private Pane gameInfoPane;
+  public MenuBarController menuBarController;
 
 
   /**
@@ -86,7 +86,26 @@ public class GameWindow {
         )
     );
 
-    MenuBar menuBar = new MenuBar(game, this);
+    Pane menuBar = null;
+
+    try {
+      URL fxmlFile = getClass().getResource("/UI/MenuBar.fxml");
+      if (fxmlFile == null) {
+        throw new IOException("URL for UI/MenuBar.fxml was null.");
+      }
+
+      FXMLLoader loader = new FXMLLoader(fxmlFile);
+      menuBar = loader.load();
+      menuBarController = loader.getController();
+      menuBarController.initializeOwners(game, this);
+
+    } catch (IOException exception) {
+      throw new RuntimeException(exception);
+    }
+
+    if (menuBar == null) {
+      throw new RuntimeException("Failed to load menuBar from fxml");
+    }
 
     gameInfoPane = new VBox();
     gameInfoPane.setPrefHeight(75);
@@ -100,11 +119,12 @@ public class GameWindow {
    *
    * @param domain The domain of the new game.
    */
-  public void createGame(Domain domain) {
+  public void createGame(Domain domain, int levelNum) {
     gamePane.getChildren().clear();
     renderer = new Renderer(domain, (int) gamePane.getWidth());
     gamePane.getChildren().add(renderer.getDisplay());
 
+    menuBarController.updateLevelNumber(levelNum);
 
     try {
       URL fxmlFile = getClass().getResource("/UI/GameInfo.fxml");

@@ -37,7 +37,7 @@ public class PauseOverlay extends BorderPane {
 
 
     Button button = new Button("Resume Game");
-    button.setFont(new Font(20));
+    button.getStyleClass().add("OverlayButton");
     button.setOnAction(event -> game.resumeGame());
 
     VBox bottomPane = new VBox();

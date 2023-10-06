@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<GridPane xmlns="http://javafx.com/javafx"
+          xmlns:fx="http://javafx.com/fxml"
+          fx:controller="nz.ac.wgtn.swen225.lc.app.gui.MenuBarController"
+          minHeight="25" maxHeight="25" styleClass="gameMenu">
+    <padding>
+        <Insets left="5" right="5"/>
+    </padding>
+
+    <MenuButton focusTraversable="false" GridPane.columnIndex="0" styleClass="menuButton">
+        Game
+        <items>
+            <MenuItem onAction="#onSaveGame" text="Save Game"/>
+            <MenuItem onAction="#onLoadGame" text="Load Game"/>
+            <MenuItem onAction="#onQuitGame" text="Quit Game"/>
+        </items>
+    </MenuButton>
+
+    <MenuButton focusTraversable="false" GridPane.columnIndex="1" styleClass="menuButton">
+        Level
+        <items>
+            <MenuItem onAction="#onLoadLevel1" text="Load Level 1"/>
+            <MenuItem onAction="#onLoadLevel2" text="Load Level 2"/>
+        </items>
+    </MenuButton>
+
+    <MenuButton focusTraversable="false" GridPane.columnIndex="2" styleClass="menuButton">
+        Recorder
+        <items>
+            <MenuItem onAction="#onSaveRecording" text="Save Recording"/>
+            <MenuItem onAction="#onPlayRecording" text="Play a Recording"/>
+        </items>
+    </MenuButton>
+
+    <Button focusTraversable="false" onAction="#onPauseClicked" GridPane.columnIndex="3" styleClass="menuButton">Pause
+    </Button>
+
+    <Button focusTraversable="false" onAction="#onHelpClicked" GridPane.columnIndex="4" styleClass="menuButton">Help
+    </Button>
+
+    <Label fx:id="levelLabel" GridPane.columnIndex="5" GridPane.hgrow="ALWAYS" GridPane.halignment="RIGHT"
+           textAlignment="RIGHT"/>
+</GridPane>
