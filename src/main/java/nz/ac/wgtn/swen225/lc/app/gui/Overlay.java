@@ -6,6 +6,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import nz.ac.wgtn.swen225.lc.app.Game;
 import nz.ac.wgtn.swen225.lc.app.gui.overlay.GameOverOverlayController;
+import nz.ac.wgtn.swen225.lc.app.gui.overlay.NextLevelOverlayController;
 import nz.ac.wgtn.swen225.lc.app.gui.overlay.PauseOverlayController;
 
 import java.io.IOException;
@@ -21,7 +22,9 @@ public class Overlay extends StackPane {
   private final Pane helpOverlay;
   private final Pane pauseOverlay;
   private final Pane gameOverOverlay;
+  private final Pane nextLevelOverlay;
   private final GameOverOverlayController gameOverOverlayController;
+  private final NextLevelOverlayController nextLevelOverlayController;
   private final Game game;
   private final GameWindow window;
 
@@ -88,7 +91,20 @@ public class Overlay extends StackPane {
       throw new RuntimeException(exception);
     }
 
-    this.getChildren().addAll(pauseOverlay, helpOverlay, gameOverOverlay);
+    try {
+      URL fxmlFile = getClass().getResource("/UI/Overlays/NextLevelOverlay.fxml");
+      if (fxmlFile == null) {
+        throw new IOException("URL for NextLevelOverlay was null.");
+      }
+
+      FXMLLoader loader = new FXMLLoader(fxmlFile);
+      nextLevelOverlay = loader.load();
+      nextLevelOverlayController = loader.getController();
+    } catch (IOException exception) {
+      throw new RuntimeException(exception);
+    }
+
+    this.getChildren().addAll(pauseOverlay, helpOverlay, gameOverOverlay, nextLevelOverlay);
   }
 
 
@@ -100,6 +116,7 @@ public class Overlay extends StackPane {
     pauseOverlay.setVisible(false);
     helpOverlay.setVisible(false);
     gameOverOverlay.setVisible(false);
+    nextLevelOverlay.setVisible(false);
   }
 
   /**
@@ -126,6 +143,15 @@ public class Overlay extends StackPane {
   public void displayGameOver(String reason) {
     gameOverOverlayController.onGameOver(reason, game, window);
     gameOverOverlay.setVisible(true);
+    this.setVisible(true);
+  }
+
+  /**
+   * Display the next level overlay.
+   */
+  public void displayNextLevel() {
+    nextLevelOverlayController.onWin(game, window);
+    nextLevelOverlay.setVisible(true);
     this.setVisible(true);
   }
 }

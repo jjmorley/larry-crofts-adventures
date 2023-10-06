@@ -133,7 +133,13 @@ public class Game {
     // TODO Get time remaining from persistence
 
     this.recorder = new Recorder(-1, this);
-    gameTimer = new GameTimer(5, 1000, this::onTimeout, this::onTimerUpdate);
+
+    if (gameTimer != null) {
+      gameTimer.pauseTimer();
+      gameTimer = null;
+    }
+
+    gameTimer = new GameTimer(60, 1000, this::onTimeout, this::onTimerUpdate);
 
     if (autoUpdateActors) {
       actorTimer = new GameTimer(
@@ -271,6 +277,17 @@ public class Game {
     }
 
     Platform.runLater(() -> gameWindow.overlay.displayGameOver(reason));
+  }
+
+  private void gameWin() {
+    isGameOver = true;
+    pauseGame(false);
+
+    if (gameWindow == null) {
+      return;
+    }
+
+    Platform.runLater(() -> gameWindow.overlay.displayNextLevel());
   }
 
   public int getCurrentLevel() {
