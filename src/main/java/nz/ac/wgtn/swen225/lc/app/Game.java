@@ -40,16 +40,7 @@ public class Game {
     this.stage = stage;
     gameWindow = new GameWindow(stage, this);
 
-    // Load game
-    try {
-      URL fileUrl = getClass().getResource("/levels/level1.json");
-      if (fileUrl != null) {
-        File f = new File(fileUrl.toURI());
-        loadGame(f);
-      }
-    } catch (URISyntaxException ex) {
-      System.out.println("Failed to load level1, URI Syntax error: " + ex.toString());
-    }
+    loadLevel(1);
   }
 
   /**
@@ -58,15 +49,7 @@ public class Game {
    * @param level the number of the level to load;
    */
   public Game(int level) {
-    try {
-      URL fileUrl = getClass().getResource("/levels/level" + level + ".json");
-      if (fileUrl != null) {
-        File f = new File(fileUrl.toURI());
-        loadGame(f);
-      }
-    } catch (URISyntaxException ex) {
-      System.out.println("Failed to load level" + level + ", URI Syntax error: " + ex.toString());
-    }
+    loadLevel(level);
   }
 
   /**
@@ -122,6 +105,23 @@ public class Game {
     }
 
     Platform.runLater(() -> gameWindow.gameInfoController.updateUi(domain, this));
+  }
+
+  /**
+   * Load a level.
+   *
+   * @param level The level number to load.
+   */
+  public void loadLevel(int level) {
+    try {
+      URL fileUrl = getClass().getResource("/levels/level" + level + ".json");
+      if (fileUrl != null) {
+        File f = new File(fileUrl.toURI());
+        loadGame(f);
+      }
+    } catch (URISyntaxException ex) {
+      System.out.println("Failed to load level" + level + ", URI Syntax error: " + ex.toString());
+    }
   }
 
   /**
@@ -232,8 +232,13 @@ public class Game {
   }
 
   private void gameOver(String reason) {
-    // if UI show overlay
-    // do nothing until a new
+    pauseGame(false);
+
+    if (gameWindow == null) {
+      return;
+    }
+
+    Platform.runLater(() -> gameWindow.overlay.displayGameOver(reason));
   }
 
   public int getCurrentLevel() {
