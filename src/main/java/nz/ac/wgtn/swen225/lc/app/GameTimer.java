@@ -11,19 +11,23 @@ import java.util.function.Consumer;
  */
 public class GameTimer {
   private final Runnable onTimeout;
-  private final Consumer<Integer> onTimerUpdate;
-  private int timeRemaining;
+  private final Consumer<Long> onTimerUpdate;
+  private long timeRemaining;
   private Timer currentTimer;
   private boolean isPaused = false;
+  private long speed;
 
 
   /**
    * Creates a new game timer with a given amount of time remaining.
    *
-   * @param startingTime The time that the timer should start with.
-   * @param onTimeout    The function to be called when the timer ends.
+   * @param startingTime  The time that the timer should start with.
+   * @param delay         The time between each clock tick.
+   * @param onTimeout     The function to be called when the timer ends.
+   * @param onTimerUpdate Called whenever the timer updates.
    */
-  public GameTimer(int startingTime, Runnable onTimeout, Consumer<Integer> onTimerUpdate) {
+  public GameTimer(long startingTime, long delay, Runnable onTimeout, Consumer<Long> onTimerUpdate) {
+    this.speed = delay;
     timeRemaining = startingTime;
     this.onTimeout = onTimeout;
     this.onTimerUpdate = onTimerUpdate;
@@ -39,7 +43,7 @@ public class GameTimer {
     };
     currentTimer = new Timer("GameTimer");
 
-    long delay = 1000L;
+    long delay = speed;
     currentTimer.schedule(task, delay);
   }
 
@@ -71,7 +75,7 @@ public class GameTimer {
     decrementTimerAfterOneSec();
   }
 
-  public int getTimeRemaining() {
+  public long getTimeRemaining() {
     return timeRemaining;
   }
 
@@ -79,7 +83,7 @@ public class GameTimer {
    * Set the paused state of the timer.
    *
    * @param paused the new state.
-   * */
+   */
   public void setPaused(boolean paused) {
     if (currentTimer != null) {
       currentTimer.cancel();
@@ -90,7 +94,6 @@ public class GameTimer {
       // Start timer
       decrementTimerAfterOneSec();
     }
-
 
     isPaused = paused;
   }

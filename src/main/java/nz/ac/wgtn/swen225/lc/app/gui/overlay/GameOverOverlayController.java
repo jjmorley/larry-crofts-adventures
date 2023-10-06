@@ -34,7 +34,7 @@ public class GameOverOverlayController {
 
   public void restart(ActionEvent event) {
     window.overlay.close();
-    game.loadLevel(game.getCurrentLevel());
+    game.loadLevel(game.getCurrentLevel(), true);
   }
 
   /**
@@ -47,7 +47,7 @@ public class GameOverOverlayController {
     }
 
     window.overlay.close();
-    game.loadGame(saveFile);
+    game.loadGame(saveFile, true);
   }
 
   public void quit(ActionEvent event) {

@@ -25,10 +25,13 @@ public class Game {
   public Recorder recorder;
   private boolean isPaused = false;
   private GameTimer gameTimer;
+  private GameTimer actorTimer;
   private int currentLevel;
   private GameWindow gameWindow;
   private Domain domain;
   private Stage stage;
+
+  private boolean isGameOver = false;
 
   /**
    * Creates a new instance of the game.
@@ -40,7 +43,7 @@ public class Game {
     this.stage = stage;
     gameWindow = new GameWindow(stage, this);
 
-    loadLevel(1);
+    loadLevel(1, true);
   }
 
   /**
@@ -49,7 +52,7 @@ public class Game {
    * @param level the number of the level to load;
    */
   public Game(int level) {
-    loadLevel(level);
+    loadLevel(level, true);
   }
 
   /**
@@ -62,16 +65,7 @@ public class Game {
     gameWindow.inputManager.setMovementLocked(true);
 
     // Load level
-    try {
-      URL fileUrl = getClass().getResource("/levels/level" + level + ".json");
-      if (fileUrl != null) {
-        File f = new File(fileUrl.toURI());
-        this.loadGame(f);
-      }
-    } catch (URISyntaxException ex) {
-      System.out.println("Failed to load level " + level + ", URI Syntax error: " + ex.toString());
-      return;
-    }
+    loadLevel(level, false);
 
     // Create control window
     new RecorderPlaybackWindow(stage, playback, this);
@@ -99,7 +93,7 @@ public class Game {
     gameOver("ran out of time.");
   }
 
-  private void onTimerUpdate(int timeRemaining) {
+  private void onTimerUpdate(long timeRemaining) {
     if (gameWindow == null || gameWindow.gameInfoController == null || domain == null) {
       return;
     }
@@ -112,12 +106,12 @@ public class Game {
    *
    * @param level The level number to load.
    */
-  public void loadLevel(int level) {
+  public void loadLevel(int level, boolean autoUpdateActors) {
     try {
       URL fileUrl = getClass().getResource("/levels/level" + level + ".json");
       if (fileUrl != null) {
         File f = new File(fileUrl.toURI());
-        loadGame(f);
+        loadGame(f, autoUpdateActors);
       }
     } catch (URISyntaxException ex) {
       System.out.println("Failed to load level" + level + ", URI Syntax error: " + ex.toString());
@@ -129,12 +123,31 @@ public class Game {
    *
    * @param file the save/level file to load from.
    */
-  public void loadGame(File file) {
+  public void loadGame(File file, boolean autoUpdateActors) {
     Domain domain = Load.loadAsDomain(file);
     this.domain = domain;
-    this.recorder = new Recorder(-1, this); // TODO Get level number from persistence
+
+    isGameOver = false;
+
+    // TODO Get level number from persistence
     // TODO Get time remaining from persistence
-    gameTimer = new GameTimer(60, this::onTimeout, this::onTimerUpdate);
+
+    this.recorder = new Recorder(-1, this);
+    gameTimer = new GameTimer(5, 1000, this::onTimeout, this::onTimerUpdate);
+
+    if (autoUpdateActors) {
+      actorTimer = new GameTimer(
+          Long.MAX_VALUE,
+          1000,
+          () -> {
+            // This should never happen
+          },
+          (Long timeRemaining) -> this.updateActors());
+    } else {
+      // Kill any actor timer
+      actorTimer.pauseTimer();
+      actorTimer = null;
+    }
 
     if (gameWindow != null) {
       gameWindow.createGame(domain, currentLevel);
@@ -159,6 +172,10 @@ public class Game {
     isPaused = true;
     gameTimer.setPaused(true);
 
+    if (actorTimer != null) {
+      actorTimer.pauseTimer();
+    }
+
     if (showOverlay) {
       gameWindow.overlay.displayPause();
     }
@@ -168,12 +185,16 @@ public class Game {
    * Resume a paused game.
    */
   public void resumeGame() {
-    if (gameTimer == null) {
+    if (gameTimer == null || isGameOver) {
       return;
     }
 
     isPaused = false;
     gameTimer.setPaused(false);
+
+    if (actorTimer != null) {
+      actorTimer.resumeTimer();
+    }
 
     gameWindow.overlay.close();
   }
@@ -186,7 +207,17 @@ public class Game {
       return;
     }
 
-    InformationPacket result = domain.advanceClock();
+    InformationPacket result = null;
+
+    try {
+      result = domain.advanceClock();
+    } catch (IllegalArgumentException exception) {
+      // Throw away exception when there are no actors present.
+    }
+
+    if (result == null) {
+      return;
+    }
 
     if (recorder != null) {
       recorder.addActorMove(null); // TODO update to remove direction input
@@ -232,6 +263,7 @@ public class Game {
   }
 
   private void gameOver(String reason) {
+    isGameOver = true;
     pauseGame(false);
 
     if (gameWindow == null) {
@@ -250,7 +282,7 @@ public class Game {
    *
    * @return The time remaining in the current game timer.
    */
-  public int getTimeLeft() {
+  public long getTimeLeft() {
     if (gameTimer == null) {
       return 0;
     }
