@@ -120,6 +120,7 @@ public class GameWindow {
   public void createGame(Domain domain, int levelNum) {
     gamePane.getChildren().clear();
     renderer = new Renderer(domain, (int) gamePane.getWidth());
+    renderer.getDisplay().setFocusTraversable(false);
     gamePane.getChildren().add(renderer.getDisplay());
 
     menuBarController.updateLevelNumber(levelNum);
