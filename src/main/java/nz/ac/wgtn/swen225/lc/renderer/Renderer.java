@@ -189,11 +189,14 @@ public class Renderer {
 
   /**
    * Moves player in the direction given by app package.
+   *
+   * @param direction direction at which the player will move
+   * @param translationSpeed speed at which the player will move, matching the game timeout
    */
-  public void movePlayer(Direction direction) {
+  public void movePlayer(Direction direction, int translationSpeed) {
     canvas.renderGameBoard();
     TranslateTransition transition =
-            new TranslateTransition(Duration.millis(InputManager.MOVEMENT_TIMEOUT),
+            new TranslateTransition(Duration.millis(translationSpeed),
                     playerImageView);
     if (direction == Direction.LEFT) {
       transition.setByX(-cellSize);
@@ -214,12 +217,12 @@ public class Renderer {
    * Moves all actors at the same time to the next cell - according to the route in the Actor
    * object class.
    *
-  public void moveActors() {
+  public void moveActors(int translationSpeed) {
     ParallelTransition parallelTransition = new ParallelTransition();
-    int count = 0;
+    int count = 0; //used to retrieve the corresponding actor from list of actor images
     for (Actor actor : domain.getActors()) {
       TranslateTransition transition =
-              new TranslateTransition(Duration.millis(InputManager.MOVEMENT_TIMEOUT),
+              new TranslateTransition(Duration.millis(translationSpeed),
                       actorImageViews.get(count));
 
       // Retrieve the actors current and next position
