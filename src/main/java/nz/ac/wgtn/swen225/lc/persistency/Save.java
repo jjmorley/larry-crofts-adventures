@@ -34,7 +34,7 @@ public class Save {
     public static void autoSave(SaveData s) {
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss");
-        File f = new File(currentTime.toString());
+        File f = new File("src/main/resources/levels/" + currentTime.toString() + ".json");
 
         saveJsonFromSaveData(f, s);
     }

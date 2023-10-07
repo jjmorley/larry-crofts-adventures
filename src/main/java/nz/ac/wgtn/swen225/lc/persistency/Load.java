@@ -23,8 +23,6 @@ import java.util.Comparator;
 /**
  * Loads in level from JSON file.
  *
- * TODO: Time remaining
- *
  * @author Seb Collis 300603371
  */
 public class Load {
@@ -50,7 +48,7 @@ public class Load {
      *
      * @return Domain
      */
-    public static Domain autoLoad(){
+    public static SaveData autoLoad(){
         Path dir = Paths.get("src/main/resources/levels");  // specify directory
         try{
             File filePath = Files.list(dir)
@@ -60,7 +58,7 @@ public class Load {
 
             if (filePath != null) //this should not ever be false - would throw error otherwise
             {
-                return loadAsDomain(filePath);
+                return loadAsSaveData(filePath);
             }
         }
         catch(Exception e){
@@ -172,27 +170,6 @@ public class Load {
         int y = Integer.valueOf(s.charAt(3)) - 48;
 
         return new Position(x, y);
-    }
-
-    /**
-     * Return loaded JSON as an array. This is a 2D array ATM but am happy to change it.
-     *
-     * @return String[][]
-     */
-    public static String[][] loadAsArray(File file){
-        //JSON LOADING
-        loadJSON(file);
-        JsonNode level = json.get("level");
-        int gridSize = json.get("gridSize").asInt();
-
-        //MAKE ARRAY
-        String[][] levelArray = new String[gridSize][gridSize];
-        for(int i = 0; i < gridSize; i++){
-            for(int j = 0; j <  gridSize; j++){
-                levelArray[i][j] = level.get(i + ", " + j).asText();
-            }
-        }
-        return levelArray;
     }
 
     /**
