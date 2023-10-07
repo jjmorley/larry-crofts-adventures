@@ -1,5 +1,6 @@
 package nz.ac.wgtn.swen225.lc.app.gui;
 
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -121,6 +122,9 @@ public class GameWindow {
     gamePane.getChildren().clear();
     renderer = new Renderer(domain, (int) gamePane.getWidth());
     renderer.getDisplay().setFocusTraversable(false);
+    renderer.getDisplay().focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+      gamePane.requestFocus();
+    });
     gamePane.getChildren().add(renderer.getDisplay());
 
     menuBarController.updateLevelNumber(levelNum);
