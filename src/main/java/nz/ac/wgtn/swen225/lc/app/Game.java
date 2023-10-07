@@ -225,6 +225,10 @@ public class Game {
       return;
     }
 
+    if (gameWindow != null) {
+      //gameWindow.renderer.moveActors(InputManager.MOVEMENT_TIMEOUT);
+    }
+
     if (recorder != null) {
       recorder.addActorMove(null); // TODO update to remove direction input
     }
@@ -253,7 +257,7 @@ public class Game {
     // Movement was successful
 
     if (gameWindow != null) {
-      gameWindow.renderer.movePlayer(direction);
+      gameWindow.renderer.movePlayer(direction, InputManager.MOVEMENT_TIMEOUT);
       gameWindow.gameInfoController.updateUi(domain, this);
     }
 
