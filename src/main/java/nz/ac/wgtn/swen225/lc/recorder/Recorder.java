@@ -38,10 +38,9 @@ public class Recorder {
         actorMoveHistory.add("");//delete if actor and player can move at same time
         System.out.println("Player Move '" + d.toString() + "' Recorded");
     }
-    public void addActorMove(Direction d) {
-        actorMoveHistory.add(d.toString());
+    public void addActorMove() {
+        actorMoveHistory.add("ActorMove");
         playerMoveHistory.add("");//delete if actor and player can move at same time
-        System.out.println("Player Move '" + d.toString() + "' Recorded");
     }
 
 
