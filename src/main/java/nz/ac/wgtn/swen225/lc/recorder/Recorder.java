@@ -60,6 +60,16 @@ public class Recorder {
         }
     }
 
+    public List<String> getPlayerMoveHistory() {
+        return playerMoveHistory;
+    }
 
+    public List<String> getActorMoveHistory() {
+        return actorMoveHistory;
+    }
+
+    public int getLevel() {
+        return level;
+    }
 
 }
