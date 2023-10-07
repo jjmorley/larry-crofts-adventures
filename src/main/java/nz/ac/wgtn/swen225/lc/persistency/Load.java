@@ -76,7 +76,7 @@ public class Load {
      */
     public static SaveData loadAsSaveData(File file){
         Domain d = loadAsDomain(file);
-        int levelNum = json.get("level").asInt();
+        int levelNum = json.get("levelNum").asInt();
         int timeRemaining = json.get("time").asInt();
 
         return new SaveData(d, levelNum, timeRemaining);
@@ -95,7 +95,7 @@ public class Load {
         JsonNode level = json.get("level");
         int gridSize = json.get("gridSize").asInt();
         int treasures = json.get("treasures").asInt();
-        String actorPos = json.get("actor").asText();
+        JsonNode actors = json.get("actor");
 
         //MAKE ARRAY
         Tile[][] levelArray = new Tile[gridSize][gridSize];
@@ -139,22 +139,24 @@ public class Load {
             }
         }
 
-        //need to break this into its own thing
-        ArrayList<Position> actorList = new ArrayList<Position>();
-        for (int i = 0; i < actorPos.length(); i += 4){
-            int x = Integer.valueOf(actorPos.charAt(i)) - 48;
-            int y = Integer.valueOf(actorPos.charAt(i + 2)) - 48;
-            actorList.add(new Position(x, y));
+        ArrayList<Actor> boardActors = new ArrayList<Actor>();
+        for(int i = 0; i < actors.size(); i++){
+            String actorPos = actors.get(i + "").asText();
+            ArrayList<Position> actorList = new ArrayList<Position>();
+            for (int j = 0; j < actorPos.length(); j += 6){
+                int x = (int) actorPos.charAt(j) - 48;
+                int y = (int) actorPos.charAt(j + 3) - 48;
+                actorList.add(new Position(x, y));
+            }
+            Actor a = new Actor(actorList);
+            boardActors.add(a);
         }
-        Actor a = new Actor(actorList);
-        ArrayList<Actor> actors = new ArrayList<Actor>();
-        actors.add(a);
 
         Board b = new Board(levelArray, true);
 
         Player p = new Player(playerPos(), new ArrayList<Item>(), treasures);
 
-        Domain d = new Domain(b, p, actors);
+        Domain d = new Domain(b, p, boardActors);
 
         return d;
     }

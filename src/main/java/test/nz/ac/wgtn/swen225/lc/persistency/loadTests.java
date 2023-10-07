@@ -1,7 +1,7 @@
 package nz.ac.wgtn.swen225.lc.persistency;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
@@ -48,14 +48,20 @@ public class loadTests {
     @Test
     public void arrayCorrectValues(){
         assert levelArray[0][0].equals("w");
-        assert levelArray[0][2].equals("d");
-        assert levelArray[1][1].equals("f");
+        assert levelArray[0][2].equals("d, g");
+        assert levelArray[1][1].equals("f, g");
         assert levelArray[2][0].equals("k");
     }
 
     @Test
     public void playerPositionCorrect(){
         assert json.get("char").asText().equals("1, 1");
+    }
+
+    @Test
+    public void actors(){
+        loadAsSaveData(new File("src/main/resources/levels/levels-template.json"));
+        assert 1 == 1;
     }
 
 }

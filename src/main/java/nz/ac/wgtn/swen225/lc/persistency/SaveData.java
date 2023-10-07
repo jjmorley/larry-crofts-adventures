@@ -4,9 +4,9 @@ import nz.ac.wgtn.swen225.lc.domain.Domain;
 
 public class SaveData {
 
-    private static Domain domain;
-    private static int levelNum;
-    private static int timeRemaining;
+    private Domain domain;
+    private int levelNum;
+    private int timeRemaining;
 
     public SaveData(Domain d, int level, int time){
         domain = d;
@@ -14,15 +14,15 @@ public class SaveData {
         timeRemaining = time;
     }
 
-    public static Domain getDomain(){
+    public Domain getDomain(){
         return domain;
     }
 
-    public static int getLevelNum(){
+    public int getLevelNum(){
         return levelNum;
     }
 
-    public static int getTimeRemaining(){
+    public int getTimeRemaining(){
         return timeRemaining;
     }
 }

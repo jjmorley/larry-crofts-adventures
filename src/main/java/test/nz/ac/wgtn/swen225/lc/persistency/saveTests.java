@@ -2,8 +2,9 @@ package nz.ac.wgtn.swen225.lc.persistency;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import nz.ac.wgtn.swen225.lc.domain.Domain;
-import org.junit.Test;
+import org.junit.jupiter.*;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
@@ -14,7 +15,7 @@ public class saveTests {
 
 
     @BeforeAll
-    static void setup() {
+    public static void setup() {
         SaveData s = loadAsSaveData(new File("src/main/resources/levels/levels-template.json"));
         saveJsonFromSaveData(new File("src/main/resources/levels/saved-level-test.json"), s);
     }

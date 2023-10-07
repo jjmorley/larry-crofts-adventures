@@ -9,10 +9,14 @@ import nz.ac.wgtn.swen225.lc.domain.Domain;
 import nz.ac.wgtn.swen225.lc.domain.Position;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.GameObject;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable.Actor;
+import nz.ac.wgtn.swen225.lc.domain.gameObject.item.Key;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.item.Treasure;
+import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.Door;
+import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.ExitDoor;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.Tile;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.walkableTile.WalkableTile;
 
+import javax.imageio.plugins.tiff.ExifTIFFTagSet;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -40,7 +44,7 @@ public class Save {
 
         ObjectNode json = saveJSONFromDomain(s.getDomain(), mapper);
 
-        json.putPOJO("level", s.getLevelNum());
+        json.putPOJO("levelNum", s.getLevelNum());
         json.putPOJO("time", s.getTimeRemaining());
 
         ObjectWriter writer = mapper.writer(new DefaultPrettyPrinter());
@@ -57,7 +61,7 @@ public class Save {
 
         Tile[][] board = d.getBoard().getBoard();
         int gridSize = board.length;
-        int treasures = 0;
+        int treasures = d.getPlayer().getTreasuresLeft();
 
         //add the array representing the level to the JSON
         //FYI: this is deliberately an ObjectNode, not an ArrayNode.
@@ -68,15 +72,32 @@ public class Save {
                 if (t instanceof WalkableTile) {
                     GameObject g = ((WalkableTile) t).getGameObject();
                     if (g != null) {
-                        array.putPOJO(i + ", " + j, g.getName().toLowerCase().charAt(0));
-                        if (g instanceof Treasure) {
-                            treasures++;
+                        if (g instanceof Key) {
+                            array.putPOJO(i + ", " + j,
+                                    g.getName().toLowerCase().charAt(0) + ", " +
+                                            (char) ((Key) g).getKey()
+                            );
                         }
-                    } else {
+                        else {
+                            array.putPOJO(i + ", " + j, g.getName().toLowerCase().charAt(0));
+                        }
+                    }
+                    else {
                         array.putPOJO(i + ", " + j, t.getName().toLowerCase().charAt(0));
                     }
-                } else {
-                    array.putPOJO(i + ", " + j, t.getName().toLowerCase().charAt(0));
+                }
+                else {
+                    if (t instanceof Door) {
+                        array.putPOJO(i + ", " + j,
+                                t.getName().toLowerCase().charAt(0) + ", " +
+                                        (char) ((Door) t).getKeyID());
+                    }
+                    else if (t instanceof ExitDoor){
+                        array.putPOJO(i + ", " + j, "l");
+                    }
+                    else {
+                        array.putPOJO(i + ", " + j, t.getName().toLowerCase().charAt(0));
+                    }
                 }
             }
         }
@@ -88,13 +109,20 @@ public class Save {
         json.putPOJO("treasures", treasures);
 
         List<Actor> a = d.getActors();
+        ObjectNode actors = m.createObjectNode();
+        int actorNum = 0;
         for (Actor act : a) {
-            StringBuilder path = new StringBuilder();
+
+            StringBuilder pathBuilder = new StringBuilder();
             for (Position p : act.getRoute()) {
-                path.append(p.x()).append(", ").append(p.y()).append(",");
+                pathBuilder.append(p.x()).append(", ").append(p.y()).append(", ");
             }
-            json.putPOJO("actor", path.toString());
+            pathBuilder.delete(pathBuilder.length() - 2, pathBuilder.length());
+            String path = pathBuilder.toString();
+            actors.putPOJO(actorNum + "", path);
+            actorNum++;
         }
+        json.putPOJO("actor", actors);
 
         return json;
     }
