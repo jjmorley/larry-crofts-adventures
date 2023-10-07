@@ -16,32 +16,34 @@ import java.util.TimerTask;
 
 public class Playback {
     private Game game;
-    private int level;
     private int frame = 0;
+    private int level;
     private static int playSpeed = 0;
-    private static int previousSpeed = 0;
     private boolean playingBack = false;
     private List<String> playerMoveHistory = new ArrayList<>();
     private List<String> actorMoveHistory = new ArrayList<>();
-    public Playback(File file, Game game){
+    public Playback(File file, Game game) throws IOException{
         loadRecordedGameFromFile(file);
         this.game = game;
     }
 
-    public void loadRecordedGameFromFile(File file) {
-        //TODO throw exception if failure to meet format
-        try {
+    public void loadRecordedGameFromFile(File file) throws IOException{
             ObjectMapper objectMapper = new ObjectMapper();
             TypeReference<Map<String, Object>> typeReference = new TypeReference<Map<String, Object>>() {};
             Map<String, Object> recordedGameData = objectMapper.readValue(file, typeReference);
             System.out.println("Loaded Recorded Game Data from: " + file);
+
+            if (!recordedGameData.containsKey("playerMoveHistory") ||
+                    !recordedGameData.containsKey("actorMoveHistory") ||
+                    !recordedGameData.containsKey("level")) {
+                throw new IOException("Invalid file format: Missing required fields");
+            }
+
             playerMoveHistory = (List<String>) recordedGameData.get("playerMoveHistory");
             actorMoveHistory = (List<String>) recordedGameData.get("actorMoveHistory");
-            level = (int) recordedGameData.get("level");
+            this.level = (int) recordedGameData.get("level");
             game.startRecordingPlayback(level, this);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
     }
 
     public void setSpeed(int speed){
@@ -61,17 +63,10 @@ public class Playback {
 
     public void pause(){
         playingBack = false;
-        previousSpeed = playSpeed;
-        setSpeed(0);
     }
 
     public void play(){
         playingBack = true;
-        if(previousSpeed == 0){
-            setSpeed(4000);
-        } else {
-            setSpeed(previousSpeed);
-        }
         autoReplayGame(playSpeed);
     }
 
@@ -99,5 +94,17 @@ public class Playback {
         };
 
         timer.scheduleAtFixedRate(task, 0, speed); // Initial delay of 0 milliseconds, repeat every 2000 milliseconds (2 seconds)
+    }
+
+    public List<String> getPlayerMoveHistory() {
+        return playerMoveHistory;
+    }
+
+    public List<String> getActorMoveHistory() {
+        return actorMoveHistory;
+    }
+
+    public int getLevel() {
+        return level;
     }
 }
