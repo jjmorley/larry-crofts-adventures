@@ -41,7 +41,7 @@ public class RecorderPlaybackWindow {
       Pane mainPane = loader.load();
 
       RecorderPlaybackController controller = loader.getController();
-      controller.initializePlaybackControls(playback);
+      controller.initializePlaybackControls(playback, game);
 
       Scene scene = new Scene(mainPane);
       URL styleSheet = getClass().getResource("/UI/styles.css");
