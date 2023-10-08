@@ -1,16 +1,18 @@
 package nz.ac.wgtn.swen225.lc.app.gui;
 
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
-import javafx.scene.input.KeyEvent;
 import nz.ac.wgtn.swen225.lc.app.Game;
 import nz.ac.wgtn.swen225.lc.recorder.Playback;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Optional;
 
 /**
  * The controller for the custom menu bar for the game.
@@ -64,10 +66,33 @@ public class MenuBarController {
    */
   public void onPlayRecording(ActionEvent event) {
     event.consume();
+    getRecordingFile();
+  }
+
+  private void getRecordingFile() {
     File file = window.openFileSelectorDialog("Recording");
-    if (file != null) {
-      new Playback(file, game);
+    if (file == null) {
+      return;
     }
+
+    try {
+      new Playback(file, game);
+    } catch (IOException ex) {
+      handleRecordingFileError();
+    }
+  }
+
+  private void handleRecordingFileError() {
+    Dialog<ButtonType> dialog = new Dialog<>();
+
+    ButtonType okButtonType = new ButtonType("Try Again", ButtonBar.ButtonData.OK_DONE);
+    dialog.getDialogPane().getButtonTypes().add(okButtonType);
+    dialog.setTitle("Error reading file");
+    dialog.setContentText("Error reading file, make sure the file is a valid Recording file.");
+
+    dialog.showAndWait();
+
+    getRecordingFile();
   }
 
   /**

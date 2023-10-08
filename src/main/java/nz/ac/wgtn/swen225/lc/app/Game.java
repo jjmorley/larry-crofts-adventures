@@ -132,7 +132,9 @@ public class Game {
     // TODO Get level number from persistence
     // TODO Get time remaining from persistence
 
-    this.recorder = new Recorder(-1, this);
+    currentLevel = 1; // TODO temporary
+
+    this.recorder = new Recorder(currentLevel, this);
 
     if (gameTimer != null) {
       gameTimer.pauseTimer();
@@ -149,7 +151,7 @@ public class Game {
             // This should never happen
           },
           (Long timeRemaining) -> this.updateActors());
-    } else {
+    } else if (actorTimer != null) {
       // Kill any actor timer
       actorTimer.pauseTimer();
       actorTimer = null;
@@ -230,7 +232,7 @@ public class Game {
     }
 
     if (recorder != null) {
-      //recorder.addActorMove(null); // TODO update to remove direction input
+      recorder.addActorMove();
     }
 
     if (!result.isPlayerAlive()) {
@@ -258,7 +260,7 @@ public class Game {
 
     if (gameWindow != null) {
       gameWindow.renderer.movePlayer(direction, InputManager.MOVEMENT_TIMEOUT);
-      gameWindow.gameInfoController.updateUi(domain, this);
+      Platform.runLater(() -> gameWindow.gameInfoController.updateUi(domain, this));
     }
 
     if (recorder != null) {

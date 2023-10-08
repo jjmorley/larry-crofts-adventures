@@ -4,6 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import nz.ac.wgtn.swen225.lc.app.Game;
 import nz.ac.wgtn.swen225.lc.app.InputManager;
 import nz.ac.wgtn.swen225.lc.recorder.Playback;
 
@@ -18,6 +19,7 @@ public class RecorderPlaybackController {
 
   private Playback playback;
   private InputManager inputManager;
+  private Game game;
 
   /**
    * Initializes the FXML controller.
@@ -31,8 +33,11 @@ public class RecorderPlaybackController {
    *
    * @param playback     The playback instance to be controlled.
    */
-  public void initializePlaybackControls(Playback playback) {
+  public void initializePlaybackControls(Playback playback, Game game) {
     this.playback = playback;
+    this.game = game;
+
+    game.pauseGame(false);
 
     playback.setSpeed((int) Math.round(250.0 * slider.getValue()));
 
@@ -42,7 +47,7 @@ public class RecorderPlaybackController {
       slider.setValue(multiplier);
       sliderLabel.setText(Double.toString(multiplier));
 
-      int newTimeout = (int) Math.round(250.0 * multiplier);
+      int newTimeout = (int) Math.round(250.0 / multiplier);
 
       playback.setSpeed(newTimeout);
       InputManager.MOVEMENT_TIMEOUT = newTimeout;
@@ -52,6 +57,7 @@ public class RecorderPlaybackController {
   @FXML
   private void pause(ActionEvent event) {
     event.consume();
+    game.pauseGame(false);
 
     if (playback != null) {
       playback.pause();
@@ -61,6 +67,7 @@ public class RecorderPlaybackController {
   @FXML
   private void play(ActionEvent event) {
     event.consume();
+    game.resumeGame();
 
     if (playback != null) {
       playback.play();
