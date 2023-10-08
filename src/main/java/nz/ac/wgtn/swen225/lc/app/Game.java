@@ -230,7 +230,7 @@ public class Game {
     }
 
     if (recorder != null) {
-      recorder.addActorMove(null); // TODO update to remove direction input
+      //recorder.addActorMove(null); // TODO update to remove direction input
     }
 
     if (!result.isPlayerAlive()) {
