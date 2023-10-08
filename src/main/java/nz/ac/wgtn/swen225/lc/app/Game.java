@@ -132,6 +132,8 @@ public class Game {
     // TODO Get level number from persistence
     // TODO Get time remaining from persistence
 
+    currentLevel = 1; // TODO temporary
+
     this.recorder = new Recorder(currentLevel, this);
 
     if (gameTimer != null) {
