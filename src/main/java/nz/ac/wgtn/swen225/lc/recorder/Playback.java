@@ -23,8 +23,9 @@ public class Playback {
     private List<String> playerMoveHistory = new ArrayList<>();
     private List<String> actorMoveHistory = new ArrayList<>();
     public Playback(File file, Game game) throws IOException{
-        loadRecordedGameFromFile(file);
         this.game = game;
+        loadRecordedGameFromFile(file);
+
     }
 
     public void loadRecordedGameFromFile(File file) throws IOException{
@@ -53,6 +54,9 @@ public class Playback {
     public void playNextFrame() {
         pause();
         // Implement step-by-step replay logic
+        if(frame == playerMoveHistory.size()-1){
+            frame = 0;
+        }
         if (actorMoveHistory.get(frame).equals("")){
             game.movePlayer(Direction.valueOf(playerMoveHistory.get(frame)));
         } else {
@@ -79,17 +83,18 @@ public class Playback {
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
-
+                if (!playingBack || frame == playerMoveHistory.size()) {
+                    timer.cancel();
+                    pause();
+                    // return;
+                }
                 if (actorMoveHistory.get(frame).equals("")){
                     game.movePlayer(Direction.valueOf(playerMoveHistory.get(frame)));
                 } else {
                     game.updateActors();
                 }
                 frame++;
-                if (!playingBack) {
-                    timer.cancel();
-                   // return;
-                }
+
             }
         };
 
