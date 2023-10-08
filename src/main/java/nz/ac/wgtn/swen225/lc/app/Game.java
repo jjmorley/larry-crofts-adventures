@@ -151,7 +151,7 @@ public class Game {
             // This should never happen
           },
           (Long timeRemaining) -> this.updateActors());
-    } else {
+    } else if (actorTimer != null) {
       // Kill any actor timer
       actorTimer.pauseTimer();
       actorTimer = null;
