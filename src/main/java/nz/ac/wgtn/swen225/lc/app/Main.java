@@ -6,6 +6,12 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import nz.ac.wgtn.swen225.lc.domain.Domain;
+
+import java.io.File;
+
+import static nz.ac.wgtn.swen225.lc.persistency.Load.loadAsDomain;
+import static nz.ac.wgtn.swen225.lc.persistency.Save.saveJSONFromDomain;
 
 /**
  * Entrypoint for Larry Crofts Adventures.

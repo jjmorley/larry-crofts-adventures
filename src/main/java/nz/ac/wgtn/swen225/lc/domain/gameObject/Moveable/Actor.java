@@ -26,6 +26,10 @@ public class Actor implements GameObject {
         positionIndex = 0;
     }
 
+    public List<Position> getRoute(){
+        return route;
+    }
+
 
     /**
      * This code implements the movement functionality of any actors/enemy's on the board.
