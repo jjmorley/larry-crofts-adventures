@@ -6,6 +6,7 @@ import nz.ac.wgtn.swen225.lc.app.gui.GameWindow;
 import nz.ac.wgtn.swen225.lc.app.gui.RecorderPlaybackWindow;
 import nz.ac.wgtn.swen225.lc.domain.Domain;
 import nz.ac.wgtn.swen225.lc.domain.InformationPacket;
+import nz.ac.wgtn.swen225.lc.domain.Position;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable.Direction;
 import nz.ac.wgtn.swen225.lc.persistency.Load;
 import nz.ac.wgtn.swen225.lc.recorder.Playback;
@@ -30,7 +31,6 @@ public class Game {
   private GameWindow gameWindow;
   private Domain domain;
   private Stage stage;
-
   private boolean isGameOver = false;
 
   /**
@@ -47,7 +47,7 @@ public class Game {
   }
 
   /**
-   * Create the game with a specific level on startup, used only by Fuzzing.
+   * Create the game with a specific level on startup, used only by Fuzzing and Testing modules.
    *
    * @param level the number of the level to load;
    */
@@ -62,7 +62,9 @@ public class Game {
    */
   public void startRecordingPlayback(int level, Playback playback) {
     // Lock out user controls
-    gameWindow.inputManager.setMovementLocked(true);
+    if (gameWindow != null) {
+      gameWindow.inputManager.setMovementLocked(true);
+    }
 
     // Load level
     loadLevel(level, false);
@@ -71,9 +73,16 @@ public class Game {
     new RecorderPlaybackWindow(stage, playback, this);
   }
 
+  /**
+   * Stop the recording playback and resume normal game control.
+   *
+   * @param playback the Playback instance that has stopped.
+   */
   public void stopRecordingPlayback(Playback playback) {
     // Resume player controls
-    gameWindow.inputManager.setMovementLocked(false);
+    if (gameWindow != null) {
+      gameWindow.inputManager.setMovementLocked(false);
+    }
   }
 
   /**
@@ -204,7 +213,9 @@ public class Game {
       actorTimer.resumeTimer();
     }
 
-    gameWindow.overlay.close();
+    if (gameWindow != null) {
+      gameWindow.overlay.close();
+    }
   }
 
   /**
@@ -250,6 +261,9 @@ public class Game {
     if (domain == null) {
       return false;
     }
+
+    Position playerStartPos = domain.getPlayer().getPosition();
+
     InformationPacket moveResult = domain.movePlayer(direction);
 
     if (!moveResult.hasPlayerMoved()) {
@@ -259,7 +273,7 @@ public class Game {
     // Movement was successful
 
     if (gameWindow != null) {
-      gameWindow.renderer.movePlayer(direction, InputManager.MOVEMENT_TIMEOUT);
+      gameWindow.renderer.movePlayer(direction, playerStartPos, domain.getPlayer().getPosition(), InputManager.MOVEMENT_TIMEOUT);
       Platform.runLater(() -> gameWindow.gameInfoController.updateUi(domain, this));
     }
 
