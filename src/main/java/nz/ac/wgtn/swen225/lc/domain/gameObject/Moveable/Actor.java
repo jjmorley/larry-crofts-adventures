@@ -1,5 +1,6 @@
 package nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable;
 
+import javafx.geometry.Pos;
 import nz.ac.wgtn.swen225.lc.domain.Board;
 import nz.ac.wgtn.swen225.lc.domain.InformationPacket;
 import nz.ac.wgtn.swen225.lc.domain.Position;
@@ -82,6 +83,15 @@ public class Actor implements GameObject {
     @Override
     public void setPosition(Position position) {
         positionIndex++;
+    }
+
+    /**
+     * does as described on the label.
+     *
+     * @return List<Position> returns all positions used in route.
+     */
+    public List<Position> getRoute() {
+        return route;
     }
 
     /**
