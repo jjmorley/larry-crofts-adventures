@@ -1,6 +1,5 @@
 package nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable;
 
-import javafx.geometry.Pos;
 import nz.ac.wgtn.swen225.lc.domain.Board;
 import nz.ac.wgtn.swen225.lc.domain.InformationPacket;
 import nz.ac.wgtn.swen225.lc.domain.Position;
@@ -52,7 +51,7 @@ public class Actor implements GameObject {
         }
         // If walkableTile contains a player, the player has been killed. as the actor is stepping on it.
         if (walkTile.getGameObject() instanceof Player) {
-            return new InformationPacket(board, false, false);
+            return new InformationPacket(board, false, false, false);
         }
 
         // Using full newBoard as there is no second step, compared to moveToTile.
@@ -62,7 +61,7 @@ public class Actor implements GameObject {
         positionIndex++;
 
         board.setBoard(newBoard);
-        return new InformationPacket(board, false, true);
+        return new InformationPacket(board, false, true, false);
     }
 
     /**

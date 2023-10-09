@@ -1,6 +1,5 @@
 package nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable;
 
-import javafx.geometry.Pos;
 import nz.ac.wgtn.swen225.lc.domain.Board;
 import nz.ac.wgtn.swen225.lc.domain.InformationPacket;
 import nz.ac.wgtn.swen225.lc.domain.Position;
@@ -67,7 +66,7 @@ public class Player implements GameObject {
             InformationPacket infoPacket = tryWalkThroughNonWalkableTile(moveToTile, newBoard, board, directionOffset);
 
             if (infoPacket == null) {
-                return new InformationPacket(board, false, true);
+                return new InformationPacket(board, false, true, false);
             }
             board.setBoard(infoPacket.getBoard().getBoard());
 
@@ -80,7 +79,7 @@ public class Player implements GameObject {
             board.setBoard(infoPacket.getBoard().getBoard());
 
         } else {
-            return new InformationPacket(board, false, true);
+            return new InformationPacket(board, false, true, false);
         }
 
 
@@ -92,7 +91,7 @@ public class Player implements GameObject {
         position = new Position(position.x()+directionOffset[0], position.y()+directionOffset[1]);
 
         board.setBoard(newBoard);
-        return new InformationPacket(board, true, true);
+        return new InformationPacket(board, true, true, false);
     }
 
     private InformationPacket tryWalkThroughNonWalkableTile(Tile targetTile, Tile[][] newBoard, Board board, int[] directionOffset) {
@@ -127,7 +126,7 @@ public class Player implements GameObject {
             newBoard[position.x() + directionOffset[0]][position.y() + directionOffset[1]] = new Free(null, pos);
 
             board.setBoard(newBoard);
-            return new InformationPacket(board, true, true);
+            return new InformationPacket(board, true, true, false);
         }
 
         return null;
@@ -149,7 +148,7 @@ public class Player implements GameObject {
             }
         }
 
-        return new InformationPacket(board, false, playerSurvived);
+        return new InformationPacket(board, false, playerSurvived, false);
     }
 
     private int[] convertIntTo2Dspace(Direction direction) {
