@@ -24,6 +24,8 @@ public class SoundManager {
 
   /**
    * Load all sounds into a map for easy access.
+   *
+   * @throws IllegalArgumentException if any sound file cannot be loaded
    */
   private void loadSounds() {
     try {
@@ -39,6 +41,8 @@ public class SoundManager {
               new AudioClip(this.getClass().getResource("/Sounds/Win.mp3").toExternalForm()));
       soundCache.put("Treasure",
               new AudioClip(this.getClass().getResource("/Sounds/Treasure.mp3").toExternalForm()));
+      soundCache.put("Splash",
+              new AudioClip(this.getClass().getResource("/Sounds/Splash.mp3").toExternalForm()));
     } catch (Exception e) {
       System.err.println("Error loading sound file: " + e.getMessage());
     }

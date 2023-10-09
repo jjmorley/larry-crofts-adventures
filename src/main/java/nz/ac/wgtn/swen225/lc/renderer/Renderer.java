@@ -1,14 +1,16 @@
 package nz.ac.wgtn.swen225.lc.renderer;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import javafx.animation.*;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
-import nz.ac.wgtn.swen225.lc.app.InputManager;
 import nz.ac.wgtn.swen225.lc.domain.Domain;
 import nz.ac.wgtn.swen225.lc.domain.Position;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable.Actor;
@@ -29,11 +31,13 @@ public class Renderer {
   private final double cellSize;
 
   //animation variables
-  private int currentFrame = 0;
   private static final int SPRITE_SIZE = 64;
   private static final int NUM_FRAMES = 4;
   private ImageView playerImageView;
   private final List<ImageView> actorImageViews = new ArrayList<>();
+  private ParallelTransition currentParallelTransition;
+  private TranslateTransition currentTransition;
+  private Map<ImageView, Integer> frameMap = new HashMap<>();
 
   //canvas variables
   private final BoardCanvas canvas;
@@ -66,9 +70,9 @@ public class Renderer {
     renderPlayer(domain.getPlayer().getPosition());
 
     //setup actor animation
-    /**if (domain.getActors() != null && !domain.getActors().isEmpty()) {
+    if (domain.getActors() != null && !domain.getActors().isEmpty()) {
       renderActors(domain);
-    }*/
+    }
 
     //create display window
     scrollPane = new ScrollPane();
@@ -81,8 +85,7 @@ public class Renderer {
     viewportHeight = canvasSize;
     scrollPane.setPrefViewportWidth(viewportWidth);
     scrollPane.setPrefViewportHeight(viewportHeight);
-    scrollPane.setPannable(false); //Do not allow player panning - NOT WORKING???
-    // Center the viewport on the player
+    scrollPane.setFocusTraversable(false); //Ensure input doesn't move scroll pane
     centerViewportOnPlayer(domain.getPlayer().getPosition());
   }
 
@@ -123,8 +126,11 @@ public class Renderer {
     root.getChildren().add(playerImageView);
 
     // Set the initial position of the sprite
-    playerImageView.setLayoutX(pos.x() * cellSize); // Initial X coordinate
-    playerImageView.setLayoutY(pos.y() * cellSize); // Initial Y coordinate
+    playerImageView.setLayoutX(pos.y() * cellSize); // Initial X coordinate
+    playerImageView.setLayoutY(pos.x() * cellSize); // Initial Y coordinate
+    frameMap.put(playerImageView, 0);
+
+    //start the animation
     Timeline playerAnimation = createAnimation(playerImageView);
     playerAnimation.setCycleCount(Animation.INDEFINITE);
     playerAnimation.play();
@@ -151,8 +157,8 @@ public class Renderer {
    * @param currentImageView The current sprite sheet being used
    */
   private void updateFrame(ImageView currentImageView) {
-    currentFrame = (currentFrame + 1) % NUM_FRAMES;
-    int x = currentFrame * SPRITE_SIZE;
+    frameMap.put(currentImageView, ((frameMap.get(currentImageView) + 1) % NUM_FRAMES));
+    int x = frameMap.get(currentImageView) * SPRITE_SIZE;
     currentImageView.setViewport(new javafx.geometry.Rectangle2D(x, 0, SPRITE_SIZE, SPRITE_SIZE));
   }
 
@@ -165,13 +171,15 @@ public class Renderer {
       ImageView actorImageView = new ImageView(spriteSheet);
       actorImageView.setFitWidth(cellSize);
       actorImageView.setFitHeight(cellSize);
-      root.getChildren().add(playerImageView);
       // Set the initial position of the sprite
       Position pos = actor.getPosition();
-      actorImageView.setLayoutX(pos.x() * cellSize); // Initial X coordinate
-      actorImageView.setLayoutY(pos.y() * cellSize); // Initial Y coordinate
+      actorImageView.setLayoutX(pos.y() * cellSize); // Initial X coordinate
+      actorImageView.setLayoutY(pos.x() * cellSize); // Initial Y coordinate
       actorImageViews.add(actorImageView);
+      root.getChildren().add(actorImageView);
+      frameMap.put(actorImageView, 0);
 
+      //start animation
       Timeline actorAnimation = createAnimation(actorImageView);
       actorAnimation.setCycleCount(Animation.INDEFINITE);
       actorAnimation.play();
@@ -190,24 +198,43 @@ public class Renderer {
   /**
    * Moves player in the direction given by app package.
    *
-   * @param direction direction at which the player will move
+   * @param direction        direction at which the player will move
    * @param translationSpeed speed at which the player will move, matching the game timeout
+   * @throws IllegalArgumentException if translationSpeed is less than 0
    */
   public void movePlayer(Direction direction, int translationSpeed) {
-    canvas.renderGameBoard();
-    TranslateTransition transition =
-            new TranslateTransition(Duration.millis(translationSpeed),
-                    playerImageView);
-    if (direction == Direction.LEFT) {
-      transition.setByX(-cellSize);
-    } else if (direction == Direction.RIGHT) {
-      transition.setByX(cellSize);
-    } else if (direction == Direction.DOWN) {
-      transition.setByY(cellSize);
-    } else {
-      transition.setByY(-cellSize);
+    if (translationSpeed < 0) { //precondition: do not allow a negative speed
+      throw new IllegalArgumentException("translationSpeed cannot be a negative integer");
     }
-    transition.play();
+    //ensure no animation are already in progress
+    if (currentTransition != null && currentTransition.getStatus() == Animation.Status.RUNNING) {
+      currentTransition.stop();
+    }
+    canvas.renderGameBoard();
+    currentTransition = new TranslateTransition(Duration.millis(translationSpeed), playerImageView);
+    double xchange = 0;
+    double ychange = 0;
+    if (direction == Direction.LEFT) {
+      xchange = cellSize;
+    } else if (direction == Direction.RIGHT) {
+      xchange = -cellSize;
+    } else if (direction == Direction.DOWN) {
+      ychange = -cellSize;
+    } else {
+      ychange = cellSize;
+    }
+    Position pos = domain.getPlayer().getPosition();
+    // Set the initial position of the sprite
+    playerImageView.setLayoutX(0.0); // Initial X coordinate
+    playerImageView.setLayoutY(0.0); // Initial Y coordinate
+    //set the start of the transition
+    currentTransition.setFromX(pos.y() * cellSize + xchange);
+    currentTransition.setFromY(pos.x() * cellSize + ychange);
+    //set the target destination of the transition
+    currentTransition.setToX(pos.y() * cellSize);
+    currentTransition.setToY(pos.x() * cellSize);
+
+    currentTransition.play();
     // Center the viewport on the player
     centerViewportOnPlayer(domain.getPlayer().getPosition());
 
@@ -215,11 +242,23 @@ public class Renderer {
 
   /**
    * Moves all actors at the same time to the next cell - according to the route in the Actor
-   * object class.
+   * object class. Needs to be called before the actor position gets updated.
    *
+   * @param translationSpeed speed at which the player will move, matching the game timeout
+   * @throws IllegalArgumentException if translationSpeed is less than 0
+   */
   public void moveActors(int translationSpeed) {
-    ParallelTransition parallelTransition = new ParallelTransition();
+    if (translationSpeed < 0) { //precondition: do not allow negative transition speeds
+      throw new IllegalArgumentException("translationSpeed cannot be a negative integer");
+    }
+    //ensure no animations are already in progress
+    if (currentParallelTransition != null && currentParallelTransition.getStatus() == javafx.animation.Animation.Status.RUNNING) {
+      currentParallelTransition.stop();
+    }
+    canvas.renderGameBoard();
+    currentParallelTransition = new ParallelTransition();
     int count = 0; //used to retrieve the corresponding actor from list of actor images
+    //add each actor transition to the parallel transition
     for (Actor actor : domain.getActors()) {
       TranslateTransition transition =
               new TranslateTransition(Duration.millis(translationSpeed),
@@ -228,35 +267,26 @@ public class Renderer {
       // Retrieve the actors current and next position
       List<Position> route = actor.getRoute();
       int currentPos = actor.getPositionIndex();
-      int nextPosition = (currentPos + 1) % route.size();
+      int nextPos = (currentPos + 1) % route.size();
 
-      // Calculate the change in X and Y coordinates
-      int deltaX = route.get(nextPosition).x() - route.get(currentPos).x();
-      int deltaY = route.get(nextPosition).y() - route.get(currentPos).y();
+      // Set the initial position of the sprite
+      actorImageViews.get(count).setLayoutX(0.0); // Initial X coordinate
+      actorImageViews.get(count).setLayoutY(0.0); // Initial Y coordinate
 
-      // determine the direction
-      if (Math.abs(deltaX) == 1) {
-        // Player moved horizontally
-        if (deltaX > 0) { //Moved right
-          transition.setByX(cellSize);
-        } else { //Moved left
-          transition.setByX(-cellSize);
-        }
-      } else if (Math.abs(deltaY) == 1) {
-        // Player moved vertically
-        if (deltaY < 0) { //Moved Up
-          transition.setByY(-cellSize);
-        } else { //Moved down
-          transition.setByY(cellSize);
-        }
-      }
+      //set the start of the transition
+      transition.setFromX(route.get(currentPos).y() * cellSize);
+      transition.setFromY(route.get(currentPos).x() * cellSize);
 
-      parallelTransition.getChildren().add(transition);
+      //set the target destination of the transition
+      transition.setToX(route.get(nextPos).y() * cellSize);
+      transition.setToY(route.get(nextPos).x() * cellSize);
+
+      currentParallelTransition.getChildren().add(transition);
       count++;
     }
 
-    parallelTransition.play();
-  }*/
+    currentParallelTransition.play();
+  }
 
   /**
    * gets the scrollPane which provides a focus area on all the root children.
