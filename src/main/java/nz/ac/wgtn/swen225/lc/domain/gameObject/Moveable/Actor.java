@@ -95,6 +95,15 @@ public class Actor implements GameObject {
     }
 
     /**
+     * does as described on the label.
+     *
+     * @return index returns current number of route.
+     */
+    public int getPositionIndex() {
+        return positionIndex;
+    }
+
+    /**
      * Returns the name of the class.
      *
      * @return String .
