@@ -43,6 +43,8 @@ public class SpriteManager {
     spriteCache.put("Door_Yellow_Open", new Image("/Sprites/Door_Yellow_Open.png"));
     spriteCache.put("Door_Red_Open", new Image("/Sprites/Door_Red_Open.png"));
     spriteCache.put("Door_Green_Open", new Image("/Sprites/Door_Green_Open.png"));
+    spriteCache.put("Water", new Image("/Sprites/Water.png"));
+    spriteCache.put("Lava", new Image("/Sprites/Lava.png"));
   }
 
   /**
