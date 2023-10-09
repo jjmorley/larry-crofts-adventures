@@ -273,7 +273,7 @@ public class Game {
     // Movement was successful
 
     if (gameWindow != null) {
-      gameWindow.renderer.movePlayer(direction, playerStartPos, domain.getPlayer().getPosition(), InputManager.MOVEMENT_TIMEOUT);
+      gameWindow.renderer.movePlayer(direction, InputManager.MOVEMENT_TIMEOUT);
       Platform.runLater(() -> gameWindow.gameInfoController.updateUi(domain, this));
     }
 
