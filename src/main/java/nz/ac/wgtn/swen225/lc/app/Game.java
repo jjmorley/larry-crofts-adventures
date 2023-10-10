@@ -1,9 +1,5 @@
 package nz.ac.wgtn.swen225.lc.app;
 
-import java.io.File;
-import java.net.URISyntaxException;
-import java.net.URL;
-
 import javafx.application.Platform;
 import javafx.stage.Stage;
 import nz.ac.wgtn.swen225.lc.app.gui.GameWindow;
@@ -16,6 +12,10 @@ import nz.ac.wgtn.swen225.lc.persistency.Save;
 import nz.ac.wgtn.swen225.lc.persistency.SaveData;
 import nz.ac.wgtn.swen225.lc.recorder.Playback;
 import nz.ac.wgtn.swen225.lc.recorder.Recorder;
+
+import java.io.File;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 
 /**
@@ -360,5 +360,9 @@ public class Game {
     }
 
     return gameTimer.getTimeRemaining();
+  }
+
+  public Domain getDomain() {
+    return domain;
   }
 }
