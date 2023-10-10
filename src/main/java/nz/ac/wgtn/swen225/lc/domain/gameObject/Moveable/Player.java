@@ -70,8 +70,8 @@ public class Player implements GameObject {
         if (!(moveToTile instanceof WalkableTile) && !(moveToTile instanceof Wall)) {
             infoPacket = tryWalkThroughNonWalkableTile(moveToTile, newBoard, board, directionOffset);
 
-            if (infoPacket == null) {
-                return new InformationPacket(board, false, true, false, null);
+            if (!infoPacket.hasPlayerMoved()) {
+                return infoPacket;
             }
             board.setBoard(infoPacket.getBoard().getBoard());
 
@@ -133,7 +133,7 @@ public class Player implements GameObject {
             return new InformationPacket(board, true, true, false, null);
         }
 
-        return null;
+        return new InformationPacket(board, false, true, false, null);
     }
 
     private InformationPacket getContentsOfNextTile(WalkableTile targetTile, Tile[][] newBoard, Board board) {
