@@ -30,7 +30,7 @@ public class Save {
    * Autosaves to a JSON titled with the hash of the current time.
    */
   public static void autoSave(SaveData s) {
-    File f = new File("src/main/saves/"
+    File f = new File("saves/"
             + java.time.LocalDateTime.now().hashCode() + ".json");
     saveJsonFromSaveData(f, s);
   }

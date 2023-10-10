@@ -45,7 +45,7 @@ public class Load {
    * @return Domain
    */
   public static SaveData autoLoad() {
-    Path dir = Paths.get("src/main/saves");  // specify directory
+    Path dir = Paths.get("saves/");  // specify directory
     try {
       File filePath = Files.list(dir)
               .filter(f -> !Files.isDirectory(f))
