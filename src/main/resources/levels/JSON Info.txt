@@ -6,6 +6,8 @@ JSON KEY
         I = info
         L = exit lock
         E = exit
+        V = Lava
+        A = Water
         D = locked door
         K = key
         For doors and keys, the second letter correlates

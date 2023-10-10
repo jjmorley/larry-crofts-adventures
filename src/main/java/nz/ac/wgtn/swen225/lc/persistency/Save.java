@@ -14,7 +14,9 @@ import nz.ac.wgtn.swen225.lc.domain.gameObject.item.Key;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.Door;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.ExitDoor;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.Tile;
+import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.walkableTile.Lava;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.walkableTile.WalkableTile;
+import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.walkableTile.Water;
 
 /**
  * Saves level info as JSON.
@@ -80,7 +82,13 @@ public class Save {
                               + (char) ((Key) g).getKey()
               );
             } else {
-              array.putPOJO(i + ", " + j, g.getName().toLowerCase().charAt(0));
+              if (t instanceof Lava) {
+                array.putPOJO(i + ", " + j, "v");
+              } else if (t instanceof Water) {
+                array.putPOJO(i + ", " + j, "a");
+              } else {
+                array.putPOJO(i + ", " + j, g.getName().toLowerCase().charAt(0));
+              }
             }
           } else {
             array.putPOJO(i + ", " + j, t.getName().toLowerCase().charAt(0));

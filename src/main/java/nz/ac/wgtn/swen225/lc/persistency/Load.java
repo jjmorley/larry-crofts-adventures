@@ -112,6 +112,12 @@ public class Load {
           case ("t"):
             tile = new Free(new Treasure(new Position(i, j)), new Position(i, j));
             break;
+          case ("v"):
+            tile = new Lava(null, new Position(i, j));
+            break;
+          case ("a"):
+            tile = new Water(null, new Position(i, j));
+            break;
           default:
             if (s.matches("[d][,][ ][a-z]")) {
               Key k = new Key(s.charAt(3), new Position(0, 0));
