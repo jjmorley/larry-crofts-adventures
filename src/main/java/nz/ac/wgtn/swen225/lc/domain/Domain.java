@@ -3,6 +3,7 @@ package nz.ac.wgtn.swen225.lc.domain;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable.Actor;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable.Direction;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable.Player;
+import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.walkableTile.WalkableTile;
 
 import java.util.List;
 
@@ -23,8 +24,6 @@ public class Domain {
     }
 
     public InformationPacket advanceClock() {
-        // Could use streams in this case to make the code shorter, But makes it a pain to read.
-        // Seems unnecessary.
         InformationPacket infoPacket = null;
         for (Actor actor : actors) {
             infoPacket = actor.move(board);
@@ -39,17 +38,11 @@ public class Domain {
     }
 
     public InformationPacket movePlayer(Direction direction) {
-        // Remember to add sound queues.
         InformationPacket infoPacket = player.move(board, direction);
         if (infoPacket == null) throw new IllegalArgumentException();
 
-        if (!infoPacket.isPlayerAlive() || !infoPacket.hasPlayerMoved()) return infoPacket;
+        if (!infoPacket.isPlayerAlive() || !infoPacket.hasPlayerMoved() || infoPacket.hasPlayerWon()) return infoPacket;
         board = infoPacket.getBoard();
-
-        //Debugging wooooo.
-        System.out.println(player.getPosition().toString());
-        System.out.println(board.toString());
-        //Debugging wooooo.
 
         return infoPacket;
     }

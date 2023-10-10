@@ -12,7 +12,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Optional;
 
 /**
  * The controller for the custom menu bar for the game.
@@ -122,7 +121,7 @@ public class MenuBarController {
       URL fileUrl = getClass().getResource("/levels/level2.json");
       if (fileUrl != null) {
         File f = new File(fileUrl.toURI());
-        game.loadGame(f, true);
+        game.loadGameFromFile(f, true);
       }
     } catch (URISyntaxException ex) {
       System.out.println("Failed to load level2, URI Syntax error: " + ex.toString());
@@ -138,7 +137,7 @@ public class MenuBarController {
       URL fileUrl = getClass().getResource("/levels/level1.json");
       if (fileUrl != null) {
         File f = new File(fileUrl.toURI());
-        game.loadGame(f, true);
+        game.loadGameFromFile(f, true);
       }
     } catch (URISyntaxException ex) {
       System.out.println("Failed to load level1, URI Syntax error: " + ex.toString());
@@ -160,7 +159,7 @@ public class MenuBarController {
     event.consume();
     File file = window.openFileSelectorDialog("Save");
     if (file != null) {
-      game.loadGame(file, true);
+      game.loadGameFromFile(file, true);
     }
   }
 

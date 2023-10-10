@@ -6,6 +6,7 @@ import nz.ac.wgtn.swen225.lc.domain.Position;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.GameObject;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.Tile;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.walkableTile.WalkableTile;
+import nz.ac.wgtn.swen225.lc.renderer.Renderer;
 
 import java.util.List;
 
@@ -25,7 +26,6 @@ public class Actor implements GameObject {
         this.route = positionList;
         positionIndex = 0;
     }
-
 
     /**
      * This code implements the movement functionality of any actors/enemy's on the board.
@@ -51,17 +51,18 @@ public class Actor implements GameObject {
         }
         // If walkableTile contains a player, the player has been killed. as the actor is stepping on it.
         if (walkTile.getGameObject() instanceof Player) {
-            return new InformationPacket(board, false, false, false);
+            Renderer.playSound("Lose");
+            return new InformationPacket(board, false, false, false, null);
         }
 
         // Using full newBoard as there is no second step, compared to moveToTile.
         ((WalkableTile) newBoard[route.get(newIndex).x()][route.get(newIndex).y()]).setGameObject(this);
         // We are currently alive, so it is assumed we did the check beforehand.
-        positionIndex++;
         ((WalkableTile) newBoard[route.get(positionIndex).x()][route.get(positionIndex).y()]).setGameObject(null);
+        positionIndex++;
 
         board.setBoard(newBoard);
-        return new InformationPacket(board, false, true, false);
+        return new InformationPacket(board, false, true, false, null);
     }
 
     /**

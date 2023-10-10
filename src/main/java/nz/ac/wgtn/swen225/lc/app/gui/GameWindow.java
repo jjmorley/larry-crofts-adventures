@@ -4,6 +4,9 @@ import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -190,5 +193,19 @@ public class GameWindow {
 
   public Stage getStage() {
     return stage;
+  }
+
+  /**
+   * Creates a dialog to let the user know their save was successful.
+   * */
+  public void saveSuccessDialog() {
+    Dialog<ButtonType> dialog = new Dialog<>();
+
+    ButtonType okButtonType = new ButtonType("Ok", ButtonBar.ButtonData.OK_DONE);
+    dialog.getDialogPane().getButtonTypes().add(okButtonType);
+    dialog.setTitle("Save Successful");
+    dialog.setContentText("Save was successful.");
+
+    dialog.showAndWait();
   }
 }

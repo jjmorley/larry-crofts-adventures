@@ -47,7 +47,7 @@ public class GameOverOverlayController {
     }
 
     window.overlay.close();
-    game.loadGame(saveFile, true);
+    game.loadGameFromFile(saveFile, true);
   }
 
   public void quit(ActionEvent event) {
