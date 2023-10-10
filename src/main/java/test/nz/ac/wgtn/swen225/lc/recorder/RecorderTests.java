@@ -22,7 +22,7 @@ public class RecorderTests {
     public void setUp() {
         this.game = new Game(0);
         recorder = new Recorder(1, game); // Initialize Recorder
-        testFile = new File("test-recorded-game.json"); // Create a test file
+        testFile = new File("src/main/resources/Recorder/test-playback-game.json");
     }
 
     @Test
@@ -59,7 +59,7 @@ public class RecorderTests {
         recorder.addPlayerMove(Direction.UP);
 
         // Save the recorded game data to a unique test file
-        File uniqueTestFile = new File("unique-test-recorded-game.json");
+        File uniqueTestFile = new File("src/main/resources/Recorder/unique-test-recorded-game.json");
         recorder.saveRecordedGameToFile(uniqueTestFile);
 
         try {

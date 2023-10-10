@@ -21,6 +21,8 @@ public class PlaybackTests {
     private Game game;
     private Recorder recorder;
     private File testFile;
+    private File testFile1;
+    private File testFile2;
     private Playback playback;
     private File invalidTestFile; // Create a separate test file for invalid format
 
@@ -30,8 +32,10 @@ public class PlaybackTests {
         // Initialize the game or any required objects
         game = new Game(1); // You may need to adjust the game initialization based on your actual setup
         recorder = new Recorder(1, game); // Initialize Recorder
-        testFile = new File("test-playback-game.json"); // Create a test file
-        invalidTestFile = new File("invalid-playback-game.json"); // Create a separate test file for invalid format
+        testFile = new File("src/main/resources/Recorder/test-playback-game.json"); // Create a test file
+        testFile1 = new File("src/main/resources/Recorder/test-playback-game1.json"); // Create a test file
+        testFile2 = new File("src/main/resources/Recorder/test-playback-game2.json"); // Create a test file
+        invalidTestFile = new File("src/main/resources/Recorder/invalid-playback-game.json"); // Create a separate test file for invalid format
     }
 
     @Test
@@ -155,13 +159,9 @@ public class PlaybackTests {
     @Test
     public void testPlayNextFrame() throws IOException {
         // Create a Playback object with some player and actor move history
-        File testFile = new File("test-playback-game.json");
-        playback = new Playback(testFile, game);
+        testFile1 = new File("src/main/resources/Recorder/test-playback-game1.json");
+        playback = new Playback(testFile1, game);
         playback.getPlayerMoveHistory().add(Direction.RIGHT.toString());
-        playback.getActorMoveHistory().add("");
-        playback.getPlayerMoveHistory().add(Direction.DOWN.toString());
-        playback.getActorMoveHistory().add("ActorMove");
-        playback.getPlayerMoveHistory().add(Direction.UP.toString());
         playback.getActorMoveHistory().add("");
 
         // Initially, frame should be 0
@@ -179,10 +179,12 @@ public class PlaybackTests {
         assertEquals(2, playback.getFrame());
 
         playback.playNextFrame();
-
-        // Frame should be incremented to3
+        // Frame should be incremented to 3
         assertEquals(3, playback.getFrame());
 
+        playback.playNextFrame();
+        // Frame should go back to start
+        assertEquals(0, playback.getFrame());
 
     }
 
@@ -190,8 +192,8 @@ public class PlaybackTests {
     public void testAutoReplayGame() throws IOException, InterruptedException {
 
         // Create a Playback object with some player and actor move history
-        File testFile = new File("test-playback-game.json");
-        playback = new Playback(testFile, game);
+        testFile2 = new File("src/main/resources/Recorder/test-playback-game2.json");
+        playback = new Playback(testFile2, game);
         playback.getPlayerMoveHistory().add(Direction.RIGHT.toString());
         playback.getActorMoveHistory().add("");
         playback.getPlayerMoveHistory().add(Direction.DOWN.toString());
@@ -202,8 +204,9 @@ public class PlaybackTests {
         // Set the playback speed (e.g., 100 milliseconds between task executions)
         int speed = 100;
 
-        // Start auto-replay with the specified speed
-        playback.autoReplayGame(speed);
+        playback.play();
+
+        playback.setSpeed(100);
 
         // Sleep for some time to allow auto-replay to execute
         Thread.sleep(1000); // Sleep for 1 second
@@ -211,8 +214,10 @@ public class PlaybackTests {
         // Get the player's position and compare it with the expected position
         int playerX = game.getDomain().getPlayer().getPosition().x();
         int playerY = game.getDomain().getPlayer().getPosition().y();
-        assertEquals(4, playerX); // Replace expectedX with the expected X-coordinate
-        assertEquals(6, playerY); // Replace expectedY with the expected Y-coordinate
+        int expectedX = 4;
+        int expectedY = 6;
+        assertEquals(expectedX, playerX); // Replace expectedX with the expected X-coordinate
+        assertEquals(expectedY, playerY); // Replace expectedY with the expected Y-coordinate
     }
 
 }
