@@ -1,5 +1,4 @@
 package nz.ac.wgtn.swen225.lc.recorder;
-//import nz.ac.wgtn.swen225.lc.app.Direction;
 
 import nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable.Direction;
 import nz.ac.wgtn.swen225.lc.app.Game;
@@ -8,7 +7,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +26,8 @@ public class Playback {
     private boolean playingBack = false;
     private List<String> playerMoveHistory = new ArrayList<>();
     private List<String> actorMoveHistory = new ArrayList<>();
+    private Timer timer;
+    private TimerTask replayTask;
 
     /**
      * Creates new Playback instance.
@@ -40,7 +40,8 @@ public class Playback {
     public Playback(File file, Game game) throws IOException {
         this.game = game;
         loadRecordedGameFromFile(file);
-
+        timer = new Timer();
+        replayTask = autoReplayGame();
     }
 
     /**
@@ -58,9 +59,7 @@ public class Playback {
         System.out.println("Loaded Recorded Game Data from: " + file);
 
         //Check formatting
-        if (!recordedGameData.containsKey("playerMoveHistory") ||
-                !recordedGameData.containsKey("actorMoveHistory") ||
-                !recordedGameData.containsKey("level")) {
+        if (!recordedGameData.containsKey("playerMoveHistory") || !recordedGameData.containsKey("actorMoveHistory") || !recordedGameData.containsKey("level")) {
             throw new IOException("Invalid file format: Missing required fields");
         }
 
@@ -74,77 +73,54 @@ public class Playback {
     /**
      * Start the recording playback
      */
-    public void initiateRecordingPlayback(){
+    public void initiateRecordingPlayback() {
         game.startRecordingPlayback(level, this);
     }
 
     /**
      * Game uses this method to set auto playback speed.
+     * Also restarts frame play timer to make sure replaying at right speed.
      *
      * @param speed specified replay speed from user.
      */
     public void setSpeed(int speed) {
-        playSpeed = speed;
-    }
-
-    /**
-     * Game uses this method to move step-by-step through recorded game.
-     */
-    public void playNextFrame() {
-        pause();
-        //If at end of replayed game go back to beginning
-        if (frame == playerMoveHistory.size() - 1) {
-            frame = 0;
-        }
-        //Check whether next move is an actor move or player move
-        if (actorMoveHistory.get(frame).equals("")) {
-            game.movePlayer(Direction.valueOf(playerMoveHistory.get(frame)));
-        } else {
-            game.updateActors();
-        }
-        frame++;
-    }
-
-    /**
-     * Pause playback.
-     */
-    public void pause() {
-        playingBack = false;
-    }
-
-    /**
-     * Resume or start auto playback.
-     */
-    public void play() {
-        playingBack = true;
-        autoReplayGame(playSpeed);
-    }
-
-    /**
-     * Cancel auto playback indefinitely.
-     * Game calls this method for an indefinite stop to the game.
-     */
-    public void cancelPlayback() {
-        playingBack = false;
-    }
-
-    /**
-     * Game uses this method to autoplay through recorded game.
-     *
-     * @param speed Manages replay speed
-     */
-    public void autoReplayGame(int speed) {
         if (speed <= 0) {
             throw new IllegalArgumentException("Speed must be a positive value.");
         }
-        //Timer which runs at fixed rate replaying game frame by frame
 
-        Timer timer = new Timer();
-        playingBack = true;
-        TimerTask task = new TimerTask() {
+        playSpeed = speed;
+
+        // If playback is currently active, restart the timer with the new speed
+        if (playingBack) {
+            startAutoReplayTimer();
+        }
+    }
+
+    /**
+     * Start timer to run through frames at specified speed
+     */
+    public void startAutoReplayTimer() {
+        // Check if the timer is already running and cancel it if necessary
+        if (timer != null) {
+            timer.cancel();
+        }
+
+        // Schedule the timer task with the updated speed
+        timer = new Timer();
+        timer.scheduleAtFixedRate(replayTask, 0, playSpeed);
+    }
+
+    /**
+     * Create a TimerTask for replaying the game frame by frame.
+     *
+     * @return The TimerTask instance.
+     */
+    private TimerTask autoReplayGame() {
+        return new TimerTask() {
             @Override
             public void run() {
-                //If playback stopped or end of recorded game
+                System.out.println("TEST");
+                // If playback stopped or end of recorded game
                 if (!playingBack || frame == playerMoveHistory.size()) {
                     timer.cancel();
                     pause();
@@ -158,8 +134,52 @@ public class Playback {
                 }
             }
         };
-        System.out.println(speed);
-        timer.scheduleAtFixedRate(task, 0, speed);
+    }
+
+    /**
+     * Game uses this method to move step-by-step through recorded game.
+     */
+    public void playNextFrame() {
+        pause();
+
+        //Check whether next move is an actor move or player move
+        if (actorMoveHistory.get(frame).equals("")) {
+            game.movePlayer(Direction.valueOf(playerMoveHistory.get(frame)));
+        } else {
+            game.updateActors();
+        }
+
+        //If at end of replayed game go back to beginning
+        if (frame == playerMoveHistory.size() - 1) {
+            frame = 0;
+        } else {
+            frame++;
+        }
+
+    }
+
+
+    /**
+     * Pause playback.
+     */
+    public void pause() {
+        playingBack = false;
+    }
+
+    /**
+     * Resume or start auto playback.
+     */
+    public void play() {
+        playingBack = true;
+    }
+
+    /**
+     * Cancel auto playback indefinitely.
+     * Game calls this method for an indefinite stop to the game.
+     */
+    public void cancelPlayback() {
+        playingBack = false;
+        timer.cancel();
     }
 
     /**
@@ -194,7 +214,7 @@ public class Playback {
      *
      * @return current game frame.
      */
-    public int getFrame(){
+    public int getFrame() {
         return frame;
     }
 
@@ -203,7 +223,7 @@ public class Playback {
      *
      * @return if game is playing back.
      */
-    public boolean isPlayingBack(){
+    public boolean isPlayingBack() {
         return playingBack;
     }
 }
