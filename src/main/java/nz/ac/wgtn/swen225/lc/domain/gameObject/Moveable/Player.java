@@ -11,8 +11,8 @@ import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.Door;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.ExitDoor;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.Tile;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.Wall;
-import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.walkableTile.Free;
-import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.walkableTile.WalkableTile;
+import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.walkableTile.*;
+import nz.ac.wgtn.swen225.lc.renderer.Renderer;
 
 import java.util.List;
 
@@ -73,7 +73,7 @@ public class Player implements GameObject {
         } else if ((moveToTile instanceof WalkableTile targetTile)) {
             InformationPacket infoPacket = getContentsOfNextTile(targetTile, newBoard, board);
 
-            if (!infoPacket.isPlayerAlive()) {
+            if (!infoPacket.isPlayerAlive() || infoPacket.hasPlayerWon()) {
                 return infoPacket;
             }
             board.setBoard(infoPacket.getBoard().getBoard());
@@ -114,10 +114,12 @@ public class Player implements GameObject {
 
             if (validKey!=null) {
                 validMove = true;
+                Renderer.playSound("Door");
             }
         } else if (targetTile instanceof ExitDoor) {
             if (treasuresLeft == 0) {
                 validMove = true;
+                Renderer.playSound("Exit_Door");
             }
         }
 
@@ -134,6 +136,7 @@ public class Player implements GameObject {
 
     private InformationPacket getContentsOfNextTile(WalkableTile targetTile, Tile[][] newBoard, Board board) {
         boolean playerSurvived = true;
+        boolean playerWin = false;
 
         ((WalkableTile) newBoard[position.x()][position.y()]).setGameObject(null);
         board.setBoard(newBoard);
@@ -141,14 +144,26 @@ public class Player implements GameObject {
         if (targetTile.getGameObject() != null) {
             if (targetTile.getGameObject() instanceof Key key) {
                 inventory.add(key);
+                Renderer.playSound("Key");
             } else if (targetTile.getGameObject() instanceof Treasure) {
                 treasuresLeft--;
+                Renderer.playSound("Treasure");
             } else if (targetTile.getGameObject() instanceof Actor) {
                 playerSurvived = false;
+                Renderer.playSound("Lose");
             }
         }
 
-        return new InformationPacket(board, false, playerSurvived, false);
+        if (targetTile instanceof ExitDoor) {
+            playerWin = true;
+            Renderer.playSound("Win");
+        } else if (targetTile instanceof Lava || targetTile instanceof Water) {
+            playerSurvived = false;
+            Renderer.playSound("Splash");
+        }
+        // TODO: 10/10/2023 add fire and water tiles with splash sound effect 
+
+        return new InformationPacket(board, false, playerSurvived, playerWin);
     }
 
     private int[] convertIntTo2Dspace(Direction direction) {

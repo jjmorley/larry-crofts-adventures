@@ -26,7 +26,6 @@ public class Actor implements GameObject {
         positionIndex = 0;
     }
 
-
     /**
      * This code implements the movement functionality of any actors/enemy's on the board.
      * This however is not very robust, it checks if a tile is walkable, if so it'll attempt to walk over it.

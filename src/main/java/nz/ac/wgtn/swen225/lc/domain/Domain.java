@@ -43,13 +43,8 @@ public class Domain {
         InformationPacket infoPacket = player.move(board, direction);
         if (infoPacket == null) throw new IllegalArgumentException();
 
-        if (!infoPacket.isPlayerAlive() || !infoPacket.hasPlayerMoved()) return infoPacket;
+        if (!infoPacket.isPlayerAlive() || !infoPacket.hasPlayerMoved() || infoPacket.hasPlayerWon()) return infoPacket;
         board = infoPacket.getBoard();
-
-        //Debugging wooooo.
-        System.out.println(player.getPosition().toString());
-        System.out.println(board.toString());
-        //Debugging wooooo.
 
         return infoPacket;
     }
