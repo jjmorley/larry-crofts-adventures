@@ -82,6 +82,7 @@ public class Game {
   public void stopRecordingPlayback(Playback playback) {
     // Resume player controls
     if (gameWindow != null) {
+      InputManager.MOVEMENT_TIMEOUT = 250;
       gameWindow.inputManager.setMovementLocked(false);
     }
   }
