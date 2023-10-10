@@ -8,6 +8,7 @@ import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.Tile;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.walkableTile.WalkableTile;
 import nz.ac.wgtn.swen225.lc.renderer.Renderer;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -71,23 +72,24 @@ public class Actor implements GameObject {
 
 
     // Using full newBoard as there is no second step, compared to moveToTile.
-    ((WalkableTile) newBoard[route.get(newIndex).x()][route.get(newIndex).y()])
-        .setGameObject(this);
+    ((WalkableTile) newBoard[route.get(newIndex).x()][route.get(newIndex).y()]).setGameObject(this);
 
     // Work Around but I am ver tired
     int oldIndex = newIndex - 1;
     if (oldIndex == -1) {
       oldIndex = route.size() - 1;
     }
+    assert oldIndex !=  newIndex : "Actor must move";
 
     // We are currently alive, so it is assumed we did the check beforehand.
-    ((WalkableTile) newBoard[route.get(oldIndex).x()][route.get(oldIndex).y()])
-        .setGameObject(null);
+    ((WalkableTile) newBoard[route.get(oldIndex).x()][route.get(oldIndex).y()]).setGameObject(null);
 
     // Increase the index of actor.
     positionIndex++;
 
     board.setBoard(newBoard);
+    assert Arrays.deepEquals(board.getBoard(), newBoard) : "Board failed to update";
+
     return new InformationPacket(board, false, true, false, null);
   }
 

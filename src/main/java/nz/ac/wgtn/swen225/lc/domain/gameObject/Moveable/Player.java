@@ -14,6 +14,7 @@ import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.Wall;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.walkableTile.*;
 import nz.ac.wgtn.swen225.lc.renderer.Renderer;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -77,6 +78,8 @@ public class Player implements GameObject {
     // Get 2d array from board and check that we aren't attempting to move outside it's bounds
     // the if not get the Tile we are attempting to move to
     Tile[][] newBoard = board.getBoard();
+    assert  newBoard != null : "getBoard() failed";
+
     if (position.x() + directionOffset[0] >= newBoard.length || position.x() + directionOffset[0] < 0 || position.y() + directionOffset[1] >= newBoard[0].length || position.y() + directionOffset[1] < 0) {
       return new InformationPacket(board, false, true, false, null);
     }
@@ -94,6 +97,7 @@ public class Player implements GameObject {
       }
       // Update board with new board given to us if we could walk through
       board.setBoard(infoPacket.getBoard().getBoard());
+      assert Arrays.deepEquals(board.getBoard(), newBoard) : "Board has not updated";
 
     } else if ((moveToTile instanceof WalkableTile targetTile)) {
       // Attempt to walk through walkable tile,
@@ -102,6 +106,8 @@ public class Player implements GameObject {
       infoPacket = getContentsOfNextTile(targetTile, board);
 
       board.setBoard(infoPacket.getBoard().getBoard());
+      assert Arrays.deepEquals(board.getBoard(), newBoard) : "Board has not updated";
+
     } else {
       // This only occurs if we are attempting to walk through a wall
       // thus we cannot do this thus we return infoPacket
@@ -115,10 +121,14 @@ public class Player implements GameObject {
     ((WalkableTile) newBoard[position.x()][position.y()]).setGameObject(null);
 
     // Update position of player
+    Position oldPos = position;
     position = new Position(position.x() + directionOffset[0], position.y() + directionOffset[1]);
+    assert position != oldPos;
 
     // Set new board
     board.setBoard(newBoard);
+    assert Arrays.deepEquals(board.getBoard(), newBoard) : "Board has not updated";
+
     return new InformationPacket(board, true, infoPacket.isPlayerAlive(), infoPacket.hasPlayerWon(), infoPacket.getTileInformation());
   }
 
@@ -130,6 +140,20 @@ public class Player implements GameObject {
    * @return information packet
    */
   private InformationPacket tryWalkThroughNonWalkableTile(Tile targetTile, Tile[][] newBoard, Board board, int[] directionOffset) {
+    if (targetTile == null) {
+      throw new IllegalArgumentException("");
+    }
+    if (newBoard == null) {
+      throw new IllegalArgumentException("");
+    }
+    if (board == null) {
+      throw new IllegalArgumentException("");
+    }
+    if (directionOffset == null) {
+      throw new IllegalArgumentException("");
+    }
+
+
     // Boolean used to check if any match occurred and doors where opened
     boolean validMove = false;
 
@@ -173,6 +197,8 @@ public class Player implements GameObject {
           = new Free(null, pos);
 
       board.setBoard(newBoard);
+      assert Arrays.deepEquals(board.getBoard(), newBoard) : "Board has not updated";
+
       return new InformationPacket(board, true, true, false, null);
     }
 
@@ -187,6 +213,13 @@ public class Player implements GameObject {
    * @return information packet
    */
   private InformationPacket getContentsOfNextTile(WalkableTile targetTile, Board board) {
+    if (targetTile == null) {
+      throw new IllegalArgumentException("");
+    }
+    if (board == null) {
+      throw new IllegalArgumentException("");
+    }
+
     // Instantiate all needed holding variables for the Information Packet
     String tileInformation = null;
     boolean playerSurvived = true;
@@ -197,9 +230,13 @@ public class Player implements GameObject {
       if (targetTile.getGameObject() instanceof Key key) {
         inventory.add(key);
         Renderer.playSound("Key");
+        assert inventory.contains(key) : "Inventory failed to update";
+
       } else if (targetTile.getGameObject() instanceof Treasure) {
         treasuresLeft--;
         Renderer.playSound("Treasure");
+        assert treasuresLeft >= 0 : "Treasures cannot be less than zero";
+
       } else if (targetTile.getGameObject() instanceof Actor) {
         playerSurvived = false;
         Renderer.playSound("Lose");
@@ -210,11 +247,15 @@ public class Player implements GameObject {
     if (targetTile instanceof Exit) {
       playerWin = true;
       Renderer.playSound("Win");
+
     } else if (targetTile instanceof Lava || targetTile instanceof Water) {
       playerSurvived = false;
       Renderer.playSound("Splash");
+
     } else if (targetTile instanceof InfoTile infoTile) {
       tileInformation = infoTile.getInformation();
+      assert tileInformation != null : "TileInformation cannot be null";
+      assert !tileInformation.equals("") : "TileInformation cannot be empty";
     }
     return new InformationPacket(board, false, playerSurvived, playerWin, tileInformation);
   }
