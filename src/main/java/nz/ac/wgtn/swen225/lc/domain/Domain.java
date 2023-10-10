@@ -39,7 +39,6 @@ public class Domain {
     }
 
     public InformationPacket movePlayer(Direction direction) {
-        // Remember to add sound queues.
         InformationPacket infoPacket = player.move(board, direction);
         if (infoPacket == null) throw new IllegalArgumentException();
 
