@@ -154,7 +154,7 @@ public class Player implements GameObject {
             }
         }
 
-        if (targetTile instanceof ExitDoor) {
+        if (targetTile instanceof Exit) {
             playerWin = true;
             Renderer.playSound("Win");
         } else if (targetTile instanceof Lava || targetTile instanceof Water) {
