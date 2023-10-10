@@ -74,8 +74,14 @@ public class Actor implements GameObject {
     ((WalkableTile) newBoard[route.get(newIndex).x()][route.get(newIndex).y()])
         .setGameObject(this);
 
+    // Work Around but I am ver tired
+    int oldIndex = newIndex - 1;
+    if (oldIndex == -1) {
+      oldIndex = route.size() - 1;
+    }
+
     // We are currently alive, so it is assumed we did the check beforehand.
-    ((WalkableTile) newBoard[route.get(positionIndex).x()][route.get(positionIndex).y()])
+    ((WalkableTile) newBoard[route.get(oldIndex).x()][route.get(oldIndex).y()])
         .setGameObject(null);
 
     // Increase the index of actor.

@@ -18,13 +18,22 @@ public class Domain {
   private final List<Actor> actors;
 
   /**
-   * Instantiates a new Domain.
+   * Instantiates a new Domain. domain handles all aspects of the game.
+   * this moves the actors as well as players. which handle their own
+   * movements allowing us to simply to ask them to move themselves.
    *
    * @param board  the board
    * @param player the player
    * @param actors the actors
    */
   public Domain(Board board, Player player, List<Actor> actors) {
+    if (board == null) {
+      throw new IllegalArgumentException();
+    }
+    if (player == null) {
+      throw new IllegalArgumentException();
+    }
+
     this.board = board;
     this.player = player;
     this.actors = actors;
@@ -37,21 +46,22 @@ public class Domain {
    */
   public InformationPacket advanceClock() {
     InformationPacket infoPacket = null;
+
+    // Attempts to move all actors
     for (Actor actor : actors) {
       infoPacket = actor.move(board);
- 
+
+      // if infoPacket is null something has gone wrong,  thus throw IllegalStateException
       if (infoPacket == null) {
-        throw new IllegalArgumentException();
+        throw new IllegalStateException();
       }
+      // if player has died return right away
       if (!infoPacket.isPlayerAlive()) {
         return infoPacket;
       }
       board = infoPacket.getBoard();
     }
 
-    if (infoPacket == null) {
-      throw new IllegalArgumentException();
-    }
     return infoPacket;
   }
 
@@ -62,13 +72,12 @@ public class Domain {
    * @return the information packet
    */
   public InformationPacket movePlayer(Direction direction) {
+    // attempts to move the player in specified direction
     InformationPacket infoPacket = player.move(board, direction);
 
+    // if returned null something has gone wrong, thus throw IllegalStateException
     if (infoPacket == null) {
-      throw new IllegalArgumentException();
-    }
-    if (!infoPacket.isPlayerAlive() || !infoPacket.hasPlayerMoved() || infoPacket.hasPlayerWon()) {
-      return infoPacket;
+      throw new IllegalStateException();
     }
     board = infoPacket.getBoard();
 
