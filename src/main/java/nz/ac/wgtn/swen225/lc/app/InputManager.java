@@ -109,7 +109,7 @@ public class InputManager {
       URL fileUrl = getClass().getResource("/levels/level" + levelNum + ".json");
       if (fileUrl != null) {
         File f = new File(fileUrl.toURI());
-        game.loadGame(f, true);
+        game.loadGameFromFile(f, true);
       }
     } catch (URISyntaxException ex) {
       System.out.println("Failed to load level " + levelNum + ", URI Syntax error: ");
@@ -130,7 +130,7 @@ public class InputManager {
         return;
       }
 
-      game.loadGame(file, true);
+      game.loadGameFromFile(file, true);
     }
   }
 

@@ -1,21 +1,21 @@
 package nz.ac.wgtn.swen225.lc.app;
 
+import java.io.File;
+import java.net.URISyntaxException;
+import java.net.URL;
+
 import javafx.application.Platform;
 import javafx.stage.Stage;
 import nz.ac.wgtn.swen225.lc.app.gui.GameWindow;
 import nz.ac.wgtn.swen225.lc.app.gui.RecorderPlaybackWindow;
 import nz.ac.wgtn.swen225.lc.domain.Domain;
 import nz.ac.wgtn.swen225.lc.domain.InformationPacket;
-import nz.ac.wgtn.swen225.lc.domain.Position;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable.Direction;
 import nz.ac.wgtn.swen225.lc.persistency.Load;
+import nz.ac.wgtn.swen225.lc.persistency.Save;
 import nz.ac.wgtn.swen225.lc.persistency.SaveData;
 import nz.ac.wgtn.swen225.lc.recorder.Playback;
 import nz.ac.wgtn.swen225.lc.recorder.Recorder;
-
-import java.io.File;
-import java.net.URISyntaxException;
-import java.net.URL;
 
 
 /**
@@ -25,7 +25,6 @@ import java.net.URL;
  */
 public class Game {
   public Recorder recorder;
-  private boolean isPaused = false;
   private GameTimer gameTimer;
   private GameTimer actorTimer;
   private int currentLevel;
@@ -44,7 +43,15 @@ public class Game {
     this.stage = stage;
     gameWindow = new GameWindow(stage, this);
 
-    loadLevel(1, true);
+    SaveData data = Load.autoLoad();
+
+    if (data == null) {
+      // No latest save, loading level 1
+      loadLevel(1, true);
+      return;
+    }
+
+    loadGameFromData(data, true);
   }
 
   /**
@@ -94,7 +101,7 @@ public class Game {
    */
   public void exitGame(boolean save) {
     if (save) {
-      // wait for save to finish then exit game
+      this.saveGame();
     }
 
     System.exit(0);
@@ -122,10 +129,10 @@ public class Game {
       URL fileUrl = getClass().getResource("/levels/level" + level + ".json");
       if (fileUrl != null) {
         File f = new File(fileUrl.toURI());
-        loadGame(f, autoUpdateActors);
+        loadGameFromFile(f, autoUpdateActors);
       }
     } catch (URISyntaxException ex) {
-      System.out.println("Failed to load level" + level + ", URI Syntax error: " + ex.toString());
+      System.out.println("Failed to load level" + level + ", URI Syntax error: " + ex);
     }
   }
 
@@ -134,13 +141,16 @@ public class Game {
    *
    * @param file the save/level file to load from.
    */
-  public void loadGame(File file, boolean autoUpdateActors) {
-    Domain domain = Load.loadAsDomain(file);
-    this.domain = domain;
-
-    isGameOver = false;
+  public void loadGameFromFile(File file, boolean autoUpdateActors) {
     SaveData saveData = Load.loadAsSaveData(file);
+    loadGameFromData(saveData, autoUpdateActors);
+  }
 
+  private void loadGameFromData(SaveData saveData, boolean autoUpdateActors) {
+    isGameOver = false;
+
+
+    domain = saveData.getDomain();
     currentLevel = saveData.getLevelNum();
     int timeRemaining = saveData.getTimeRemaining();
 
@@ -178,7 +188,16 @@ public class Game {
    * Save the current game.
    */
   public void saveGame() {
+    if (domain == null) {
+      throw new IllegalStateException();
+    }
 
+    SaveData saveData = new SaveData(domain, currentLevel, (int) gameTimer.getTimeRemaining());
+    Save.autoSave(saveData);
+
+    if (gameWindow != null) {
+      gameWindow.saveSuccessDialog();
+    }
   }
 
   /**
@@ -189,7 +208,6 @@ public class Game {
       return;
     }
 
-    isPaused = true;
     gameTimer.setPaused(true);
 
     if (actorTimer != null) {
@@ -213,7 +231,6 @@ public class Game {
       return;
     }
 
-    isPaused = false;
     gameTimer.setPaused(false);
 
     if (actorTimer != null) {
