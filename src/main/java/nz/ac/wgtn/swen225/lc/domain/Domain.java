@@ -13,101 +13,49 @@ import java.util.List;
  * @author Alexander_Galloway 300611406.
  */
 public class Domain {
-  private final Player player;
-  private Board board;
-  private final List<Actor> actors;
+    private final Player player;
+    private Board board;
+    private final List<Actor> actors;
 
-  /**
-   * Instantiates a new Domain. domain handles all aspects of the game.
-   * this moves the actors as well as players. which handle their own
-   * movements allowing us to simply to ask them to move themselves.
-   *
-   * @param board  the board
-   * @param player the player
-   * @param actors the actors
-   */
-  public Domain(Board board, Player player, List<Actor> actors) {
-    if (board == null) {
-      throw new IllegalArgumentException();
-    }
-    if (player == null) {
-      throw new IllegalArgumentException();
+    public Domain(Board board, Player player, List<Actor> actors) {
+        this.board = board;
+        this.player = player;
+        this.actors = actors;
     }
 
-    this.board = board;
-    this.player = player;
-    this.actors = actors;
-  }
+    public InformationPacket advanceClock() {
+        InformationPacket infoPacket = null;
+        for (Actor actor : actors) {
+            infoPacket = actor.move(board);
+            if (infoPacket == null) throw new IllegalArgumentException();
 
-  /**
-   * Advance clock information packet.
-   *
-   * @return the information packet
-   */
-  public InformationPacket advanceClock() {
-    InformationPacket infoPacket = null;
+            if (!infoPacket.isPlayerAlive()) return infoPacket;
+            board = infoPacket.getBoard();
+        }
 
-    // Attempts to move all actors
-    for (Actor actor : actors) {
-      infoPacket = actor.move(board);
-
-      // if infoPacket is null something has gone wrong,  thus throw IllegalStateException
-      if (infoPacket == null) {
-        throw new IllegalStateException();
-      }
-      // if player has died return right away
-      if (!infoPacket.isPlayerAlive()) {
+        if (infoPacket == null) throw new IllegalArgumentException();
         return infoPacket;
-      }
-      board = infoPacket.getBoard();
     }
 
-    return infoPacket;
-  }
+    public InformationPacket movePlayer(Direction direction) {
+        InformationPacket infoPacket = player.move(board, direction);
+        if (infoPacket == null) throw new IllegalArgumentException();
 
-  /**
-   * Move player information packet.
-   *
-   * @param direction the direction
-   * @return the information packet
-   */
-  public InformationPacket movePlayer(Direction direction) {
-    // attempts to move the player in specified direction
-    InformationPacket infoPacket = player.move(board, direction);
+        if (!infoPacket.isPlayerAlive() || !infoPacket.hasPlayerMoved() || infoPacket.hasPlayerWon()) return infoPacket;
+        board = infoPacket.getBoard();
 
-    // if returned null something has gone wrong, thus throw IllegalStateException
-    if (infoPacket == null) {
-      throw new IllegalStateException();
+        return infoPacket;
     }
-    board = infoPacket.getBoard();
 
-    return infoPacket;
-  }
+    public Player getPlayer() {
+        return player;
+    }
 
-  /**
-   * Gets player.
-   *
-   * @return the player
-   */
-  public Player getPlayer() {
-    return player;
-  }
+    public Board getBoard() {
+        return board;
+    }
 
-  /**
-   * Gets board.
-   *
-   * @return the board
-   */
-  public Board getBoard() {
-    return board;
-  }
-
-  /**
-   * Gets actors.
-   *
-   * @return the actors
-   */
-  public List<Actor> getActors() {
-    return actors;
-  }
+    public List<Actor> getActors() {
+        return actors;
+    }
 }
