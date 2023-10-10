@@ -228,6 +228,10 @@ public class Game {
 
     InformationPacket result = null;
 
+    if (gameWindow != null) {
+      gameWindow.renderer.moveActors(InputManager.MOVEMENT_TIMEOUT);
+    }
+
     try {
       result = domain.advanceClock();
     } catch (IllegalArgumentException exception) {
@@ -236,10 +240,6 @@ public class Game {
 
     if (result == null) {
       return;
-    }
-
-    if (gameWindow != null) {
-      //gameWindow.renderer.moveActors(InputManager.MOVEMENT_TIMEOUT);
     }
 
     if (recorder != null) {
