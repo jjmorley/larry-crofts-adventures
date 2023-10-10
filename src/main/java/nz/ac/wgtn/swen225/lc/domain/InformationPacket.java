@@ -6,39 +6,75 @@ package nz.ac.wgtn.swen225.lc.domain;
  * @author Alexander_Galloway 300611406.
  */
 public class InformationPacket {
-    private final Board board;
-    private final boolean playerMoved;
-    private final boolean playerAlive;
-    private final boolean playerWon;
-    private final String tileInformation;
+  private final Board board;
+  private final boolean playerMoved;
+  private final boolean playerAlive;
+  private final boolean playerWon;
+  private final String tileInformation;
 
-    public InformationPacket(Board board, boolean playerMoved, boolean playerAlive, boolean playerWon, String tileInformation) {
-        if (board == null) throw new IllegalArgumentException();
-
-        this.board = board;
-        this.playerMoved = playerMoved;
-        this.playerAlive = playerAlive;
-        this.playerWon = playerWon;
-        this.tileInformation = tileInformation;
+  /**
+   * Instantiates a new Information packet.
+   *
+   * @param board           the board
+   * @param playerMoved     the player moved
+   * @param playerAlive     the player alive
+   * @param playerWon       the player won
+   * @param tileInformation the tile information
+   */
+  public InformationPacket(Board board, boolean playerMoved, boolean playerAlive, boolean playerWon, String tileInformation) {
+    if (board == null) {
+      throw new IllegalArgumentException();
     }
 
-    public Board getBoard() {
-        return board;
-    }
+    this.board = board;
+    this.playerMoved = playerMoved;
+    this.playerAlive = playerAlive;
+    this.playerWon = playerWon;
+    this.tileInformation = tileInformation;
+  }
 
-    public boolean hasPlayerMoved() {
-        return playerMoved;
-    }
+  /**
+   * Gets board.
+   *
+   * @return the board
+   */
+  public Board getBoard() {
+    return board;
+  }
 
-    public boolean isPlayerAlive() {
-        return playerAlive;
-    }
+  /**
+   * Has player moved boolean.
+   *
+   * @return the boolean
+   */
+  public boolean hasPlayerMoved() {
+    return playerMoved;
+  }
 
-    public boolean hasPlayerWon() {
-        return playerWon;
-    }
+  /**
+   * Is player alive boolean.
+   *
+   * @return the boolean
+   */
+  public boolean isPlayerAlive() {
+    return playerAlive;
+  }
 
-    public String getTileInformation() {
-        return tileInformation;
-    }
+  /**
+   * Has player won boolean.
+   *
+   * @return the boolean
+   */
+  public boolean hasPlayerWon() {
+    return playerWon;
+  }
+
+  /**
+   * Gets tile information.
+   *
+   * @return the tile information
+   */
+  public String getTileInformation() {
+    return tileInformation;
+  }
 }
