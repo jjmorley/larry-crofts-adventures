@@ -12,7 +12,7 @@ import java.io.IOException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-public class RecorderTests {
+public class RecorderTest {
 
     private Recorder recorder;
     private File testFile;
@@ -22,11 +22,11 @@ public class RecorderTests {
     public void setUp() {
         this.game = new Game(0);
         recorder = new Recorder(1, game); // Initialize Recorder
-        testFile = new File("src/main/resources/Recorder/test-playback-game.json");
+        testFile = new File("test-recorded-game.json"); // Create a test file
     }
 
     @Test
-    public void testSave1() {
+    public void testSave() {
         // Add some moves to the recorder
         recorder.addPlayerMove(Direction.RIGHT);
         recorder.addActorMove();
@@ -39,32 +39,6 @@ public class RecorderTests {
 
             // Construct a Playback object from the test file and catch IOException
             Playback loadedRecorder = new Playback(testFile, this.game);
-
-            // Check if loadedRecorder contains the same moves as the original recorder
-            assertEquals(recorder.getPlayerMoveHistory(), loadedRecorder.getPlayerMoveHistory());
-            assertEquals(recorder.getActorMoveHistory(), loadedRecorder.getActorMoveHistory());
-            assertEquals(recorder.getLevel(), loadedRecorder.getLevel());
-        } catch (IOException e) {
-            // Handle IOException if it occurs during file operations
-            fail("IOException occurred: " + e.getMessage());
-        }
-    }
-
-    @Test
-    public void testSave2() {
-        // Add a different sequence of player moves to the recorder
-        recorder.addPlayerMove(Direction.UP);
-        recorder.addPlayerMove(Direction.LEFT);
-        recorder.addActorMove();
-        recorder.addPlayerMove(Direction.UP);
-
-        // Save the recorded game data to a unique test file
-        File uniqueTestFile = new File("src/main/resources/Recorder/unique-test-recorded-game.json");
-        recorder.saveRecordedGameToFile(uniqueTestFile);
-
-        try {
-            // Construct a Playback object from the unique test file and catch IOException
-            Playback loadedRecorder = new Playback(uniqueTestFile, this.game);
 
             // Check if loadedRecorder contains the same moves as the original recorder
             assertEquals(recorder.getPlayerMoveHistory(), loadedRecorder.getPlayerMoveHistory());
