@@ -3,6 +3,7 @@ package nz.ac.wgtn.swen225.lc.domain;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable.Actor;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable.Direction;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable.Player;
+import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.walkableTile.WalkableTile;
 
 import java.util.List;
 
@@ -23,8 +24,6 @@ public class Domain {
     }
 
     public InformationPacket advanceClock() {
-        // Could use streams in this case to make the code shorter, But makes it a pain to read.
-        // Seems unnecessary.
         InformationPacket infoPacket = null;
         for (Actor actor : actors) {
             infoPacket = actor.move(board);
