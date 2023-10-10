@@ -105,13 +105,17 @@ public class Playback {
    */
   public void startAutoReplayTimer() {
     // Check if the timer is already running and cancel it if necessary
-    if (timer != null) {
-      timer.cancel();
+    if (replayTask != null) {
+      replayTask.cancel();
+    }
+
+    if (timer == null) {
+      timer = new Timer();
     }
 
     // Schedule the timer task with the updated speed
-    timer = new Timer();
-    timer.scheduleAtFixedRate(replayTask, 0, playSpeed);
+    replayTask = autoReplayGame();
+    timer.scheduleAtFixedRate(replayTask, 50, playSpeed);
   }
 
   /**
@@ -125,7 +129,7 @@ public class Playback {
       public void run() {
         // If playback stopped or end of recorded game
         if (!playingBack || frame == playerMoveHistory.size()) {
-          timer.cancel();
+          replayTask.cancel();
           pause();
         } else {
           if (actorMoveHistory.get(frame).equals("")) {
@@ -145,17 +149,15 @@ public class Playback {
   public void playNextFrame() {
     pause();
 
-    //Check whether next move is an actor move or player move
-    if (actorMoveHistory.get(frame).equals("")) {
-      game.movePlayer(Direction.valueOf(playerMoveHistory.get(frame)));
-    } else {
-      game.updateActors();
-    }
-
-    //If at end of replayed game go back to beginning
     if (frame == playerMoveHistory.size() - 1) {
-      frame = 0;
+      game.stopRecordingPlayback(this);
     } else {
+      //Check whether next move is an actor move or player move
+      if (actorMoveHistory.get(frame).equals("")) {
+        game.movePlayer(Direction.valueOf(playerMoveHistory.get(frame)));
+      } else {
+        game.updateActors();
+      }
       frame++;
     }
 
@@ -174,6 +176,7 @@ public class Playback {
    */
   public void play() {
     playingBack = true;
+    startAutoReplayTimer();
   }
 
   /**
