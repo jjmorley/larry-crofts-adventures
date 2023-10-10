@@ -9,6 +9,7 @@ import nz.ac.wgtn.swen225.lc.domain.InformationPacket;
 import nz.ac.wgtn.swen225.lc.domain.Position;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable.Direction;
 import nz.ac.wgtn.swen225.lc.persistency.Load;
+import nz.ac.wgtn.swen225.lc.persistency.SaveData;
 import nz.ac.wgtn.swen225.lc.recorder.Playback;
 import nz.ac.wgtn.swen225.lc.recorder.Recorder;
 
@@ -137,11 +138,10 @@ public class Game {
     this.domain = domain;
 
     isGameOver = false;
+    SaveData saveData = Load.loadAsSaveData(file);
 
-    // TODO Get level number from persistence
-    // TODO Get time remaining from persistence
-
-    currentLevel = 1; // TODO temporary
+    currentLevel = saveData.getLevelNum();
+    int timeRemaining = saveData.getTimeRemaining();
 
     this.recorder = new Recorder(currentLevel, this);
 
@@ -150,7 +150,13 @@ public class Game {
       gameTimer = null;
     }
 
-    gameTimer = new GameTimer(60, 1000, this::onTimeout, this::onTimerUpdate);
+    gameTimer = new GameTimer(timeRemaining, 1000, this::onTimeout, this::onTimerUpdate);
+
+    if (actorTimer != null) {
+      // Kill any actor timer
+      actorTimer.pauseTimer();
+      actorTimer = null;
+    }
 
     if (autoUpdateActors) {
       actorTimer = new GameTimer(
@@ -159,11 +165,7 @@ public class Game {
           () -> {
             // This should never happen
           },
-          (Long timeRemaining) -> this.updateActors());
-    } else if (actorTimer != null) {
-      // Kill any actor timer
-      actorTimer.pauseTimer();
-      actorTimer = null;
+          (Long timeLeft) -> this.updateActors());
     }
 
     if (gameWindow != null) {
@@ -193,7 +195,11 @@ public class Game {
       actorTimer.pauseTimer();
     }
 
-    if (showOverlay) {
+    if (gameWindow != null) {
+      gameWindow.inputManager.setMovementLocked(true);
+    }
+
+    if (showOverlay && gameWindow != null) {
       gameWindow.overlay.displayPause();
     }
   }
@@ -211,6 +217,10 @@ public class Game {
 
     if (actorTimer != null) {
       actorTimer.resumeTimer();
+    }
+
+    if (gameWindow != null) {
+      gameWindow.inputManager.setMovementLocked(false);
     }
 
     if (gameWindow != null) {
@@ -262,8 +272,6 @@ public class Game {
       return false;
     }
 
-    Position playerStartPos = domain.getPlayer().getPosition();
-
     InformationPacket moveResult = domain.movePlayer(direction);
 
     if (!moveResult.hasPlayerMoved()) {
@@ -279,6 +287,11 @@ public class Game {
 
     if (recorder != null) {
       recorder.addPlayerMove(direction);
+    }
+
+    if (moveResult.hasPlayerWon()) {
+      gameWin();
+      return true;
     }
 
     if (!moveResult.isPlayerAlive()) {
