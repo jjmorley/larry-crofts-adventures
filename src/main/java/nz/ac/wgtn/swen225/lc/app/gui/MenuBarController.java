@@ -75,8 +75,7 @@ public class MenuBarController {
     }
 
     try {
-      Playback playback = new Playback(file, game);
-      playback.initiateRecordingPlayback();
+      new Playback(file, game);
     } catch (IOException ex) {
       handleRecordingFileError();
     }
