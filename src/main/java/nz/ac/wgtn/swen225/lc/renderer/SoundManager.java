@@ -2,6 +2,7 @@ package nz.ac.wgtn.swen225.lc.renderer;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import javafx.scene.media.AudioClip;
 
 
@@ -12,7 +13,6 @@ import javafx.scene.media.AudioClip;
  */
 public class SoundManager {
   private final Map<String, AudioClip> soundCache;
-  private AudioClip backgroundMusic; //not implemented yet
 
   /**
    * Initialises the map of sounds and sound names.
@@ -29,38 +29,25 @@ public class SoundManager {
    */
   private void loadSounds() {
     try {
-      soundCache.put("Key",
-              new AudioClip(this.getClass().getResource("/Sounds/Key.mp3").toExternalForm()));
-      soundCache.put("Door",
-              new AudioClip(this.getClass().getResource("/Sounds/Door.mp3").toExternalForm()));
-      soundCache.put("Exit_Door", new AudioClip(this.getClass().getResource("/Sounds/Exit_Door"
-              + ".mp3").toExternalForm()));
-      soundCache.put("Lose",
-              new AudioClip(this.getClass().getResource("/Sounds/Lose.mp3").toExternalForm()));
-      soundCache.put("Win",
-              new AudioClip(this.getClass().getResource("/Sounds/Win.mp3").toExternalForm()));
+      soundCache.put("Key", new AudioClip(Objects.requireNonNull(this.getClass().getResource(
+              "/Sounds/Key.mp3")).toExternalForm()));
+      soundCache.put("Door", new AudioClip(Objects.requireNonNull(this.getClass().getResource(
+              "/Sounds/Door.mp3")).toExternalForm()));
+      soundCache.put("Exit_Door",
+              new AudioClip(Objects.requireNonNull(this.getClass().getResource("/Sounds/Exit_Door"
+                      + ".mp3")).toExternalForm()));
+      soundCache.put("Lose", new AudioClip(Objects.requireNonNull(this.getClass().getResource(
+              "/Sounds/Lose.mp3")).toExternalForm()));
+      soundCache.put("Win", new AudioClip(Objects.requireNonNull(this.getClass().getResource(
+              "/Sounds/Win.mp3")).toExternalForm()));
       soundCache.put("Treasure",
-              new AudioClip(this.getClass().getResource("/Sounds/Treasure.mp3").toExternalForm()));
-      soundCache.put("Splash",
-              new AudioClip(this.getClass().getResource("/Sounds/Splash.mp3").toExternalForm()));
+              new AudioClip(Objects.requireNonNull(this.getClass().getResource("/Sounds/Treasure"
+                      + ".mp3")).toExternalForm()));
+      soundCache.put("Splash", new AudioClip(Objects.requireNonNull(this.getClass().getResource(
+              "/Sounds/Splash.mp3")).toExternalForm()));
     } catch (Exception e) {
       System.err.println("Error loading sound file: " + e.getMessage());
     }
-  }
-
-  /**
-   * Music for game. NOT IMPLEMENTED YET
-   */
-  public void playBackgroundMusic() {
-    backgroundMusic.setCycleCount(AudioClip.INDEFINITE); // Loop the background music indefinitely
-    backgroundMusic.play();
-  }
-
-  /**
-   * Stop the music. NOT IMPLEMENTED YET
-   */
-  public void stopBackgroundMusic() {
-    backgroundMusic.stop();
   }
 
   /**
