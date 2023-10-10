@@ -311,6 +311,11 @@ public class Game {
       return true;
     }
 
+    if (moveResult.getTileInformation() != null && gameWindow != null) {
+      pauseGame(false);
+      gameWindow.overlay.displayHelp();
+    }
+
     if (!moveResult.isPlayerAlive()) {
       gameOver("died");
     }
