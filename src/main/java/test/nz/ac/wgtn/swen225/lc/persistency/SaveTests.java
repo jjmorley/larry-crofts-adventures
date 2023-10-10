@@ -39,7 +39,7 @@ public class SaveTests {
 
   @Test
   public void autoSaveNotEmpty() throws IOException {
-    SaveData s = loadAsSaveData(new File("src/main/resources/levels/levels-template.json"));
+    SaveData s = loadAsSaveData(new File("src/main/resources/levels/level1.json"));
     autoSave(s);
     SaveData autoSavedData = autoLoad();
 

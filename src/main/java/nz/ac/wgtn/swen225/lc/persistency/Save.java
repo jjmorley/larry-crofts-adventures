@@ -28,7 +28,7 @@ public class Save {
    * Autosaves to a JSON titled with the hash of the current time.
    */
   public static void autoSave(SaveData s) {
-    File f = new File("src/main/resources/levels/"
+    File f = new File("src/main/saves/"
             + java.time.LocalDateTime.now().hashCode() + ".json");
     saveJsonFromSaveData(f, s);
   }

@@ -45,12 +45,12 @@ public class Load {
    * @return Domain
    */
   public static SaveData autoLoad() {
-    Path dir = Paths.get("src/main/resources/levels");  // specify directory
+    Path dir = Paths.get("src/main/saves");  // specify directory
     try {
       File filePath = Files.list(dir)
               .filter(f -> !Files.isDirectory(f))
               .max(Comparator.comparingLong(f -> f.toFile().lastModified()))
-              .orElseGet(null).toFile();
+              .orElse(Paths.get("src/main/resources/levels/level1.json")).toFile(); //load level 1 by default
 
       if (filePath != null) { //this should not ever be false - would throw error otherwise
         return loadAsSaveData(filePath);
