@@ -1,20 +1,21 @@
 package nz.ac.wgtn.swen225.lc.app;
 
+import java.io.File;
+import java.net.URISyntaxException;
+import java.net.URL;
+
 import javafx.application.Platform;
 import javafx.stage.Stage;
 import nz.ac.wgtn.swen225.lc.app.gui.GameWindow;
 import nz.ac.wgtn.swen225.lc.app.gui.RecorderPlaybackWindow;
 import nz.ac.wgtn.swen225.lc.domain.Domain;
 import nz.ac.wgtn.swen225.lc.domain.InformationPacket;
-import nz.ac.wgtn.swen225.lc.domain.Position;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable.Direction;
 import nz.ac.wgtn.swen225.lc.persistency.Load;
+import nz.ac.wgtn.swen225.lc.persistency.Save;
+import nz.ac.wgtn.swen225.lc.persistency.SaveData;
 import nz.ac.wgtn.swen225.lc.recorder.Playback;
 import nz.ac.wgtn.swen225.lc.recorder.Recorder;
-
-import java.io.File;
-import java.net.URISyntaxException;
-import java.net.URL;
 
 
 /**
@@ -24,7 +25,6 @@ import java.net.URL;
  */
 public class Game {
   public Recorder recorder;
-  private boolean isPaused = false;
   private GameTimer gameTimer;
   private GameTimer actorTimer;
   private int currentLevel;
@@ -32,6 +32,7 @@ public class Game {
   private Domain domain;
   private Stage stage;
   private boolean isGameOver = false;
+  private boolean shouldAutoUpdateActors = true;
 
   /**
    * Creates a new instance of the game.
@@ -43,7 +44,15 @@ public class Game {
     this.stage = stage;
     gameWindow = new GameWindow(stage, this);
 
-    loadLevel(1, true);
+    SaveData data = Load.autoLoad();
+
+    if (data == null) {
+      // No latest save, loading level 1
+      loadLevel(1, true);
+      return;
+    }
+
+    loadGameFromData(data, true);
   }
 
   /**
@@ -81,8 +90,11 @@ public class Game {
   public void stopRecordingPlayback(Playback playback) {
     // Resume player controls
     if (gameWindow != null) {
+      InputManager.MOVEMENT_TIMEOUT = 250;
       gameWindow.inputManager.setMovementLocked(false);
     }
+
+    actorTimer.setPaused(false);
   }
 
   /**
@@ -92,7 +104,7 @@ public class Game {
    */
   public void exitGame(boolean save) {
     if (save) {
-      // wait for save to finish then exit game
+      this.saveGame();
     }
 
     System.exit(0);
@@ -120,10 +132,10 @@ public class Game {
       URL fileUrl = getClass().getResource("/levels/level" + level + ".json");
       if (fileUrl != null) {
         File f = new File(fileUrl.toURI());
-        loadGame(f, autoUpdateActors);
+        loadGameFromFile(f, autoUpdateActors);
       }
     } catch (URISyntaxException ex) {
-      System.out.println("Failed to load level" + level + ", URI Syntax error: " + ex.toString());
+      System.out.println("Failed to load level" + level + ", URI Syntax error: " + ex);
     }
   }
 
@@ -132,16 +144,18 @@ public class Game {
    *
    * @param file the save/level file to load from.
    */
-  public void loadGame(File file, boolean autoUpdateActors) {
-    Domain domain = Load.loadAsDomain(file);
-    this.domain = domain;
+  public void loadGameFromFile(File file, boolean autoUpdateActors) {
+    SaveData saveData = Load.loadAsSaveData(file);
+    loadGameFromData(saveData, autoUpdateActors);
+  }
 
+  private void loadGameFromData(SaveData saveData, boolean autoUpdateActors) {
+    this.shouldAutoUpdateActors = autoUpdateActors;
     isGameOver = false;
 
-    // TODO Get level number from persistence
-    // TODO Get time remaining from persistence
-
-    currentLevel = 1; // TODO temporary
+    domain = saveData.getDomain();
+    currentLevel = saveData.getLevelNum();
+    int timeRemaining = saveData.getTimeRemaining();
 
     this.recorder = new Recorder(currentLevel, this);
 
@@ -150,24 +164,25 @@ public class Game {
       gameTimer = null;
     }
 
-    gameTimer = new GameTimer(60, 1000, this::onTimeout, this::onTimerUpdate);
+    gameTimer = new GameTimer(timeRemaining, 1000, this::onTimeout, this::onTimerUpdate);
 
-    if (autoUpdateActors) {
+    if (actorTimer == null) {
       actorTimer = new GameTimer(
           Long.MAX_VALUE,
           1000,
           () -> {
             // This should never happen
           },
-          (Long timeRemaining) -> this.updateActors());
-    } else if (actorTimer != null) {
-      // Kill any actor timer
-      actorTimer.pauseTimer();
-      actorTimer = null;
+          (Long timeLeft) -> {
+            this.updateActors();
+          });
     }
+
+    actorTimer.setPaused(!shouldAutoUpdateActors);
 
     if (gameWindow != null) {
       gameWindow.createGame(domain, currentLevel);
+      gameWindow.inputManager.setMovementLocked(false);
     }
   }
 
@@ -175,7 +190,16 @@ public class Game {
    * Save the current game.
    */
   public void saveGame() {
+    if (domain == null) {
+      throw new IllegalStateException();
+    }
 
+    SaveData saveData = new SaveData(domain, currentLevel, (int) gameTimer.getTimeRemaining());
+    Save.autoSave(saveData);
+
+    if (gameWindow != null) {
+      gameWindow.saveSuccessDialog();
+    }
   }
 
   /**
@@ -186,14 +210,14 @@ public class Game {
       return;
     }
 
-    isPaused = true;
     gameTimer.setPaused(true);
+    actorTimer.setPaused(true);
 
-    if (actorTimer != null) {
-      actorTimer.pauseTimer();
+    if (gameWindow != null) {
+      gameWindow.inputManager.setMovementLocked(true);
     }
 
-    if (showOverlay) {
+    if (showOverlay && gameWindow != null) {
       gameWindow.overlay.displayPause();
     }
   }
@@ -206,11 +230,14 @@ public class Game {
       return;
     }
 
-    isPaused = false;
     gameTimer.setPaused(false);
 
-    if (actorTimer != null) {
-      actorTimer.resumeTimer();
+    if (shouldAutoUpdateActors) {
+      actorTimer.setPaused(false);
+    }
+
+    if (gameWindow != null) {
+      gameWindow.inputManager.setMovementLocked(false);
     }
 
     if (gameWindow != null) {
@@ -228,6 +255,10 @@ public class Game {
 
     InformationPacket result = null;
 
+    if (gameWindow != null) {
+      gameWindow.renderer.moveActors(InputManager.MOVEMENT_TIMEOUT);
+    }
+
     try {
       result = domain.advanceClock();
     } catch (IllegalArgumentException exception) {
@@ -236,10 +267,6 @@ public class Game {
 
     if (result == null) {
       return;
-    }
-
-    if (gameWindow != null) {
-      //gameWindow.renderer.moveActors(InputManager.MOVEMENT_TIMEOUT);
     }
 
     if (recorder != null) {
@@ -262,8 +289,6 @@ public class Game {
       return false;
     }
 
-    Position playerStartPos = domain.getPlayer().getPosition();
-
     InformationPacket moveResult = domain.movePlayer(direction);
 
     if (!moveResult.hasPlayerMoved()) {
@@ -279,6 +304,16 @@ public class Game {
 
     if (recorder != null) {
       recorder.addPlayerMove(direction);
+    }
+
+    if (moveResult.hasPlayerWon()) {
+      gameWin();
+      return true;
+    }
+
+    if (moveResult.getTileInformation() != null && gameWindow != null) {
+      pauseGame(false);
+      gameWindow.overlay.displayHelp();
     }
 
     if (!moveResult.isPlayerAlive()) {

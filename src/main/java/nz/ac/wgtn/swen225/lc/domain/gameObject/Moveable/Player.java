@@ -11,8 +11,8 @@ import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.Door;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.ExitDoor;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.Tile;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.Wall;
-import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.walkableTile.Free;
-import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.walkableTile.WalkableTile;
+import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.walkableTile.*;
+import nz.ac.wgtn.swen225.lc.renderer.Renderer;
 
 import java.util.List;
 
@@ -53,33 +53,35 @@ public class Player implements GameObject {
      * @return Board that has been updated.
      */
     public InformationPacket move(Board board, Direction direction) {
+        InformationPacket infoPacket = null;
+
         if (board == null) throw new IllegalArgumentException();
         if (direction == null) throw new IllegalArgumentException();
 
         int[] directionOffset = convertIntTo2Dspace(direction);
 
         Tile[][] newBoard = board.getBoard();
+        if (position.x() + directionOffset[0] >= newBoard.length || position.x() + directionOffset[0] < 0 || position.y() + directionOffset[1] >= newBoard[0].length || position.y() + directionOffset[1] < 0) {
+            return new InformationPacket(board, false, true, false, null);
+        }
         Tile moveToTile = newBoard[position.x() + directionOffset[0]][position.y() + directionOffset[1]];
 
 
         if (!(moveToTile instanceof WalkableTile) && !(moveToTile instanceof Wall)) {
-            InformationPacket infoPacket = tryWalkThroughNonWalkableTile(moveToTile, newBoard, board, directionOffset);
+            infoPacket = tryWalkThroughNonWalkableTile(moveToTile, newBoard, board, directionOffset);
 
-            if (infoPacket == null) {
-                return new InformationPacket(board, false, true, false);
-            }
-            board.setBoard(infoPacket.getBoard().getBoard());
-
-        } else if ((moveToTile instanceof WalkableTile targetTile)) {
-            InformationPacket infoPacket = getContentsOfNextTile(targetTile, newBoard, board);
-
-            if (!infoPacket.isPlayerAlive()) {
+            if (!infoPacket.hasPlayerMoved()) {
                 return infoPacket;
             }
             board.setBoard(infoPacket.getBoard().getBoard());
 
+        } else if ((moveToTile instanceof WalkableTile targetTile)) {
+            infoPacket = getContentsOfNextTile(targetTile, newBoard, board);
+
+
+            board.setBoard(infoPacket.getBoard().getBoard());
         } else {
-            return new InformationPacket(board, false, true, false);
+            return new InformationPacket(board, false, true, false, null);
         }
 
 
@@ -91,7 +93,7 @@ public class Player implements GameObject {
         position = new Position(position.x()+directionOffset[0], position.y()+directionOffset[1]);
 
         board.setBoard(newBoard);
-        return new InformationPacket(board, true, true, false);
+        return new InformationPacket(board, true, infoPacket.isPlayerAlive(), infoPacket.hasPlayerWon(), infoPacket.getTileInformation());
     }
 
     private InformationPacket tryWalkThroughNonWalkableTile(Tile targetTile, Tile[][] newBoard, Board board, int[] directionOffset) {
@@ -114,10 +116,12 @@ public class Player implements GameObject {
 
             if (validKey!=null) {
                 validMove = true;
+                Renderer.playSound("Door");
             }
         } else if (targetTile instanceof ExitDoor) {
             if (treasuresLeft == 0) {
                 validMove = true;
+                Renderer.playSound("Exit_Door");
             }
         }
 
@@ -126,14 +130,16 @@ public class Player implements GameObject {
             newBoard[position.x() + directionOffset[0]][position.y() + directionOffset[1]] = new Free(null, pos);
 
             board.setBoard(newBoard);
-            return new InformationPacket(board, true, true, false);
+            return new InformationPacket(board, true, true, false, null);
         }
 
-        return null;
+        return new InformationPacket(board, false, true, false, null);
     }
 
     private InformationPacket getContentsOfNextTile(WalkableTile targetTile, Tile[][] newBoard, Board board) {
+        String tileInfomation = null;
         boolean playerSurvived = true;
+        boolean playerWin = false;
 
         ((WalkableTile) newBoard[position.x()][position.y()]).setGameObject(null);
         board.setBoard(newBoard);
@@ -141,14 +147,26 @@ public class Player implements GameObject {
         if (targetTile.getGameObject() != null) {
             if (targetTile.getGameObject() instanceof Key key) {
                 inventory.add(key);
+                Renderer.playSound("Key");
             } else if (targetTile.getGameObject() instanceof Treasure) {
                 treasuresLeft--;
+                Renderer.playSound("Treasure");
             } else if (targetTile.getGameObject() instanceof Actor) {
                 playerSurvived = false;
+                Renderer.playSound("Lose");
             }
         }
 
-        return new InformationPacket(board, false, playerSurvived, false);
+        if (targetTile instanceof Exit) {
+            playerWin = true;
+            Renderer.playSound("Win");
+        } else if (targetTile instanceof Lava || targetTile instanceof Water) {
+            playerSurvived = false;
+            Renderer.playSound("Splash");
+        } else if (targetTile instanceof InfoTile infoTile) {
+            tileInfomation = infoTile.getInformation();
+        }
+        return new InformationPacket(board, false, playerSurvived, playerWin, tileInfomation);
     }
 
     private int[] convertIntTo2Dspace(Direction direction) {

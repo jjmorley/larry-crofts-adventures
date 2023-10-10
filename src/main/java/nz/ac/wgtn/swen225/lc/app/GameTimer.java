@@ -52,10 +52,13 @@ public class GameTimer {
 
     onTimerUpdate.accept(timeRemaining);
 
-    if (timeRemaining > 0) {
-      decrementTimerAfterOneSec();
-    } else {
+    if (timeRemaining == 0) {
       onTimeout.run();
+      return;
+    }
+
+    if (!isPaused) {
+      decrementTimerAfterOneSec();
     }
   }
 
