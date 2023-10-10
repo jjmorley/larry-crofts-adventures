@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javafx.animation.*;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
@@ -37,7 +36,7 @@ public class Renderer {
   private final List<ImageView> actorImageViews = new ArrayList<>();
   private ParallelTransition currentParallelTransition;
   private TranslateTransition currentTransition;
-  private Map<ImageView, Integer> frameMap = new HashMap<>();
+  private final Map<ImageView, Integer> frameMap = new HashMap<>();
 
   //canvas variables
   private final BoardCanvas canvas;
@@ -252,7 +251,8 @@ public class Renderer {
       throw new IllegalArgumentException("translationSpeed cannot be a negative integer");
     }
     //ensure no animations are already in progress
-    if (currentParallelTransition != null && currentParallelTransition.getStatus() == javafx.animation.Animation.Status.RUNNING) {
+    if (currentParallelTransition != null
+            && currentParallelTransition.getStatus() == javafx.animation.Animation.Status.RUNNING) {
       currentParallelTransition.stop();
     }
     canvas.renderGameBoard();
@@ -264,20 +264,19 @@ public class Renderer {
               new TranslateTransition(Duration.millis(translationSpeed),
                       actorImageViews.get(count));
 
-      // Retrieve the actors current and next position
       List<Position> route = actor.getRoute();
-      int currentPos = actor.getPositionIndex();
-      int nextPos = (currentPos + 1) % route.size();
 
       // Set the initial position of the sprite
       actorImageViews.get(count).setLayoutX(0.0); // Initial X coordinate
       actorImageViews.get(count).setLayoutY(0.0); // Initial Y coordinate
 
       //set the start of the transition
+      int currentPos = actor.getPositionIndex();
       transition.setFromX(route.get(currentPos).y() * cellSize);
       transition.setFromY(route.get(currentPos).x() * cellSize);
 
       //set the target destination of the transition
+      int nextPos = (currentPos + 1) % route.size();
       transition.setToX(route.get(nextPos).y() * cellSize);
       transition.setToY(route.get(nextPos).x() * cellSize);
 

@@ -68,7 +68,8 @@ public class BoardCanvas extends Canvas {
 
         //It the tile is a WalkableTile check to see it has an item
         if (tiles[i][j] instanceof WalkableTile tile) {
-          if (tile.getGameObject() != null && !tile.getGameObject().getName().equals("Player") && !tile.getGameObject().getName().equals("Actor")) {
+          if (tile.getGameObject() != null && !tile.getGameObject().getName().equals("Player")
+                  && !tile.getGameObject().getName().equals("Actor")) {
             //load the item sprite
             Image itemImage;
             if (tile.getGameObject() instanceof Key key) { //if it's a key, check what colour it is
