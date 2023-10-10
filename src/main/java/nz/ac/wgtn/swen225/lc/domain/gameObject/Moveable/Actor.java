@@ -58,8 +58,8 @@ public class Actor implements GameObject {
         // Using full newBoard as there is no second step, compared to moveToTile.
         ((WalkableTile) newBoard[route.get(newIndex).x()][route.get(newIndex).y()]).setGameObject(this);
         // We are currently alive, so it is assumed we did the check beforehand.
-        positionIndex++;
         ((WalkableTile) newBoard[route.get(positionIndex).x()][route.get(positionIndex).y()]).setGameObject(null);
+        positionIndex++;
 
         board.setBoard(newBoard);
         return new InformationPacket(board, false, true, false, null);
