@@ -14,11 +14,10 @@ import org.junit.jupiter.api.Test;
  * @author chaisonopp
  */
 class FuzzTest {
-    // Initialise/Assignment
 
+    // Initialise/Assignment
     private nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable.Direction dir;
     private final int TIMEOUT = 250;
-
 
     // Level 1 test
     @Test
@@ -42,7 +41,6 @@ class FuzzTest {
                 } else {
                     game.movePlayer(Direction.LEFT);
                 }
-
                 Thread.sleep(TIMEOUT);
             }
 
@@ -77,7 +75,7 @@ class FuzzTest {
             Game game = new Game(2);
 
             // Move the player in random directions
-            for (int i = 0; i < 100; i++) {
+            for (int i = 0; i < 150; i++) {
                 // Generate a random number between 1 and 4 (inclusive)
                 Random random = new Random();
                 int rand = random.nextInt(4) + 1;
@@ -96,7 +94,6 @@ class FuzzTest {
             }
         });
     }
-
 }
 
 
