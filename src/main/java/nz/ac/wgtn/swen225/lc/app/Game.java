@@ -361,8 +361,4 @@ public class Game {
 
     return gameTimer.getTimeRemaining();
   }
-
-  public Domain getDomain() {
-    return domain;
-  }
 }
