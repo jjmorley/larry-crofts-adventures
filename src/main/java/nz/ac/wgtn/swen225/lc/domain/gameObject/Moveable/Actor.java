@@ -37,9 +37,9 @@ public class Actor implements GameObject {
      */
     public InformationPacket move(Board board) {
         if (board == null) throw new IllegalArgumentException();
-        if (positionIndex++ >= route.size()) positionIndex = -1;
+        if (positionIndex+1 >= route.size()) positionIndex = -1;
 
-        int newIndex = positionIndex++;
+        int newIndex = positionIndex+1;
         Tile[][] newBoard = board.getBoard();
 
         Tile moveToTile = newBoard[route.get(newIndex).x()][route.get(newIndex).y()];
@@ -56,8 +56,8 @@ public class Actor implements GameObject {
         // Using full newBoard as there is no second step, compared to moveToTile.
         ((WalkableTile) newBoard[route.get(newIndex).x()][route.get(newIndex).y()]).setGameObject(this);
         // We are currently alive, so it is assumed we did the check beforehand.
-        ((WalkableTile) newBoard[route.get(positionIndex).x()][route.get(positionIndex).y()]).setGameObject(null);
         positionIndex++;
+        ((WalkableTile) newBoard[route.get(positionIndex).x()][route.get(positionIndex).y()]).setGameObject(null);
 
         board.setBoard(newBoard);
         return new InformationPacket(board, false, true, false);
