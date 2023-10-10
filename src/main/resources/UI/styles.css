@@ -1,0 +1,87 @@
+.icon-button {
+    -fx-background-color: #00000014;
+    -size: 40;
+    -fx-min-height: -size;
+    -fx-min-width: -size;
+    -fx-max-height: -size;
+    -fx-max-width: -size;
+    -fx-background-radius: 1000;
+}
+
+.icon-button:hover {
+    -fx-background-color: #00000029;
+}
+
+.icon-button:pressed {
+    -fx-background-color: #0000005c;
+}
+
+.icon-button .icon {
+    -fx-background-color: black;
+    -size: 16;
+    -fx-min-height: -size;
+    -fx-min-width: -size;
+    -fx-max-height: -size;
+    -fx-max-width: -size;
+}
+
+.gameLabel {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 18;
+}
+
+.gameLabelValue {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 24;
+    -fx-font-weight: Bold;
+}
+
+.label {
+    -fx-font-family: 'Silkscreen';
+}
+
+.button {
+    -fx-font-family: 'Silkscreen';
+}
+
+.OverlayButton {
+    -fx-font-family: 'Silkscreen';
+    -fx-font-size: 20;
+}
+
+.OverlayTitle {
+    -fx-font-family: 'Silkscreen';
+    -fx-font-weight: Bold;
+    -fx-font-size: 40;
+    -fx-text-fill: #ffffff;
+}
+
+.OverlayHeading {
+    -fx-font-family: 'Silkscreen';
+    -fx-font-weight: Bold;
+    -fx-font-size: 32;
+    -fx-text-fill: #ffffff;
+}
+
+.OverlayText {
+    -fx-font-family: 'Silkscreen';
+    -fx-font-size: 20;
+    -fx-text-fill: #ffffff;
+}
+
+.gameMenu {
+    -fx-background-color: #00000014;
+}
+
+.menuButton {
+    -fx-background-radius: 0;
+    -fx-background-color: #00000000;
+}
+
+.menuButton:hover {
+    -fx-background-color: #00000029;
+}
+
+.menuButton:pressed {
+    -fx-background-color: #0000005c;
+}

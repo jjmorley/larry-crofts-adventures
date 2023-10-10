@@ -1,32 +1,28 @@
 package nz.ac.wgtn.swen225.lc.persistency;
 
-import com.fasterxml.jackson.core.*;
-import com.fasterxml.jackson.databind.*;
-import nz.ac.wgtn.swen225.lc.app.Game;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import nz.ac.wgtn.swen225.lc.domain.Board;
 import nz.ac.wgtn.swen225.lc.domain.Domain;
 import nz.ac.wgtn.swen225.lc.domain.Position;
-import nz.ac.wgtn.swen225.lc.domain.gameObject.GameObject;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable.Actor;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable.Player;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.item.Item;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.item.Key;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.item.Treasure;
-import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.Door;
-import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.ExitDoor;
-import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.Tile;
-import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.Wall;
-import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.walkableTile.Free;
-import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.walkableTile.InfoTile;
+import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.*;
+import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.walkableTile.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.*;
 import java.util.ArrayList;
+import java.util.Comparator;
+
 
 /**
  * Loads in level from JSON file.
  *
- * TODO: EXTRA NPC
  * @author Seb Collis 300603371
  */
 public class Load {
@@ -48,28 +44,46 @@ public class Load {
     }
 
     /**
-     * Return loaded JSON as an array. This is a 2D array ATM but am happy to change it.
+     * Loads level based upon whatever has been last saved.
      *
-     * @return String[][]
+     * @return Domain
      */
-    public static String[][] loadAsArray(File file){
-        //JSON LOADING
-        loadJSON(file);
-        JsonNode level = json.get("level");
-        int gridSize = json.get("gridSize").asInt();
+    public static SaveData autoLoad(){
+        Path dir = Paths.get("src/main/resources/levels");  // specify directory
+        try{
+            File filePath = Files.list(dir)
+                    .filter(f -> !Files.isDirectory(f))
+                    .max(Comparator.comparingLong(f -> f.toFile().lastModified()))
+                    .orElseGet(null).toFile();
 
-        //MAKE ARRAY
-        String[][] levelArray = new String[gridSize][gridSize];
-        for(int i = 0; i < gridSize; i++){
-            for(int j = 0; j <  gridSize; j++){
-                levelArray[i][j] = level.get(i + ", " + j).asText();
+            if (filePath != null) //this should not ever be false - would throw error otherwise
+            {
+                return loadAsSaveData(filePath);
             }
         }
-        return levelArray;
+        catch(Exception e){
+            System.out.println("Something messed up. \n" + e.toString());
+        }
+        return null;
+    }
+
+    /**
+     * Return loaded JSON as a SaveData object.
+     *
+     * @return SaveData
+     */
+    public static SaveData loadAsSaveData(File file){
+        Domain d = loadAsDomain(file);
+        int levelNum = json.get("levelNum").asInt();
+        int timeRemaining = json.get("time").asInt();
+
+        return new SaveData(d, levelNum, timeRemaining);
     }
 
     /**
      * Return loaded JSON as a domain object.
+     *
+     * TODO: MULTIPLE ACTORS
      *
      * @return Domain
      */
@@ -79,6 +93,7 @@ public class Load {
         JsonNode level = json.get("level");
         int gridSize = json.get("gridSize").asInt();
         int treasures = json.get("treasures").asInt();
+        JsonNode actors = json.get("actor");
 
         //MAKE ARRAY
         Tile[][] levelArray = new Tile[gridSize][gridSize];
@@ -93,8 +108,11 @@ public class Load {
                     case("w"):
                         tile = new Wall(new Position(i, j));
                         break;
-                    case("e"):
+                    case("l"):
                         tile = new ExitDoor(new Position(i, j));
+                        break;
+                    case("e"):
+                        tile = new Exit(null, new Position(i, j));
                         break;
                     case("i"):
                         tile = new InfoTile(null, new Position(i, j), "hasn't been set yet");
@@ -119,11 +137,24 @@ public class Load {
             }
         }
 
+        ArrayList<Actor> boardActors = new ArrayList<Actor>();
+        for(int i = 0; i < actors.size(); i++){
+            String actorPos = actors.get(i + "").asText();
+            ArrayList<Position> actorList = new ArrayList<Position>();
+            for (int j = 0; j < actorPos.length(); j += 6){
+                int x = (int) actorPos.charAt(j) - 48;
+                int y = (int) actorPos.charAt(j + 3) - 48;
+                actorList.add(new Position(x, y));
+            }
+            Actor a = new Actor(actorList);
+            boardActors.add(a);
+        }
+
         Board b = new Board(levelArray, true);
 
         Player p = new Player(playerPos(), new ArrayList<Item>(), treasures);
 
-        Domain d = new Domain(b, p, new ArrayList<Actor>());
+        Domain d = new Domain(b, p, boardActors);
 
         return d;
     }

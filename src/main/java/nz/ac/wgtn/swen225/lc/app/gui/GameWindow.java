@@ -1,6 +1,7 @@
 package nz.ac.wgtn.swen225.lc.app.gui;
 
-import java.io.File;
+import javafx.beans.value.ObservableValue;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -13,6 +14,10 @@ import nz.ac.wgtn.swen225.lc.app.InputManager;
 import nz.ac.wgtn.swen225.lc.domain.Domain;
 import nz.ac.wgtn.swen225.lc.renderer.Renderer;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+
 /**
  * This class creates the game window and all subcomponents including input capture.
  *
@@ -20,12 +25,15 @@ import nz.ac.wgtn.swen225.lc.renderer.Renderer;
  */
 public class GameWindow {
 
+  public final InputManager inputManager;
   private final Game game;
-  private final InputManager inputManager;
   private final Stage stage;
   public Overlay overlay;
   public Renderer renderer;
+  public GameInfoController gameInfoController;
   private Pane gamePane;
+  private Pane gameInfoPane;
+  public MenuBarController menuBarController;
 
 
   /**
@@ -46,13 +54,14 @@ public class GameWindow {
     // Pane to stack the overlay on top of the main pane
     StackPane stackPane = new StackPane();
 
-    overlay = new Overlay(game);
+    overlay = new Overlay(game, this);
     VBox mainPane = createMainPane();
 
     stackPane.getChildren().addAll(mainPane, overlay);
 
     // Setup window
     Scene scene = new Scene(stackPane, 720, 820);
+    scene.getStylesheets().add(getClass().getResource("/UI/styles.css").toExternalForm());
     stage.setScene(scene);
     stage.setTitle("Larry Croft's Adventures");
     stage.getIcons().add(new Image("windowIcon.png"));
@@ -76,42 +85,107 @@ public class GameWindow {
         )
     );
 
-    MenuBar menuBar = new MenuBar(game, this);
-    GameInfo gameInfo = new GameInfo();
+    Pane menuBar = null;
+
+    try {
+      URL fxmlFile = getClass().getResource("/UI/MenuBar.fxml");
+      if (fxmlFile == null) {
+        throw new IOException("URL for UI/MenuBar.fxml was null.");
+      }
+
+      FXMLLoader loader = new FXMLLoader(fxmlFile);
+      menuBar = loader.load();
+      menuBarController = loader.getController();
+      menuBarController.initializeOwners(game, this);
+
+    } catch (IOException exception) {
+      throw new RuntimeException(exception);
+    }
+
+    if (menuBar == null) {
+      throw new RuntimeException("Failed to load menuBar from fxml");
+    }
+
+    gameInfoPane = new VBox();
+    gameInfoPane.setPrefHeight(75);
 
     // VBox to stack menu bar, game info, and game window vertically
-    return new VBox(menuBar, gameInfo, gamePane);
+    return new VBox(menuBar, gameInfoPane, gamePane);
   }
 
   /**
    * Set up the UI when a new game is started/loaded.
    *
    * @param domain The domain of the new game.
-   * */
-  public void createGame(Domain domain) {
+   */
+  public void createGame(Domain domain, int levelNum) {
     gamePane.getChildren().clear();
     renderer = new Renderer(domain, (int) gamePane.getWidth());
+    renderer.getDisplay().setFocusTraversable(false);
+    renderer.getDisplay().focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+      gamePane.requestFocus();
+    });
     gamePane.getChildren().add(renderer.getDisplay());
+
+    menuBarController.updateLevelNumber(levelNum);
+
+    try {
+      URL fxmlFile = getClass().getResource("/UI/GameInfo.fxml");
+      if (fxmlFile == null) {
+        throw new IOException("URL for UI/GameInfo.fxml was null.");
+      }
+
+      FXMLLoader loader = new FXMLLoader(fxmlFile);
+      Pane gameInfo = loader.load();
+      gameInfoPane.getChildren().clear();
+      gameInfoPane.getChildren().add(gameInfo);
+
+      gameInfoController = loader.getController();
+      gameInfoController.updateUi(domain, game);
+    } catch (IOException exception) {
+      throw new RuntimeException(exception);
+    }
   }
 
   /**
    * Opens a file picker and returns the file the user picks.
    *
+   * @param kindOfFile The 'kind' of file that is being selected, e.g., "Save", "Recording"
    * @return The file the user picks or null.
    */
-  public File openSaveSelectorDialog() {
+  public File openFileSelectorDialog(String kindOfFile) {
     FileChooser fileChooser = new FileChooser();
-    fileChooser.setTitle("Open a Save File");
+    fileChooser.setTitle("Open a " + kindOfFile + " File");
     fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
 
-    FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("Save File", "*.json");
+    FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter(
+        kindOfFile + " File",
+        "*.json"
+    );
     fileChooser.getExtensionFilters().add(filter);
 
-    File file = fileChooser.showOpenDialog(stage);
+    return fileChooser.showOpenDialog(stage);
+  }
 
-    // TODO processing if it is a valid file?
+  /**
+   * Opens a save dialog and returns the file the user picks.
+   *
+   * @param kindOfFile The 'kind' of file that is being selected, e.g., "Save", "Recording"
+   * @return The file the user picks or null.
+   */
+  public File openFileSaveDialog(String kindOfFile, String initialFileName) {
+    FileChooser fileChooser = new FileChooser();
+    fileChooser.setTitle("Save as");
+    fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+    fileChooser.setInitialFileName(initialFileName);
 
-    return file;
+    FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter(
+        kindOfFile + " File",
+        "*.json"
+    );
+    fileChooser.getExtensionFilters().add(filter);
+
+    return fileChooser.showSaveDialog(stage);
   }
 
   public Stage getStage() {

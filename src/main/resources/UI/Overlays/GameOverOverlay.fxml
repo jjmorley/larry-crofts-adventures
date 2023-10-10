@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--Trent Shailer 300602354-->
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="nz.ac.wgtn.swen225.lc.app.gui.overlay.GameOverOverlayController"
+            visible="false">
+    <padding>
+        <Insets right="50" top="50" left="50" bottom="50"/>
+    </padding>
+
+    <top>
+        <VBox alignment="CENTER">
+            <Label styleClass="OverlayTitle">
+                Game Over
+            </Label>
+        </VBox>
+    </top>
+
+    <center>
+        <VBox alignment="TOP_CENTER">
+            <Label fx:id="reasonLabel" styleClass="OverlayHeading">
+            </Label>
+        </VBox>
+    </center>
+
+    <bottom>
+        <HBox alignment="CENTER" spacing="25">
+            <Button onAction="#restart" styleClass="OverlayButton">Restart Level</Button>
+            <Button onAction="#load" styleClass="OverlayButton">Load a Save</Button>
+            <Button onAction="#quit" styleClass="OverlayButton">Quit Game</Button>
+        </HBox>
+    </bottom>
+</BorderPane>

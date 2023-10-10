@@ -38,9 +38,9 @@ public class Actor implements GameObject {
      */
     public InformationPacket move(Board board) {
         if (board == null) throw new IllegalArgumentException();
-        if (positionIndex++ >= route.size()) positionIndex = -1;
+        if (positionIndex+1 >= route.size()) positionIndex = -1;
 
-        int newIndex = positionIndex++;
+        int newIndex = positionIndex+1;
         Tile[][] newBoard = board.getBoard();
 
         Tile moveToTile = newBoard[route.get(newIndex).x()][route.get(newIndex).y()];
@@ -51,17 +51,17 @@ public class Actor implements GameObject {
         }
         // If walkableTile contains a player, the player has been killed. as the actor is stepping on it.
         if (walkTile.getGameObject() instanceof Player) {
-            return new InformationPacket(board, false, false);
+            return new InformationPacket(board, false, false, false);
         }
 
         // Using full newBoard as there is no second step, compared to moveToTile.
         ((WalkableTile) newBoard[route.get(newIndex).x()][route.get(newIndex).y()]).setGameObject(this);
         // We are currently alive, so it is assumed we did the check beforehand.
-        ((WalkableTile) newBoard[route.get(positionIndex).x()][route.get(positionIndex).y()]).setGameObject(null);
         positionIndex++;
+        ((WalkableTile) newBoard[route.get(positionIndex).x()][route.get(positionIndex).y()]).setGameObject(null);
 
         board.setBoard(newBoard);
-        return new InformationPacket(board, false, true);
+        return new InformationPacket(board, false, true, false);
     }
 
     /**
@@ -82,6 +82,24 @@ public class Actor implements GameObject {
     @Override
     public void setPosition(Position position) {
         positionIndex++;
+    }
+
+    /**
+     * does as described on the label.
+     *
+     * @return List<Position> returns all positions used in route.
+     */
+    public List<Position> getRoute() {
+        return route;
+    }
+
+    /**
+     * does as described on the label.
+     *
+     * @return index returns current number of route.
+     */
+    public int getPositionIndex() {
+        return positionIndex;
     }
 
     /**

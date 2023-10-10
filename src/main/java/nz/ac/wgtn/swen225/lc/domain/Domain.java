@@ -46,6 +46,11 @@ public class Domain {
         if (!infoPacket.isPlayerAlive() || !infoPacket.hasPlayerMoved()) return infoPacket;
         board = infoPacket.getBoard();
 
+        //Debugging wooooo.
+        System.out.println(player.getPosition().toString());
+        System.out.println(board.toString());
+        //Debugging wooooo.
+
         return infoPacket;
     }
 

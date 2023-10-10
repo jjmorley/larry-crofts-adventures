@@ -1,6 +1,5 @@
 package nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable;
 
-import javafx.geometry.Pos;
 import nz.ac.wgtn.swen225.lc.domain.Board;
 import nz.ac.wgtn.swen225.lc.domain.InformationPacket;
 import nz.ac.wgtn.swen225.lc.domain.Position;
@@ -67,7 +66,7 @@ public class Player implements GameObject {
             InformationPacket infoPacket = tryWalkThroughNonWalkableTile(moveToTile, newBoard, board, directionOffset);
 
             if (infoPacket == null) {
-                return new InformationPacket(board, false, true);
+                return new InformationPacket(board, false, true, false);
             }
             board.setBoard(infoPacket.getBoard().getBoard());
 
@@ -80,7 +79,7 @@ public class Player implements GameObject {
             board.setBoard(infoPacket.getBoard().getBoard());
 
         } else {
-            return new InformationPacket(board, false, true);
+            return new InformationPacket(board, false, true, false);
         }
 
 
@@ -92,18 +91,28 @@ public class Player implements GameObject {
         position = new Position(position.x()+directionOffset[0], position.y()+directionOffset[1]);
 
         board.setBoard(newBoard);
-        return new InformationPacket(board, true, true);
+        return new InformationPacket(board, true, true, false);
     }
 
     private InformationPacket tryWalkThroughNonWalkableTile(Tile targetTile, Tile[][] newBoard, Board board, int[] directionOffset) {
         boolean validMove = false;
 
-        if (targetTile instanceof Door doorTile) {
-            int keys = inventory.stream()
-                    .filter(item -> item instanceof Key && doorTile.keyMatch((Key) item))
-                    .toList().size();
+        if (targetTile instanceof Door doorTile && inventory.size()>0) {
+            Item validKey = null;
 
-            if (keys > 0) {
+            int i = 0;
+            for (Item item : inventory) {
+                if (item instanceof Key key && doorTile.keyMatch(key)) {
+                    validKey = key;
+                    break;
+                }
+                i++;
+
+                if (i==inventory.size()) i=-1;
+            }
+            if (i!=-1) inventory.remove(i);
+
+            if (validKey!=null) {
                 validMove = true;
             }
         } else if (targetTile instanceof ExitDoor) {
@@ -117,7 +126,7 @@ public class Player implements GameObject {
             newBoard[position.x() + directionOffset[0]][position.y() + directionOffset[1]] = new Free(null, pos);
 
             board.setBoard(newBoard);
-            return new InformationPacket(board, true, true);
+            return new InformationPacket(board, true, true, false);
         }
 
         return null;
@@ -139,23 +148,23 @@ public class Player implements GameObject {
             }
         }
 
-        return new InformationPacket(board, false, playerSurvived);
+        return new InformationPacket(board, false, playerSurvived, false);
     }
 
     private int[] convertIntTo2Dspace(Direction direction) {
         int[] space2D = new int[2];
         switch (direction) {
             case UP -> {
-                space2D[1] = -1;
+                space2D[0] = -1;
             }
             case RIGHT -> {
-                space2D[0] = 1;
-            }
-            case DOWN -> {
                 space2D[1] = 1;
             }
+            case DOWN -> {
+                space2D[0] = 1;
+            }
             case LEFT -> {
-                space2D[0] = -1;
+                space2D[1] = -1;
             }
             default -> throw new IllegalArgumentException();
         }

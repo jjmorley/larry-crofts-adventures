@@ -3,11 +3,11 @@ package nz.ac.wgtn.swen225.lc.app;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
+
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import nz.ac.wgtn.swen225.lc.app.gui.GameWindow;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable.Direction;
-
 
 
 /**
@@ -16,14 +16,12 @@ import nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable.Direction;
  * @author Trent Shailer 300602354.
  */
 public class InputManager {
-  private static final int MOVEMENT_TIMEOUT = 500;
-  // This value should be updated dynamically based on renderer
-  // Since that needs to support recorder playback speed and
-  // there should only be one source of truth for that value
-
+  public static int MOVEMENT_TIMEOUT = 250;
   private final Game game;
   private final GameWindow gameWindow;
   private long lastMoved = 0;
+
+  private boolean movementLocked = false;
 
 
   /**
@@ -78,6 +76,10 @@ public class InputManager {
   private void handleMovement(KeyCode key) {
     assert key.isArrowKey();
 
+    if (movementLocked) {
+      return;
+    }
+
     long now = System.currentTimeMillis();
 
     // If the timeout on the movement is active, don't let the player move
@@ -107,7 +109,7 @@ public class InputManager {
       URL fileUrl = getClass().getResource("/levels/level" + levelNum + ".json");
       if (fileUrl != null) {
         File f = new File(fileUrl.toURI());
-        game.loadGame(f);
+        game.loadGame(f, true);
       }
     } catch (URISyntaxException ex) {
       System.out.println("Failed to load level " + levelNum + ", URI Syntax error: ");
@@ -123,12 +125,20 @@ public class InputManager {
     } else if (key == KeyCode.S) {
       game.exitGame(true);
     } else if (key == KeyCode.R) {
-      File file = gameWindow.openSaveSelectorDialog();
+      File file = gameWindow.openFileSelectorDialog("Save");
       if (file == null) {
         return;
       }
 
-      game.loadGame(file);
+      game.loadGame(file, true);
     }
+  }
+
+  public boolean isMovementLocked() {
+    return movementLocked;
+  }
+
+  public void setMovementLocked(boolean movementLocked) {
+    this.movementLocked = movementLocked;
   }
 }

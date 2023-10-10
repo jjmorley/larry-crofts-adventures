@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--Trent Shailer 300602354-->
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Button?>
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="nz.ac.wgtn.swen225.lc.app.gui.overlay.PauseOverlayController"
+            visible="false">
+    <padding>
+        <Insets right="50" top="50" left="50" bottom="50"/>
+    </padding>
+
+    <top>
+        <VBox alignment="CENTER">
+            <Label styleClass="OverlayTitle">
+                Game Paused
+            </Label>
+        </VBox>
+    </top>
+
+    <bottom>
+        <VBox alignment="CENTER">
+            <Button onAction="#resume" styleClass="OverlayButton">Resume Game</Button>
+        </VBox>
+    </bottom>
+</BorderPane>

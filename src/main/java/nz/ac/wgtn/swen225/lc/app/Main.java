@@ -4,7 +4,14 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import nz.ac.wgtn.swen225.lc.domain.Domain;
+
+import java.io.File;
+
+import static nz.ac.wgtn.swen225.lc.persistency.Load.loadAsDomain;
+import static nz.ac.wgtn.swen225.lc.persistency.Save.saveJSONFromDomain;
 
 /**
  * Entrypoint for Larry Crofts Adventures.
@@ -14,6 +21,8 @@ import javafx.stage.Stage;
 public class Main extends Application {
   @Override
   public void start(Stage stage) {
+    Font.loadFont(getClass().getResourceAsStream("/UI/Silkscreen-Regular.ttf"), 24);
+    Font.loadFont(getClass().getResourceAsStream("/UI/Silkscreen-Bold.ttf"), 24);
     new Game(stage);
     stage.setOnCloseRequest(event -> System.exit(0));
   }
