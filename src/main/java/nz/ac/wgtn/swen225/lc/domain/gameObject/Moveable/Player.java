@@ -53,6 +53,8 @@ public class Player implements GameObject {
      * @return Board that has been updated.
      */
     public InformationPacket move(Board board, Direction direction) {
+        InformationPacket infoPacket = null;
+
         if (board == null) throw new IllegalArgumentException();
         if (direction == null) throw new IllegalArgumentException();
 
@@ -63,19 +65,20 @@ public class Player implements GameObject {
 
 
         if (!(moveToTile instanceof WalkableTile) && !(moveToTile instanceof Wall)) {
-            InformationPacket infoPacket = tryWalkThroughNonWalkableTile(moveToTile, newBoard, board, directionOffset);
+            infoPacket = tryWalkThroughNonWalkableTile(moveToTile, newBoard, board, directionOffset);
 
             if (infoPacket == null) {
-                return new InformationPacket(board, false, true, false);
+                return new InformationPacket(board, false, true, false, null);
             }
             board.setBoard(infoPacket.getBoard().getBoard());
 
         } else if ((moveToTile instanceof WalkableTile targetTile)) {
-            InformationPacket infoPacket = getContentsOfNextTile(targetTile, newBoard, board);
+            infoPacket = getContentsOfNextTile(targetTile, newBoard, board);
+
 
             board.setBoard(infoPacket.getBoard().getBoard());
         } else {
-            return new InformationPacket(board, false, true, false);
+            return new InformationPacket(board, false, true, false, null);
         }
 
 
@@ -87,7 +90,7 @@ public class Player implements GameObject {
         position = new Position(position.x()+directionOffset[0], position.y()+directionOffset[1]);
 
         board.setBoard(newBoard);
-        return new InformationPacket(board, true, true, false);
+        return new InformationPacket(board, true, infoPacket.isPlayerAlive(), infoPacket.hasPlayerWon(), infoPacket.getTileInformation());
     }
 
     private InformationPacket tryWalkThroughNonWalkableTile(Tile targetTile, Tile[][] newBoard, Board board, int[] directionOffset) {
@@ -124,13 +127,14 @@ public class Player implements GameObject {
             newBoard[position.x() + directionOffset[0]][position.y() + directionOffset[1]] = new Free(null, pos);
 
             board.setBoard(newBoard);
-            return new InformationPacket(board, true, true, false);
+            return new InformationPacket(board, true, true, false, null);
         }
 
         return null;
     }
 
     private InformationPacket getContentsOfNextTile(WalkableTile targetTile, Tile[][] newBoard, Board board) {
+        String tileInfomation = null;
         boolean playerSurvived = true;
         boolean playerWin = false;
 
@@ -156,10 +160,10 @@ public class Player implements GameObject {
         } else if (targetTile instanceof Lava || targetTile instanceof Water) {
             playerSurvived = false;
             Renderer.playSound("Splash");
+        } else if (targetTile instanceof InfoTile infoTile) {
+            tileInfomation = infoTile.getInformation();
         }
-        // TODO: 10/10/2023 add fire and water tiles with splash sound effect 
-
-        return new InformationPacket(board, false, playerSurvived, playerWin);
+        return new InformationPacket(board, false, playerSurvived, playerWin, tileInfomation);
     }
 
     private int[] convertIntTo2Dspace(Direction direction) {

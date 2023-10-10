@@ -52,7 +52,7 @@ public class Actor implements GameObject {
         // If walkableTile contains a player, the player has been killed. as the actor is stepping on it.
         if (walkTile.getGameObject() instanceof Player) {
             Renderer.playSound("Lose");
-            return new InformationPacket(board, false, false, false);
+            return new InformationPacket(board, false, false, false, null);
         }
 
         // Using full newBoard as there is no second step, compared to moveToTile.
@@ -62,7 +62,7 @@ public class Actor implements GameObject {
         ((WalkableTile) newBoard[route.get(positionIndex).x()][route.get(positionIndex).y()]).setGameObject(null);
 
         board.setBoard(newBoard);
-        return new InformationPacket(board, false, true, false);
+        return new InformationPacket(board, false, true, false, null);
     }
 
     /**
