@@ -1,12 +1,12 @@
-package nz.ac.wgtn.swen225.lc.fuzz;
+package test.nz.ac.wgtn.swen225.lc.fuzz;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable.Direction;
-import nz.ac.wgtn.swen225.lc.app.*;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertTimeout;
 
 import java.util.Random;
+import nz.ac.wgtn.swen225.lc.app.Game;
+import nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable.Direction;
+import org.junit.jupiter.api.Test;
+
 
 /**
  * Generate some random input to invoke methods in nz.ac.wgtn.swen225.lc.app
@@ -17,6 +17,7 @@ import java.util.Random;
 class FuzzTest {
 
     // Level 1 test
+    @SuppressWarnings("checkstyle:Indentation")
     @Test
     void test1() {
         assertTimeout(java.time.Duration.ofSeconds(60), () -> {
@@ -28,8 +29,11 @@ class FuzzTest {
 
             /* Move the player up five times (out of top-board), then down 10 times (out of bot-board) */
             for (int i = 0; i < 15; i++) {
-                if (i <= 5) { game.movePlayer(Direction.UP); }
-                else { game.movePlayer(Direction.DOWN); }
+                if (i <= 5) {
+                    game.movePlayer(Direction.UP);
+                } else {
+                    game.movePlayer(Direction.DOWN);
+                }
                 Thread.sleep(MOVE_DURATION);
             }
 
