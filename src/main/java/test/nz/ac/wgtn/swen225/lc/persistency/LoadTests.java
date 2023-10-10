@@ -1,4 +1,4 @@
-package test.nz.ac.wgtn.swen225.lc.persistency;
+package nz.ac.wgtn.swen225.lc.persistency;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import nz.ac.wgtn.swen225.lc.domain.Domain;

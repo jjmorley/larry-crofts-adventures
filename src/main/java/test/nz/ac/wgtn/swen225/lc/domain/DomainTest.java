@@ -1,4 +1,4 @@
-package test.nz.ac.wgtn.swen225.lc.domain;
+package nz.ac.wgtn.swen225.lc.domain;
 
 import javafx.geometry.Pos;
 import nz.ac.wgtn.swen225.lc.domain.Board;
