@@ -141,24 +141,9 @@ public class Player implements GameObject {
         if (item instanceof Key key && doorTile.keyMatch(key)) {
           break;
         }
-        Tile moveToTile = newBoard[position.x() + directionOffset[0]][position.y() + directionOffset[1]];
-
-
-        if (!(moveToTile instanceof WalkableTile) && !(moveToTile instanceof Wall)) {
-            infoPacket = tryWalkThroughNonWalkableTile(moveToTile, newBoard, board, directionOffset);
-
-            if (!infoPacket.hasPlayerMoved()) {
-                return infoPacket;
-            }
-            board.setBoard(infoPacket.getBoard().getBoard());
-
-        } else if ((moveToTile instanceof WalkableTile targetTile)) {
-            infoPacket = getContentsOfNextTile(targetTile, newBoard, board);
-
-
-            board.setBoard(infoPacket.getBoard().getBoard());
-        } else {
-            return new InformationPacket(board, false, true, false, null);
+        i++;
+        if (i == inventory.size()) {
+          i = -1;
         }
       }
 
@@ -187,38 +172,8 @@ public class Player implements GameObject {
       newBoard[position.x() + directionOffset[0]][position.y() + directionOffset[1]]
           = new Free(null, pos);
 
-            int i = 0;
-            for (Item item : inventory) {
-                if (item instanceof Key key && doorTile.keyMatch(key)) {
-                    validKey = key;
-                    break;
-                }
-                i++;
-
-                if (i==inventory.size()) i=-1;
-            }
-            if (i!=-1) inventory.remove(i);
-
-            if (validKey!=null) {
-                validMove = true;
-                Renderer.playSound("Door");
-            }
-        } else if (targetTile instanceof ExitDoor) {
-            if (treasuresLeft == 0) {
-                validMove = true;
-                Renderer.playSound("Exit_Door");
-            }
-        }
-
-        if (validMove) {
-            Position pos = new Position(position.x() + directionOffset[0], position.y() + directionOffset[1]);
-            newBoard[position.x() + directionOffset[0]][position.y() + directionOffset[1]] = new Free(null, pos);
-
-            board.setBoard(newBoard);
-            return new InformationPacket(board, true, true, false, null);
-        }
-
-        return new InformationPacket(board, false, true, false, null);
+      board.setBoard(newBoard);
+      return new InformationPacket(board, true, true, false, null);
     }
 
     return new InformationPacket(board, false, true, false, null);
