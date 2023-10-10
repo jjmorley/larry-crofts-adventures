@@ -32,6 +32,7 @@ public class Game {
   private Domain domain;
   private Stage stage;
   private boolean isGameOver = false;
+  private boolean shouldAutoUpdateActors = true;
 
   /**
    * Creates a new instance of the game.
@@ -92,6 +93,8 @@ public class Game {
       InputManager.MOVEMENT_TIMEOUT = 250;
       gameWindow.inputManager.setMovementLocked(false);
     }
+
+    actorTimer.setPaused(false);
   }
 
   /**
@@ -147,8 +150,8 @@ public class Game {
   }
 
   private void loadGameFromData(SaveData saveData, boolean autoUpdateActors) {
+    this.shouldAutoUpdateActors = autoUpdateActors;
     isGameOver = false;
-
 
     domain = saveData.getDomain();
     currentLevel = saveData.getLevelNum();
@@ -163,24 +166,23 @@ public class Game {
 
     gameTimer = new GameTimer(timeRemaining, 1000, this::onTimeout, this::onTimerUpdate);
 
-    if (actorTimer != null) {
-      // Kill any actor timer
-      actorTimer.pauseTimer();
-      actorTimer = null;
-    }
-
-    if (autoUpdateActors) {
+    if (actorTimer == null) {
       actorTimer = new GameTimer(
           Long.MAX_VALUE,
           1000,
           () -> {
             // This should never happen
           },
-          (Long timeLeft) -> this.updateActors());
+          (Long timeLeft) -> {
+            this.updateActors();
+          });
     }
+
+    actorTimer.setPaused(!shouldAutoUpdateActors);
 
     if (gameWindow != null) {
       gameWindow.createGame(domain, currentLevel);
+      gameWindow.inputManager.setMovementLocked(false);
     }
   }
 
@@ -209,10 +211,7 @@ public class Game {
     }
 
     gameTimer.setPaused(true);
-
-    if (actorTimer != null) {
-      actorTimer.pauseTimer();
-    }
+    actorTimer.setPaused(true);
 
     if (gameWindow != null) {
       gameWindow.inputManager.setMovementLocked(true);
@@ -233,8 +232,8 @@ public class Game {
 
     gameTimer.setPaused(false);
 
-    if (actorTimer != null) {
-      actorTimer.resumeTimer();
+    if (shouldAutoUpdateActors) {
+      actorTimer.setPaused(false);
     }
 
     if (gameWindow != null) {
