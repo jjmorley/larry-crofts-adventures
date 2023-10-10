@@ -40,7 +40,7 @@ public class Water implements WalkableTile {
 
   @Override
   public String getName() {
-    return "InfoTile";
+    return "Water";
   }
 
   @Override
