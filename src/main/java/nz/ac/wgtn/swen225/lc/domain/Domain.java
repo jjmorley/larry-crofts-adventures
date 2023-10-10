@@ -72,6 +72,10 @@ public class Domain {
    * @return the information packet
    */
   public InformationPacket movePlayer(Direction direction) {
+    if (direction == null) {
+      throw new IllegalArgumentException();
+    }
+
     // attempts to move the player in specified direction
     InformationPacket infoPacket = player.move(board, direction);
 
