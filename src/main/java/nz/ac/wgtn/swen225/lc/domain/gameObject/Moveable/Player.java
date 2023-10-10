@@ -61,6 +61,9 @@ public class Player implements GameObject {
         int[] directionOffset = convertIntTo2Dspace(direction);
 
         Tile[][] newBoard = board.getBoard();
+        if (position.x() + directionOffset[0] >= newBoard.length || position.x() + directionOffset[0] < 0 || position.y() + directionOffset[1] >= newBoard[0].length || position.y() + directionOffset[1] < 0) {
+            return new InformationPacket(board, false, true, false, null);
+        }
         Tile moveToTile = newBoard[position.x() + directionOffset[0]][position.y() + directionOffset[1]];
 
 
