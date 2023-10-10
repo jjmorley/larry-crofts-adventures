@@ -6,6 +6,7 @@ import nz.ac.wgtn.swen225.lc.domain.Position;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.GameObject;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.Tile;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.tile.walkableTile.WalkableTile;
+import nz.ac.wgtn.swen225.lc.renderer.Renderer;
 
 import java.util.List;
 
@@ -50,6 +51,7 @@ public class Actor implements GameObject {
         }
         // If walkableTile contains a player, the player has been killed. as the actor is stepping on it.
         if (walkTile.getGameObject() instanceof Player) {
+            Renderer.playSound("Lose");
             return new InformationPacket(board, false, false, false);
         }
 
