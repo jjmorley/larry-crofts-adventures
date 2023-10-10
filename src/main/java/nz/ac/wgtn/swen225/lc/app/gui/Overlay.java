@@ -113,6 +113,10 @@ public class Overlay extends StackPane {
    */
   public void close() {
     this.setVisible(false);
+    closeAllOverlays();
+  }
+
+  private void closeAllOverlays() {
     pauseOverlay.setVisible(false);
     helpOverlay.setVisible(false);
     gameOverOverlay.setVisible(false);
@@ -123,6 +127,7 @@ public class Overlay extends StackPane {
    * Display the pause screen on the overlay.
    */
   public void displayPause() {
+    closeAllOverlays();
     pauseOverlay.setVisible(true);
     this.setVisible(true);
   }
@@ -131,6 +136,7 @@ public class Overlay extends StackPane {
    * Display the help screen on the overlay.
    */
   public void displayHelp() {
+    closeAllOverlays();
     helpOverlay.setVisible(true);
     this.setVisible(true);
   }
@@ -141,6 +147,7 @@ public class Overlay extends StackPane {
    * @param reason The reason the game over screen is being displayed.
    */
   public void displayGameOver(String reason) {
+    closeAllOverlays();
     gameOverOverlayController.onGameOver(reason, game, window);
     gameOverOverlay.setVisible(true);
     this.setVisible(true);
@@ -150,6 +157,7 @@ public class Overlay extends StackPane {
    * Display the next level overlay.
    */
   public void displayNextLevel() {
+    closeAllOverlays();
     nextLevelOverlayController.onWin(game, window);
     nextLevelOverlay.setVisible(true);
     this.setVisible(true);
