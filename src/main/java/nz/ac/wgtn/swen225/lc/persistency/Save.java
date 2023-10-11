@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.node.*;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import nz.ac.wgtn.swen225.lc.domain.Domain;
 import nz.ac.wgtn.swen225.lc.domain.Position;
@@ -30,7 +32,12 @@ public class Save {
    * Autosaves to a JSON titled with the hash of the current time.
    */
   public static void autoSave(SaveData s) {
-    File f = new File("src/main/saves/"
+    File tempFile = new File("saves/");
+
+    if (!tempFile.isDirectory()) {
+      new File("saves/").mkdirs();
+    }
+    File f = new File("saves/"
             + java.time.LocalDateTime.now().hashCode() + ".json");
     saveJsonFromSaveData(f, s);
   }
