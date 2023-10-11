@@ -1,5 +1,11 @@
 **Start Up Instructions:**
 
+Note that you will need maven to get our external libraries.
+
+To run, in the root folder in your terminal run `mvn clean javafx:run`
+
+Alternatively you can add a maven run configuration to IntelliJ, where under command line, just add `clean javafx:run`
+
 
 **Game Instructions:**
 - Use the Arrow Keys to move the knight.
