@@ -1,4 +1,4 @@
-package test.nz.ac.wgtn.swen225.lc.domain;
+package nz.ac.wgtn.swen225.lc.domain;
 
 import javafx.geometry.Pos;
 import nz.ac.wgtn.swen225.lc.domain.Board;
@@ -26,6 +26,9 @@ import static org.junit.Assert.fail;
 
 /**
  * The type Domain test.
+ * The majority of my methods are gets and sets and the like
+ * which are used seldom by myself but become very useful for outside sections
+ * Most of which were specifically asked for by those people.
  *
  * @author Alexander_Galloway 300611406.
  */
@@ -339,6 +342,51 @@ public class DomainTest {
     assert domain.getPlayer().getTreasuresLeft() == 2 : "treasures";
     assert domain.getActors().get(0).getPosition().equals(new Position(3, 4)) : "ActorPos";
     assert domain.getPlayer().getInventory().size() == 0 : "Inventory";
+  }
+
+  @Test
+  public void testGettersSetters1() {
+    int treasures = 0;
+    List<Position> lp = new ArrayList<Position>();
+    lp.add(new Position(3, 4));
+    lp.add(new Position(2, 4));
+    lp.add(new Position(2, 3));
+    lp.add(new Position(3, 3));
+
+    Actor actor = new Actor(lp);
+    List<Actor> la = new ArrayList<>(); la.add(actor);
+
+    List<GameObject> items = new ArrayList<>();
+    items.add(new Treasure(new Position(4, 2)));
+    treasures++;
+    items.add(new Treasure(new Position(4, 6)));
+    treasures++;
+    items.add(new Key(0, new Position(3, 2)));
+    items.add(actor);
+
+    Player player = new Player(new Position(4, 4), new ArrayList<Item>(), treasures);
+    Tile[][] tileArr = makeBoard();
+
+    tileArr[player.getPosition().x()][player.getPosition().y()] = new Free(player, player.getPosition());
+    tileArr[5][2] = new Door((Key) items.get(2), player.getPosition());
+    tileArr[4][3] = new Water(null, player.getPosition());
+    tileArr[4][5] = new Lava(null, player.getPosition());
+    tileArr[5][4] = new InfoTile(null, player.getPosition(), "Information on my info tile");
+
+    tileArr = addItemsToBoard(items, tileArr);
+    Board board = new Board(tileArr, true);
+    Domain domain = new Domain(board, player, la);
+
+    System.out.println(board.toString());
+
+    for (int i = 0; i < tileArr.length; i++) {
+      for (int j = 0; j < tileArr[0].length; j++) {
+        assert tileArr[i][j].getName() != null;
+        assert tileArr[i][j].getPosition() != null;
+        tileArr[i][j].setPosition(new Position(i+200, j+200));
+        assert tileArr[i][j].getPosition().equals(new Position(i+200, j+200));
+      }
+    }
   }
 
   /**

@@ -1,4 +1,4 @@
-package test.nz.ac.wgtn.swen225.lc.recorder;
+package nz.ac.wgtn.swen225.lc.recorder;
 
 import nz.ac.wgtn.swen225.lc.app.Game;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable.Direction;
