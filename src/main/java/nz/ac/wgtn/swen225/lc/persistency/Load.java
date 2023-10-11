@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.Comparator;
+
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import nz.ac.wgtn.swen225.lc.domain.*;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable.Actor;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable.Player;
@@ -146,13 +148,25 @@ public class Load {
       boardActors.add(a);
     }
 
+    ArrayList<Item> inv = new ArrayList<Item>();
+    if (json.get("inventory") != null) {
+      ArrayNode items = json.get("inventory").withArray("");
+
+      for (int i = 0; i < items.size(); i++) {
+        JsonNode item = items.get(i);
+        if (item.get("name").asText().equals("Key")) {
+          inv.add(new Key(item.get("key").asInt(),
+                  new Position(item.get("position").get("x").asInt(),
+                          item.get("position").get("y").asInt())));
+        }
+      }
+    }
+
     Board b = new Board(levelArray, true);
 
-    Player p = new Player(playerPos(), new ArrayList<Item>(), treasures);
+    Player p = new Player(playerPos(), inv, treasures);
 
-    Domain d = new Domain(b, p, boardActors);
-
-    return d;
+    return new Domain(b, p, boardActors);
   }
 
   /**

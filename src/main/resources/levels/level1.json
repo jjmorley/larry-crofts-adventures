@@ -105,6 +105,7 @@
   "char" : "4, 4",
   "gridSize" : 10,
   "treasures" : 6,
+  "inventory" : [],
   "actor" : {
   },
   "levelNum" : 1,
