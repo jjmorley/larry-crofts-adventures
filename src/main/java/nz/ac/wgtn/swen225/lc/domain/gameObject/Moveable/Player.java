@@ -41,9 +41,6 @@ public class Player implements GameObject {
     if (inventory == null) {
       throw new IllegalArgumentException();
     }
-    if (treasuresLeft == 0) {
-      throw new IllegalArgumentException();
-    }
 
     this.position = position;
     this.inventory = inventory;
