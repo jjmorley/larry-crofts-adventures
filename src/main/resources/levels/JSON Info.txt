@@ -18,3 +18,6 @@ JSON KEY
     Char - Correlates to the position of the player character.
     GridSize - Correlates to the size of the level (I.E 9 = 9 tiles x 9 tiles).
     Treasure - Correlates to the amount of treasure on the map
+    Inventory - List of players inventory
+    LevelNum - Level number
+    Time - Time left in level

@@ -119,6 +119,7 @@ public class Save {
     json.putPOJO("char", d.getPlayer().getPosition().x() + ", " + d.getPlayer().getPosition().y());
     json.putPOJO("gridSize", gridSize);
     json.putPOJO("treasures", d.getPlayer().getTreasuresLeft());
+    json.putPOJO("inventory", d.getPlayer().getInventory());
 
     List<Actor> a = d.getActors();
     ObjectNode actors = m.createObjectNode();
