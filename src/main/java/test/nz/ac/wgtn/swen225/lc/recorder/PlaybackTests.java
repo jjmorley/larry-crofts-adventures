@@ -1,6 +1,10 @@
 package test.nz.ac.wgtn.swen225.lc.recorder;
 
-
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
 import nz.ac.wgtn.swen225.lc.app.Game;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable.Direction;
 import nz.ac.wgtn.swen225.lc.recorder.Playback;
@@ -8,213 +12,239 @@ import nz.ac.wgtn.swen225.lc.recorder.Recorder;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.List;
-
 import static org.junit.Assert.*;
 
+/**
+ * Tests for playback class.
+ *
+ * @author Nate Burt 300605172.
+ */
 public class PlaybackTests {
 
-    private Game game;
-    private Recorder recorder;
-    private File testFile;
-    private File testFile1;
-    private File testFile2;
-    private Playback playback;
-    private File invalidTestFile; // Create a separate test file for invalid format
+  private Game game;
+  private Recorder recorder;
+  private File testFile;
+  private File testFile1;
+  private File testFile2;
+  private Playback playback;
+  private File invalidTestFile; // Create a separate test file for invalid format
 
 
-    @Before
-    public void setUp() {
-        // Initialize the game or any required objects
-        game = new Game(1); // You may need to adjust the game initialization based on your actual setup
-        recorder = new Recorder(1, game); // Initialize Recorder
-        testFile = new File("src/main/resources/Recorder/test-playback-game.json"); // Create a test file
-        testFile1 = new File("src/main/resources/Recorder/test-playback-game1.json"); // Create a test file
-        testFile2 = new File("src/main/resources/Recorder/test-playback-game2.json"); // Create a test file
-        invalidTestFile = new File("src/main/resources/Recorder/invalid-playback-game.json"); // Create a separate test file for invalid format
+  /**
+   * Set up game and testing files.
+   */
+  @Before
+  public void setUp() {
+    game = new Game(1);
+    recorder = new Recorder(1, game); // Initialize Recorder
+    testFile = new File("src/main/resources/Recorder/test-playback-game.json");
+    testFile1 = new File("src/main/resources/Recorder/test-playback-game1.json");
+    testFile2 = new File("src/main/resources/Recorder/test-playback-game2.json");
+    // Create a separate test file for invalid format
+    invalidTestFile = new File("src/main/resources/Recorder/invalid-playback-game.json");
+  }
+
+  /**
+   * Test with simple empty file.
+   */
+  @Test
+  public void testPlaybackInitialization() {
+    recorder.saveRecordedGameToFile(testFile);
+    try {
+      playback = new Playback(testFile, game);
+
+      assertEquals(0, playback.getFrame());
+      assertEquals(1, playback.getLevel());
+      assertFalse(playback.isPlayingBack());
+    } catch (IOException e) {
+      fail("Exception thrown: " + e.getMessage());
     }
+  }
 
-    @Test
-    public void testPlaybackInitialization() {
-        recorder.saveRecordedGameToFile(testFile);
-        try {
-            playback = new Playback(testFile, game);
+  /**
+   * Test loading.
+   */
+  @Test
+  public void testLoadRecordedGameFromFile() {
+    // Add moves to recorded file
+    recorder.addPlayerMove(Direction.RIGHT);
+    recorder.addActorMove();
+    recorder.addPlayerMove(Direction.DOWN);
+    recorder.saveRecordedGameToFile(testFile);
+    try {
+      playback = new Playback(testFile, game);
 
-            assertEquals(0, playback.getFrame());
-            assertEquals(1, playback.getLevel());
-            assertFalse(playback.isPlayingBack());
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("Exception thrown: " + e.getMessage());
-        }
+      List<String> playerMoves = playback.getPlayerMoveHistory();
+      List<String> actorMoves = playback.getActorMoveHistory();
+
+      // Test that the loaded data matches the expected data
+      assertEquals(3, playerMoves.size());
+      assertEquals(3, actorMoves.size());
+      assertEquals(Direction.RIGHT.toString(), playerMoves.get(0));
+      assertEquals("", actorMoves.get(0));
+      assertEquals(Direction.DOWN.toString(), playerMoves.get(2));
+      assertEquals("ActorMove", actorMoves.get(1));
+    } catch (IOException e) {
+      fail("Exception thrown: " + e.getMessage());
     }
+  }
 
-    @Test
-    public void testLoadRecordedGameFromFile() {
-        recorder.addPlayerMove(Direction.RIGHT);
-        recorder.addActorMove();
-        recorder.addPlayerMove(Direction.DOWN);
-        recorder.saveRecordedGameToFile(testFile);
-        try {
-            playback = new Playback(testFile, game);
+  /**
+   * Test invalid format.
+   *
+   * @throws IOException thrown if invalid format.
+   */
+  @Test
+  public void testInvalidFileFormatMissingFields() throws IOException {
+    // Create an invalid JSON file with missing required fields
+    String invalidJson = "{ \"playerMoveHistory\": [\"UP\", \"DOWN\"], \"level\": 1 }";
 
-            List<String> playerMoves = playback.getPlayerMoveHistory();
-            List<String> actorMoves = playback.getActorMoveHistory();
+    // Write the invalid JSON string to the test file
+    Files.write(Paths.get(invalidTestFile.toURI()), invalidJson.getBytes());
 
-            // Test that the loaded data matches the expected data (you may need to adjust these values)
-            assertEquals(3, playerMoves.size());
-            assertEquals(3, actorMoves.size());
-            assertEquals(Direction.RIGHT.toString(), playerMoves.get(0));
-            assertEquals("", actorMoves.get(0));
-            assertEquals(Direction.DOWN.toString(), playerMoves.get(2));
-            assertEquals("ActorMove", actorMoves.get(1));
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("Exception thrown: " + e.getMessage());
-        }
+    try {
+      playback = new Playback(invalidTestFile, game);
+
+      // The test should not reach here, so it's an error
+      fail("Expected IOException due to missing required fields.");
+    } catch (IOException e) {
+      // Check if the exception message contains the expected error message
+      assertTrue(e.getMessage().contains("Invalid file format: Missing required fields"));
     }
+  }
 
-    @Test
-    public void testInvalidFileFormatMissingFields() throws IOException {
-        // Create an invalid JSON file with missing required fields
-        String invalidJson = "{ \"playerMoveHistory\": [\"UP\", \"DOWN\"], \"level\": 1 }";
+  /**
+   * Test pausing and playing features.
+   */
+  @Test
+  public void testPauseAndPlay() {
+    // Create a test JSON file with recorded moves
+    Recorder recorder = new Recorder(1, game);
+    recorder.addPlayerMove(Direction.RIGHT);
+    recorder.saveRecordedGameToFile(testFile);
 
-        // Write the invalid JSON string to the test file
-        Files.write(Paths.get(invalidTestFile.toURI()), invalidJson.getBytes());
+    try {
+      // Initialize Playback with the test file
+      playback = new Playback(testFile, game);
+      playback.setSpeed(2000);
+      // Start playback
+      playback.play();
 
-        try {
-            playback = new Playback(invalidTestFile, game);
+      // Ensure that playback is playing
+      assertTrue(playback.isPlayingBack());
 
-            // The test should not reach here, so it's an error
-            fail("Expected IOException due to missing required fields.");
-        } catch (IOException e) {
-            // Check if the exception message contains the expected error message
-            assertTrue(e.getMessage().contains("Invalid file format: Missing required fields"));
-        }
+      // Pause playback
+      playback.pause();
+
+      // Ensure that playback is paused
+      assertFalse(playback.isPlayingBack());
+
+      // Resume playback
+      playback.play();
+
+      // Ensure that playback is playing again
+      assertTrue(playback.isPlayingBack());
+    } catch (Exception e) {
+      fail("Exception thrown: " + e.getMessage());
     }
-    @Test
-    public void testPauseAndPlay() {
-        // Create a test JSON file with recorded moves
-        // This assumes that you have a Recorder class to create the JSON file
-        Recorder recorder = new Recorder(1, game);
-        recorder.addPlayerMove(Direction.RIGHT);
-        recorder.saveRecordedGameToFile(testFile);
+  }
 
-        try {
-            // Initialize Playback with the test file
-            playback = new Playback(testFile, game);
-            playback.setSpeed(2000);
-            // Start playback
-            playback.play();
+  /**
+   * Test cancelling of playback.
+   */
+  @Test
+  public void testCancelPlayback() {
+    // Create a test JSON file with recorded moves
+    Recorder recorder = new Recorder(1, game);
+    recorder.addPlayerMove(Direction.RIGHT);
+    recorder.saveRecordedGameToFile(testFile);
 
-            // Ensure that playback is playing
-            assertTrue(playback.isPlayingBack());
+    try {
+      // Initialize Playback with the test file
+      playback = new Playback(testFile, game);
 
-            // Pause playback
-            playback.pause();
+      playback.setSpeed(2000);
+      // Start playback
+      playback.play();
 
-            // Ensure that playback is paused
-            assertFalse(playback.isPlayingBack());
+      // Cancel playback
+      playback.cancelPlayback();
 
-            // Resume playback
-            playback.play();
-
-            // Ensure that playback is playing again
-            assertTrue(playback.isPlayingBack());
-        } catch (Exception e) {
-            fail("Exception thrown: " + e.getMessage());
-        }
+      // Ensure that playback is canceled
+      assertFalse(playback.isPlayingBack());
+    } catch (Exception e) {
+      fail("Exception thrown: " + e.getMessage());
     }
+  }
 
-    @Test
-    public void testCancelPlayback() {
-        // Create a test JSON file with recorded moves
-        // This assumes that you have a Recorder class to create the JSON file
-        Recorder recorder = new Recorder(1, game);
-        recorder.addPlayerMove(Direction.RIGHT);
-        recorder.saveRecordedGameToFile(testFile);
+  /**
+   * Test frame by frame.
+   *
+   * @throws IOException thrown if loading file encounters error.
+   */
+  @Test
+  public void testPlayNextFrame() throws IOException {
+    // Create a Playback object with some player and actor move history
+    testFile1 = new File("src/main/resources/Recorder/test-playback-game1.json");
+    playback = new Playback(testFile1, game);
+    playback.getPlayerMoveHistory().add(Direction.RIGHT.toString());
+    playback.getActorMoveHistory().add("");
 
-        try {
-            // Initialize Playback with the test file
-            playback = new Playback(testFile, game);
+    System.out.println(playback.getPlayerMoveHistory().size());
+    // Initially, frame should be 0
+    assertEquals(0, playback.getFrame());
 
-            playback.setSpeed(2000);
-            // Start playback
-            playback.play();
+    // Call playNextFrame to move to the next frame
+    playback.playNextFrame();
 
-            // Cancel playback
-            playback.cancelPlayback();
+    // Frame should be incremented to 1
+    assertEquals(1, playback.getFrame());
 
-            // Ensure that playback is canceled
-            assertFalse(playback.isPlayingBack());
-        } catch (Exception e) {
-            fail("Exception thrown: " + e.getMessage());
-        }
-    }
+    playback.playNextFrame();
 
-    @Test
-    public void testPlayNextFrame() throws IOException {
-        // Create a Playback object with some player and actor move history
-        testFile1 = new File("src/main/resources/Recorder/test-playback-game1.json");
-        playback = new Playback(testFile1, game);
-        playback.getPlayerMoveHistory().add(Direction.RIGHT.toString());
-        playback.getActorMoveHistory().add("");
+    // Frame should be incremented to 2
+    assertEquals(2, playback.getFrame());
 
-        System.out.println(playback.getPlayerMoveHistory().size());
-        // Initially, frame should be 0
-        assertEquals(0, playback.getFrame());
+    playback.playNextFrame();
+    // Frame should be incremented to 3
+    assertEquals(3, playback.getFrame());
 
-        // Call playNextFrame to move to the next frame
-        playback.playNextFrame();
+  }
 
-        // Frame should be incremented to 1
-        assertEquals(1, playback.getFrame());
+  /**
+   * Test autoplay.
+   *
+   * @throws IOException          thrown if loading file encounters error.
+   * @throws InterruptedException if thread error encountered
+   */
+  @Test
+  public void testAutoReplayGame() throws IOException, InterruptedException {
 
-        playback.playNextFrame();
+    // Create a Playback object with player and actor move history
+    testFile2 = new File("src/main/resources/Recorder/test-playback-game2.json");
+    playback = new Playback(testFile2, game);
+    playback.getPlayerMoveHistory().add(Direction.RIGHT.toString());
+    playback.getActorMoveHistory().add("");
+    playback.getPlayerMoveHistory().add(Direction.DOWN.toString());
+    playback.getActorMoveHistory().add("ActorMove");
+    playback.getPlayerMoveHistory().add(Direction.UP.toString());
+    playback.getActorMoveHistory().add("");
 
-        // Frame should be incremented to 2
-        assertEquals(2, playback.getFrame());
+    // Set the playback speed
+    int speed = 100;
+    playback.setSpeed(speed);
+    playback.play();
 
-        playback.playNextFrame();
-        // Frame should be incremented to 3
-        assertEquals(3, playback.getFrame());
+    // Sleep for some time to allow auto-replay to execute
+    Thread.sleep(1000); // Sleep for 1 second
 
-    }
-
-    @Test
-    public void testAutoReplayGame() throws IOException, InterruptedException {
-
-        // Create a Playback object with some player and actor move history
-        testFile2 = new File("src/main/resources/Recorder/test-playback-game2.json");
-        playback = new Playback(testFile2, game);
-        playback.getPlayerMoveHistory().add(Direction.RIGHT.toString());
-        playback.getActorMoveHistory().add("");
-        playback.getPlayerMoveHistory().add(Direction.DOWN.toString());
-        playback.getActorMoveHistory().add("ActorMove");
-        playback.getPlayerMoveHistory().add(Direction.UP.toString());
-        playback.getActorMoveHistory().add("");
-
-        // Set the playback speed (e.g., 100 milliseconds between task executions)
-        int speed = 100;
-        playback.setSpeed(100);
-        playback.play();
-
-
-
-        // Sleep for some time to allow auto-replay to execute
-        Thread.sleep(1000); // Sleep for 1 second
-
-        // Get the player's position and compare it with the expected position
-        int playerX = 4;//game.getDomain().getPlayer().getPosition().x();
-        int playerY = 6;//game.getDomain().getPlayer().getPosition().y();
-        int expectedX = 4;
-        int expectedY = 6;
-        assertEquals(expectedX, playerX); // Replace expectedX with the expected X-coordinate
-        assertEquals(expectedY, playerY); // Replace expectedY with the expected Y-coordinate
-    }
+    // Get the player's position and compare it with the expected position
+    int playerX = game.getDomain().getPlayer().getPosition().x();
+    int playerY = game.getDomain().getPlayer().getPosition().y();
+    int expectedX = 4;
+    int expectedY = 6;
+    assertEquals(expectedX, playerX);
+    assertEquals(expectedY, playerY);
+  }
 
 }

@@ -54,28 +54,27 @@ public class Playback {
    */
   public void loadRecordedGameFromFile(File file) throws IOException {
     ObjectMapper objectMapper = new ObjectMapper();
-    //For loading
+    // For loading
     TypeReference<Map<String, Object>> typeReference = new TypeReference<Map<String, Object>>() {
     };
     Map<String, Object> recordedGameData = objectMapper.readValue(file, typeReference);
     System.out.println("Loaded Recorded Game Data from: " + file);
 
-    //Check formatting
+    // Check formatting
     if (!recordedGameData.containsKey("playerMoveHistory")
             || !recordedGameData.containsKey("actorMoveHistory")
             || !recordedGameData.containsKey("level")) {
       throw new IOException("Invalid file format: Missing required fields");
     }
 
-    //Load fields
+    // Load fields
     this.playerMoveHistory = (List<String>) recordedGameData.get("playerMoveHistory");
     this.actorMoveHistory = (List<String>) recordedGameData.get("actorMoveHistory");
     this.level = (int) recordedGameData.get("level");
-    //game.startRecordingPlayback(level, this);
   }
 
   /**
-   * Start the recording playback
+   * Start the recording playback.
    */
   public void initiateRecordingPlayback() {
     game.startRecordingPlayback(level, this);
@@ -94,17 +93,17 @@ public class Playback {
 
     playSpeed = speed;
 
-    // If playback is currently active, restart the timer with the new speed
+    // If playback is currently active, restart the task with the new speed
     if (playingBack) {
       startAutoReplayTimer();
     }
   }
 
   /**
-   * Start timer to run through frames at specified speed
+   * Start timer to run through frames at specified speed.
    */
   public void startAutoReplayTimer() {
-    // Check if the timer is already running and cancel it if necessary
+    // Check if the task is already running and cancel it if necessary
     if (replayTask != null) {
       replayTask.cancel();
     }
@@ -132,7 +131,7 @@ public class Playback {
           replayTask.cancel();
           pause();
         } else {
-          if (actorMoveHistory.get(frame).equals("")) {
+          if (actorMoveHistory.get(frame).isEmpty()) {
             game.movePlayer(Direction.valueOf(playerMoveHistory.get(frame)));
           } else {
             game.updateActors();
@@ -152,8 +151,8 @@ public class Playback {
     if (frame == playerMoveHistory.size() - 1) {
       game.stopRecordingPlayback(this);
     } else {
-      //Check whether next move is an actor move or player move
-      if (actorMoveHistory.get(frame).equals("")) {
+      // Check whether next move is an actor move or player move
+      if (actorMoveHistory.get(frame).isEmpty()) {
         game.movePlayer(Direction.valueOf(playerMoveHistory.get(frame)));
       } else {
         game.updateActors();
@@ -162,7 +161,6 @@ public class Playback {
     }
 
   }
-
 
   /**
    * Pause playback.
@@ -225,7 +223,7 @@ public class Playback {
   }
 
   /**
-   * Getter for if the recorded game is being autoplayed back.
+   * Getter for if the recorded game is being auto-played.
    *
    * @return if game is playing back.
    */
