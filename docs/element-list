@@ -1,0 +1,12 @@
+nz.ac.wgtn.swen225.lc.app
+nz.ac.wgtn.swen225.lc.app.gui
+nz.ac.wgtn.swen225.lc.app.gui.overlay
+nz.ac.wgtn.swen225.lc.domain
+nz.ac.wgtn.swen225.lc.domain.gameObject
+nz.ac.wgtn.swen225.lc.domain.gameObject.item
+nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable
+nz.ac.wgtn.swen225.lc.domain.gameObject.tile
+nz.ac.wgtn.swen225.lc.domain.gameObject.tile.walkableTile
+nz.ac.wgtn.swen225.lc.persistency
+nz.ac.wgtn.swen225.lc.recorder
+nz.ac.wgtn.swen225.lc.renderer
