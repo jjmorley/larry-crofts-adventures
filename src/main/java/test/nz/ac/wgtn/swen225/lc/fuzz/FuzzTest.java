@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Random;
 import nz.ac.wgtn.swen225.lc.app.*;
+import nz.ac.wgtn.swen225.lc.domain.Domain;
+import nz.ac.wgtn.swen225.lc.domain.InformationPacket;
 import nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable.Direction;
 import org.junit.jupiter.api.Test;
 
@@ -17,7 +19,10 @@ class FuzzTest {
 
     // Initialise/Assignment
     private nz.ac.wgtn.swen225.lc.domain.gameObject.Moveable.Direction dir;
+
+
     private final int TIMEOUT = 250;
+
 
     // Level 1 test
     @Test
@@ -71,8 +76,10 @@ class FuzzTest {
     @Test
     void test2() {
         assertTimeout(java.time.Duration.ofSeconds(60), () -> {
+
             // Initialise Game()
             Game game = new Game(2);
+            Domain dom = game.getDomain();
 
             // Move the player in random directions
             for (int i = 0; i < 150; i++) {
@@ -82,16 +89,28 @@ class FuzzTest {
 
                 // Correspond the numbers to movements
                 switch (rand) {
-                    default  -> dir = Direction.UP;
+                    default -> dir = Direction.UP;
                     case (2) -> dir = Direction.DOWN;
                     case (3) -> dir = Direction.LEFT;
                     case (4) -> dir = Direction.RIGHT;
                 }
-
                 // Move the player
                 game.movePlayer(dir);
+                InformationPacket move = dom.movePlayer(dir);
+
+                if (move.hasPlayerWon()) {
+                    System.out.println("Player has won.");
+                    break;
+                }
+
+                if (!move.isPlayerAlive()) {
+                    System.out.println("Player has died.");
+                    break;
+                }
+
                 Thread.sleep(TIMEOUT);
             }
+
         });
     }
 }
